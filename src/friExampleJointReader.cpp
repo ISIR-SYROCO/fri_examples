@@ -18,7 +18,39 @@ bool FriExampleJointReader::doStart(){
 }
 
 void FriExampleJointReader::updateHook(){
+    //Read in the iport_joint_state
+    unsigned int ndof = 7;
+    lwr_fri::FriJointState fri_joint_state_data;
+    RTT::FlowStatus jointStateFS = iport_joint_state.read(fri_joint_state_data);
+    
+    if(jointStateFS == RTT::NewData){
+        std::cout << "Measured Joint configuration" << std::endl;
+        printData(fri_joint_state_data.msrJntPos);
 
+        std::cout << "Commanded Joint configuration before FRI" << std::endl;
+        printData(fri_joint_state_data.cmdJntPos);
+
+        std::cout << "Commanded Joint configuration FRI offset" << std::endl;
+        printData(fri_joint_state_data.cmdJntPosFriOffset);
+
+        std::cout << "Measured Joint Torque" << std::endl;
+        printData(fri_joint_state_data.msrJntTrq);
+
+        std::cout << "Estimated external joint torque" << std::endl;
+        printData(fri_joint_state_data.estExtJntTrq);
+        
+        std::cout << "Gravity compensation" << std::endl;
+        printData(fri_joint_state_data.gravity);
+    }
+}
+
+void FriExampleJointReader::printData(std::vector<double> &vec){
+    for(std::vector<double>::iterator iter = vec.begin();
+            iter != vec.end();
+            ++iter){
+        std::cout << *iter << " ";
+    }
+    std::cout << std::endl;
 }
 
 void FriExampleJointReader::stopHook(){

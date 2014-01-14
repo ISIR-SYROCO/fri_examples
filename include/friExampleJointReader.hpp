@@ -21,7 +21,9 @@ class FriExampleJointReader : public FriExampleAbstract{
         void cleanupHook();
 
         RTT::InputPort<lwr_fri::FriJointState> iport_joint_state;
-
+    
+    private:
+        void printData(std::vector<double> &vec);
 };
 
 #endif
