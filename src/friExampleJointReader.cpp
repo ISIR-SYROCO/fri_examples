@@ -4,8 +4,10 @@
 #include "friExampleJointReader.hpp"
 #include <rtt/Component.hpp>
 #include <iostream>
-using namespace RTT;
+#include <boost/foreach.hpp>
+
 FriExampleJointReader::FriExampleJointReader(std::string const& name) : FriExampleAbstract(name){
+    this->addPort("FRIJointState", iport_joint_state);
 
 }
 
@@ -44,11 +46,9 @@ void FriExampleJointReader::updateHook(){
     }
 }
 
-void FriExampleJointReader::printData(std::vector<double> &vec){
-    for(std::vector<double>::iterator iter = vec.begin();
-            iter != vec.end();
-            ++iter){
-        std::cout << *iter << " ";
+void FriExampleJointReader::printData(boost::array<float, 7> &vec){
+    BOOST_FOREACH(float f, vec){
+        std::cout << f << " ";
     }
     std::cout << std::endl;
 }

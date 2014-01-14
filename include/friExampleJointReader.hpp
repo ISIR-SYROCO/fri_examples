@@ -9,6 +9,7 @@
 #include <kuka_lwr_fri/friComm.h>
 #include <lwr_fri/typekit/Types.hpp>
 #include <sensor_msgs/typekit/Types.hpp>
+#include <boost/array.hpp>
 #include <string>
 
 class FriExampleJointReader : public FriExampleAbstract{
@@ -23,7 +24,7 @@ class FriExampleJointReader : public FriExampleAbstract{
         RTT::InputPort<lwr_fri::FriJointState> iport_joint_state;
     
     private:
-        void printData(std::vector<double> &vec);
+        void printData(boost::array<float, 7> &vec);
 };
 
 #endif

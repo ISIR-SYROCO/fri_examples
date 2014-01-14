@@ -1,0 +1,118 @@
+&ACCESS RVP
+&REL 78
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+&PARAM EDITMASK = *
+DEF krl( )
+;FOLD INI
+  ;FOLD BASISTECH INI
+
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+    
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+
+retVal=FRISTOP()	
+for i=1 to 16
+
+  $fri_to_int[i]=0
+  $fri_to_rea[i]=0.0
+endfor
+
+
+
+
+if $mode_op<>#t1 then
+  repeat
+    halt
+    ;****************************************
+    ;**** use T1-Mode for safety reasons ****
+    ;****************************************
+  until $mode_op==#t1
+endif
+
+;move to Home-Position
+ptp { a1 0,a2 90,a3 0,a4 0,a5 0,a6 0,e1 0}
+ 
+; Move to reasonable Startposition !!!
+ptp {a1 0,a2 87,a3 87,a4 0,a5 -55,a6 0,e1 0}
+HALT
+
+; Test open FRI with datarate 20 msec
+retVal=friopen(20)
+wait for ($FriState==#MON)
+$fri_to_int[1]=0
+$fri_to_rea[1]=0.123
+
+wait for ($fri_frm_int[1]==1)	; = remote pc asked for the command state?
+wait for ($FriQuality==#PERFECT)
+retVal=FRISTART(1.0)
+wait for ($FriState==#CMD)
+
+wait for ($FRI_FRM_INT[1]==2)
+
+
+ptp CLAMP_AXES($AXIS_ACT_MES)
+
+halt
+retVal=FRISTOP()	
+wait for ($FriState==#MON)
+
+
+$fri_to_int[1]=0
+wait sec 0.5
+retVal = FRICLOSE()
+
+;move to Home-Position
+
+
+ptp { a1 0,a2 90,a3 0,a4 0,a5 0,a6 0,e1 0}
+
+END
+
+
+
+
+DEFFCT E6AXIS CLAMP_AXES(ax:IN)
+E6AXIS ax
+
+DECL E6AXIS an
+
+an.A1 = CLAMP(ax.A1, -169., 169.)
+an.A2 = CLAMP(ax.A2,  -29., 209.)
+an.E1 = CLAMP(ax.E1, -169., 169.)
+an.A3 = CLAMP(ax.A3, -119., 119.)
+an.A4 = CLAMP(ax.A4, -169., 169.)
+an.A5 = CLAMP(ax.A5, -119., 119.)
+an.A6 = CLAMP(ax.A6, -169., 169.)
+
+
+RETURN an
+ENDFCT
+
+
+
+
+
+DEFFCT REAL CLAMP(v:IN, minval:IN, maxval:IN)
+REAL v, minval, maxval
+DECL REAL r
+
+r = v
+
+IF v > maxval THEN
+  r = maxval
+ENDIF
+
+IF v < minval THEN
+    r = minval
+ENDIF
+
+RETURN r
+ENDFCT
