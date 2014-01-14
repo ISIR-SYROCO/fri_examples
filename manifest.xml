@@ -1,0 +1,13 @@
+<package>
+    <description brief="Orocos fri_examples Component package">
+        This package contains the components of the fri_examples package
+    </description>
+    <license></license>
+    <author>Sovannara Hak</author>
+    <depend package="rtt" />
+    <depend package="rtt_motion_control_msgs" />
+    <depend package="rtt_sensor_msgs" />
+    <depend package="kuka_lwr_fri" />
+    <depend package="lwr_fri" />
+</package>
+
