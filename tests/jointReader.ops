@@ -10,7 +10,10 @@ lwr.udp_port = 49938
 lwr.configure
 
 var ConnPolicy cp
+
+//Only last data written is accessible
 cp.type = DATA
+//Use mutexes
 cp.lock_policy = LOCKED
 
 connect("jointReader.fromFRI", "lwr.toKRL", cp)
