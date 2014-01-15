@@ -15,6 +15,8 @@ FriExample::FriExample(std::string const& name) : FriExampleAbstract(name){
     this->addOperation("getJointState", &FriExample::getJointState, this, RTT::OwnThread);
     this->addOperation("getCartesianWrench", &FriExample::getCartesianWrench, this, RTT::OwnThread);
     this->addOperation("getJacobian", &FriExample::getJacobian, this, RTT::OwnThread);
+
+    this->addOperation("setControlStrategy", &FriExample::setControlStrategy, this, RTT::OwnThread);
 }
 
 FriExample::~FriExample(){
@@ -109,6 +111,20 @@ void FriExample::getCartesianWrench(){
 
 void FriExample::getJacobian(){
 
+}
+
+void FriExample::setControlStrategy(int mode){
+    if(mode != 10 || mode != 20 || mode != 30){
+        std::cout << "Please set a valid control mode: " << std::endl;
+        std::cout << "10: Joint position" << std::endl;
+        std::cout << "20: Cartesian stiffness" << std::endl;
+        std::cout << "30: Joint stiffness" << std::endl;
+        return;
+    }
+    else{
+        fri_to_krl.intData[1] = mode;
+        controlMode = mode;
+    }
 }
 
 ORO_CREATE_COMPONENT(FriExample)
