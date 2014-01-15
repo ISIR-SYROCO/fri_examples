@@ -57,26 +57,42 @@ class FriExampleAbstract : public RTT::TaskContext{
         return true;
     }
 
+    /** @brief Orocos Start Hook
+     * Send arrays to KRC and call doStart()
+     */
     bool startHook(){
         //Send arrays to KRC
         port_fri_to_krl.write(fri_to_krl);
         return doStart();
     }
 
+    /** @brief To implement if specific things have to be done when starting the component
+     */
     virtual bool doStart(){
         return true;
     }
 
+    /** @brief Orocos Update hook
+     */
     virtual void updateHook() = 0;
 
+    /** @brief Orocos stop hook
+     * Call doStop(), then put 2 in $FRI_FRM_INT[1]
+     * which by our convention trigger fri_stop() in KRL program
+     */
     void stopHook(){
         doStop();
-        //Put 2 on $FRI_FRM_INT[1] to trigger fri_stop()
+        //Put 2 in $FRI_FRM_INT[1] to trigger fri_stop()
         fri_to_krl.intData[0]=2;
         port_fri_to_krl.write(fri_to_krl);
     }
 
+    /** @brief To implement if specific things have to be done when stoping the component
+     */
     virtual void doStop(){}
+
+    /** @brief Orocos Cleanup hook
+     */
     virtual void cleanupHook(){};
 
 };
