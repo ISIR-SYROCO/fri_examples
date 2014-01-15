@@ -17,7 +17,6 @@ FriExampleJointReader::~FriExampleJointReader(){
 
 void FriExampleJointReader::updateHook(){
     //Read in the iport_joint_state
-    unsigned int ndof = 7;
     lwr_fri::FriJointState fri_joint_state_data;
     RTT::FlowStatus jointStateFS = iport_joint_state.read(fri_joint_state_data);
     
