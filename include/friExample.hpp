@@ -52,6 +52,7 @@ class FriExample : public FriExampleAbstract{
         RTT::OutputPort<geometry_msgs::Twist>                 oport_cartesian_twist;
         RTT::OutputPort<geometry_msgs::Wrench>                oport_cartesian_wrench;
         RTT::OutputPort<lwr_fri::CartesianImpedance>          oport_cartesian_impedance;
+
 };
 
 #endif
