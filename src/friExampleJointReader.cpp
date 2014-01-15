@@ -15,10 +15,6 @@ FriExampleJointReader::~FriExampleJointReader(){
 
 }
 
-bool FriExampleJointReader::doStart(){
-    return true;
-}
-
 void FriExampleJointReader::updateHook(){
     //Read in the iport_joint_state
     unsigned int ndof = 7;
@@ -51,14 +47,6 @@ void FriExampleJointReader::printData(boost::array<float, 7> &vec){
         std::cout << f << " ";
     }
     std::cout << std::endl;
-}
-
-void FriExampleJointReader::stopHook(){
-
-}
-
-void FriExampleJointReader::cleanupHook(){
-
 }
 
 /*

@@ -16,10 +16,8 @@ class FriExampleJointReader : public FriExampleAbstract{
     public:
         FriExampleJointReader(std::string const& name);
         ~FriExampleJointReader();
-        bool doStart();
+
         void updateHook();
-        void stopHook();
-        void cleanupHook();
 
         RTT::InputPort<lwr_fri::FriJointState> iport_joint_state;
     

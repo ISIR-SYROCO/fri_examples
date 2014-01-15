@@ -51,6 +51,7 @@ class FriExampleAbstract : public RTT::TaskContext{
         }
 
         //We chose to put 1 on the $FRI_FRM_INT[1] to trigger the fri_start()
+        //In KRL, index starts at 1
         fri_to_krl.intData[0]=1;
 
         return true;
@@ -62,10 +63,21 @@ class FriExampleAbstract : public RTT::TaskContext{
         return doStart();
     }
 
-    virtual bool doStart() = 0;
+    virtual bool doStart(){
+        return true;
+    }
+
     virtual void updateHook() = 0;
-    virtual void stopHook() = 0;
-    virtual void cleanupHook() = 0;
+
+    void stopHook(){
+        doStop();
+        //Put 2 on $FRI_FRM_INT[1] to trigger fri_stop()
+        fri_to_krl.intData[0]=2;
+        port_fri_to_krl.write(fri_to_krl);
+    }
+
+    virtual void doStop(){}
+    virtual void cleanupHook(){};
 
 };
 #endif
