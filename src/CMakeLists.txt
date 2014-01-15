@@ -12,6 +12,7 @@
 #
 include_directories(${PROJECT_SOURCE_DIR}/include)
 orocos_component(FriExampleJointReader friExampleJointReader.cpp) # ...you may add multiple source files
+orocos_component(FriExampleCartesianPosReader friExampleCartesianPosReader.cpp) # ...you may add multiple source files
 
 #
 # You may add multiple orocos_component statements.
@@ -21,7 +22,9 @@ orocos_component(FriExampleJointReader friExampleJointReader.cpp) # ...you may a
 #
 # Installs in the include/orocos/fri_examples/ directory
 #
+orocos_install_headers(friExampleAbstract.hpp) # ...you may add multiple header files
 orocos_install_headers(friExampleJointReader.hpp) # ...you may add multiple header files
+orocos_install_headers(friExampleCartesianPosReader.hpp) # ...you may add multiple header files
 #
 # You may add multiple orocos_install_headers statements.
 
