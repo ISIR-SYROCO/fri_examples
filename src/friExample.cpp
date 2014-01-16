@@ -98,7 +98,20 @@ void FriExample::getCartesianFrame(){
 }
 
 void FriExample::getRobotState(){
-
+    tFriRobotState robot_state_data;
+    RTT::FlowStatus robotStateFS = iport_robot_state.read(robot_state_data);
+    if(robotStateFS == RTT::NewData){
+        std::cout << "Power state drive" << std::endl;
+        std::cout << robot_state_data.power << std::endl;
+        std::cout << "Selected control strategy" << std::endl;
+        std::cout << robot_state_data.control << std::endl;
+        std::cout << "Drive error" << std::endl;
+        std::cout << robot_state_data.error << std::endl;
+        std::cout << "Temperature of drives" << std::endl;
+        for(unsigned int i=0; i<7; i++)
+            std::cout << robot_state_data.temperature[i] << " ";
+        std::cout << std::endl;
+    }
 }
 
 void FriExample::getJointState(){
