@@ -115,6 +115,19 @@ void FriExample::getRobotState(){
 }
 
 void FriExample::getJointState(){
+    sensor_msgs::JointState joint_state_data;
+    RTT::FlowStatus joint_state_fs = iport_joint_state.read(joint_state_data);
+    if(joint_state_fs == RTT::NewData){
+        std::cout << "Joint State" << std::endl;
+        //joint_state_data.position is a std::vector
+        BOOST_FOREACH(double d, joint_state_data.position){
+            std::cout << d << " " << std::endl;
+        }
+        std::cout << "Joint effort" << std::endl;
+        BOOST_FOREACH(double d, joint_state_data.effort){
+            std::cout << d << " " << std::endl;
+        }
+    }
 
 }
 
