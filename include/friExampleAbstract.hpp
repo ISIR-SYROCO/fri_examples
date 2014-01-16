@@ -29,13 +29,8 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     RTT::InputPort<tFriKrlData> port_fri_frm_krl;
 
-    FriExampleAbstract(std::string const& name) : RTT::TaskContext(name){
-        this->addPort("fromFRI", port_fri_to_krl);
-        this->addPort("toFRI", port_fri_frm_krl);
-    }
-
-    ~FriExampleAbstract(){
-    }
+    FriExampleAbstract(std::string const& name);
+    ~FriExampleAbstract();
 
     /** @brief Orocos Configure Hook
      * Initialization of the shared array between
@@ -43,34 +38,16 @@ class FriExampleAbstract : public RTT::TaskContext{
      * We choose by convention to trigger fri_start() in
      * the KRL program if $FRI_FRM_INT[1] == 1
      */
-    bool configureHook(){
-        //initialize the arrays that will be send to KRL
-        for(int i=0; i<16; ++i){
-            fri_to_krl.intData[i]=0;
-            fri_to_krl.realData[i]=0.0;
-        }
-
-        //We chose to put 1 on the $FRI_FRM_INT[1] to trigger the fri_start()
-        //In KRL, index starts at 1
-        fri_to_krl.intData[0]=1;
-
-        return true;
-    }
+    bool configureHook();
 
     /** @brief Orocos Start Hook
      * Send arrays to KRC and call doStart()
      */
-    bool startHook(){
-        //Send arrays to KRC
-        port_fri_to_krl.write(fri_to_krl);
-        return doStart();
-    }
+    bool startHook();
 
     /** @brief To implement if specific things have to be done when starting the component
      */
-    virtual bool doStart(){
-        return true;
-    }
+    virtual bool doStart();
 
     /** @brief Orocos Update hook
      */
@@ -80,20 +57,15 @@ class FriExampleAbstract : public RTT::TaskContext{
      * Call doStop(), then put 2 in $FRI_FRM_INT[1]
      * which by our convention trigger fri_stop() in KRL program
      */
-    void stopHook(){
-        doStop();
-        //Put 2 in $FRI_FRM_INT[1] to trigger fri_stop()
-        fri_to_krl.intData[0]=2;
-        port_fri_to_krl.write(fri_to_krl);
-    }
+    void stopHook();
 
     /** @brief To implement if specific things have to be done when stoping the component
      */
-    virtual void doStop(){}
+    virtual void doStop();
 
     /** @brief Orocos Cleanup hook
      */
-    virtual void cleanupHook(){};
+    virtual void cleanupHook();
 
 };
 #endif
