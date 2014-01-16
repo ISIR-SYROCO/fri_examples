@@ -8,6 +8,14 @@
 #include <kdl/frames_io.hpp>
 
 FriExample::FriExample(std::string const& name) : FriExampleAbstract(name){
+    this->addPort("RobotState_i", iport_robot_state);
+    this->addPort("FRIJointState_i", iport_fri_joint_state);
+    this->addPort("CartesianPosition_i", iport_cart_pos);
+    this->addPort("CartesianPositionFrame_i", iport_cart_frame);
+    this->addPort("JointState_i", iport_joint_state);
+    this->addPort("CartesianWrench_i", iport_cart_wrench);
+    this->addPort("Jacobian_i", iport_jacobian);
+
     this->addOperation("getFRIJointState", &FriExample::getFRIJointState, this, RTT::OwnThread);
     this->addOperation("getCartesianPosition", &FriExample::getCartesianPosition, this, RTT::OwnThread);
     this->addOperation("getCartesianFrame", &FriExample::getCartesianFrame, this, RTT::OwnThread);
