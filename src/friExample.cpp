@@ -144,6 +144,12 @@ void FriExample::getCartesianWrench(){
 }
 
 void FriExample::getJacobian(){
+    KDL::Jacobian jacobian_data;
+    RTT::FlowStatus jacobian_fs = iport_jacobian.read(jacobian_data);
+    if(jacobian_fs == RTT::NewData){
+        std::cout << "Jacobian: " << std::endl;
+        std::cout << jacobian_data.data << std::endl;
+    }
 
 }
 
