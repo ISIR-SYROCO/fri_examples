@@ -36,8 +36,6 @@ class FriExample : public FriExampleAbstract{
         void getCartesianWrench();
         void getJacobian();
 
-        void setControlStrategy(int mode);
-
         RTT::InputPort<lwr_fri::FriJointState>  iport_fri_joint_state;
         RTT::InputPort<geometry_msgs::Pose>     iport_cart_pos;
         RTT::InputPort<KDL::Frame>              iport_cart_frame;
@@ -54,13 +52,6 @@ class FriExample : public FriExampleAbstract{
         RTT::OutputPort<geometry_msgs::Twist>                 oport_cartesian_twist;
         RTT::OutputPort<geometry_msgs::Wrench>                oport_cartesian_wrench;
         RTT::OutputPort<lwr_fri::CartesianImpedance>          oport_cartesian_impedance;
-
-        /** @brief Store current control mode
-         * controlMode = 10  : Joint position
-         * controlMode = 20  : Cartesian stiffness
-         * controlMode = 30  : Joint stiffness
-         */
-        int controlMode;
 };
 
 #endif

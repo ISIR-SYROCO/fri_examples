@@ -19,6 +19,13 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     tFriKrlData fri_frm_krl;
 
+    /** @brief Store current control mode
+     * controlMode = 10  : Joint position
+     * controlMode = 20  : Cartesian stiffness
+     * controlMode = 30  : Joint stiffness
+     */
+    int controlMode;
+
     /**
      * Output port to send shared arrays to the KRC
      */
@@ -66,6 +73,10 @@ class FriExampleAbstract : public RTT::TaskContext{
     /** @brief Orocos Cleanup hook
      */
     virtual void cleanupHook();
+
+    /** @brief Set control strategy
+     */
+    void setControlStrategy(int mode);
 
 };
 #endif

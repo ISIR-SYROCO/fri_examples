@@ -46,3 +46,18 @@ void FriExampleAbstract::doStop(){}
 
 void FriExampleAbstract::cleanupHook(){}
 
+void FriExampleAbstract::setControlStrategy(int mode){
+    if(mode != 10 || mode != 20 || mode != 30){
+        std::cout << "Please set a valid control mode: " << std::endl;
+        std::cout << "10: Joint position" << std::endl;
+        std::cout << "20: Cartesian stiffness" << std::endl;
+        std::cout << "30: Joint stiffness" << std::endl;
+        return;
+    }
+    else{
+        fri_to_krl.intData[1] = mode;
+        controlMode = mode;
+        port_fri_to_krl.write(fri_to_krl);
+    }
+}
+
