@@ -1,0 +1,35 @@
+import("lwr_fri")
+import("FriExample")
+
+loadComponent("lwr", "lwr_fri::FRIComponent")
+loadComponent("friExample", "FriExample")
+
+setActivity("lwr", 0, 99, ORO_SCHED_RT)
+
+lwr.udp_port = 49938
+lwr.configure
+
+var ConnPolicy cp
+
+//Only last data written is accessible
+cp.type = DATA
+//Use mutexes
+cp.lock_policy = LOCKED
+
+//Port connection
+connect("friExample.fromFRI", "lwr.toKRL", cp)
+
+connect("lwr.tFriKrlData", "friExample.toFRI")
+connect("lwr.RobotState", "friExample.RobotState_i)
+connect("lwr.FRIJointState", "friExample.FRIJointState_i")
+connect("lwr.CartesianPosition", "friExample.CartesianPosition_i")
+connect("lwr.CartesianPositionFrame", "friExample.CartesianPositionFrame_i")
+connect("lwr.JointState", "friExample.JointState_i")
+connect("lwr.CartesianWrench", "friExample.CartesianWrench_i")
+connect("lwr.Jacobian", "friExample.Jacobian_i")
+
+jointReader.configure
+jointReader.setPeriod(1)
+
+lwr.start
+jointReader.start
