@@ -132,6 +132,14 @@ void FriExample::getJointState(){
 }
 
 void FriExample::getCartesianWrench(){
+    geometry_msgs::Wrench cart_wrench_data;
+    RTT::FlowStatus cart_wrench_fs = iport_cart_wrench.read(cart_wrench_data);
+    if(cart_wrench_fs == RTT::NewData){
+        std::cout << "Cartesian Force at end effector" << std::endl;
+        std::cout << cart_wrench_data.force << std::endl;
+        std::cout << "Cartesian torque at end effector" << std::endl;
+        std::cout << cart_wrench_data.torque << std::endl;
+    }
 
 }
 
