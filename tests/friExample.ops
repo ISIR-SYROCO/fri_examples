@@ -18,15 +18,25 @@ cp.lock_policy = LOCKED
 
 //Port connection
 connect("friExample.fromFRI", "lwr.toKRL", cp)
+connect("friExample.JointPositions_o", "lwr.JointPositionCommand", cp)
+connect("friExample.JointVelocities_o", "lwr.JointVelocityCommand", cp)
+connect("friExample.JointTorques_o", "lwr.JointEffortCommand", cp)
+connect("friExample.JointImpedance_o", "lwr.FriJointImpedance", cp)
+connect("friExample.CartesianPosition_o", "lwr.CartesianPositionCommand", cp)
+connect("friExample.CartesianVelocity_o", "lwr.CartesianVelocityCommand", cp)
+connect("friExample.CartesianWrench_o", "lwr.CartesianWrenchCommand", cp)
+connect("friExample.CartesianImpedance_o", "lwr.CartesianImpedanceCommand", cp)
 
-connect("lwr.tFriKrlData", "friExample.toFRI")
-connect("lwr.RobotState", "friExample.RobotState_i)
-connect("lwr.FRIJointState", "friExample.FRIJointState_i")
-connect("lwr.CartesianPosition", "friExample.CartesianPosition_i")
-connect("lwr.CartesianPositionFrame", "friExample.CartesianPositionFrame_i")
-connect("lwr.JointState", "friExample.JointState_i")
-connect("lwr.CartesianWrench", "friExample.CartesianWrench_i")
-connect("lwr.Jacobian", "friExample.Jacobian_i")
+connect("lwr.tFriKrlData", "friExample.toFRI", cp)
+connect("lwr.RobotState", "friExample.RobotState_i, cp)
+connect("lwr.FRIJointState", "friExample.FRIJointState_i", cp)
+connect("lwr.CartesianPosition", "friExample.CartesianPosition_i", cp)
+connect("lwr.CartesianPositionFrame", "friExample.CartesianPositionFrame_i", cp)
+connect("lwr.JointState", "friExample.JointState_i", cp)
+connect("lwr.CartesianWrench", "friExample.CartesianWrench_i", cp)
+connect("lwr.Jacobian", "friExample.Jacobian_i", cp)
+
+
 
 jointReader.configure
 jointReader.setPeriod(1)
