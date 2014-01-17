@@ -1,8 +1,8 @@
-&ACCESS RVP
-&REL 78
+&ACCESS RVO
+&REL 82
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
-DEF krl( )
+DEF friISIR( )
  ;FOLD Info
   ; Copyright 2014 ISIR-CNRS 
   ; Author: Sovannara Hak
@@ -31,6 +31,8 @@ DEF krl( )
  ;Initialisation of variables for FRI
  $STIFFNESS.BASE = {X 0, Y 0, Z 0, A 0, B 0, C 0} 
  $STIFFNESS.TOOL = TOOL_DATA[1]
+ $STIFFNESS.STRATEGY = 10
+ $STIFFNESS.COMMIT = TRUE
 
  ;Force to be in T1 mode
  IF $MODE_OP<>#t1 then
@@ -64,12 +66,13 @@ DEF krl( )
  prevCtrlMode = $FRI_FRM_INT[2]
  ;loop while waiting for remote pc to send $FRI_FRM_INT[1]==2
  REPEAT
-  HALT
-  IF (prevCtrlMode <> $FRI_FRM_INT[2])
+
+  IF (prevCtrlMode <> $FRI_FRM_INT[2]) THEN
    ;New control mode set
    $STIFFNESS.STRATEGY = $FRI_FRM_INT[2]
    $STIFFNESS.COMMIT = TRUE
    prevCtrlMode = $FRI_FRM_INT[2]
+   HALT
   ENDIF 
  UNTIL $FRI_FRM_INT[1]==2
 
