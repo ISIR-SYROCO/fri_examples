@@ -36,6 +36,15 @@ class FriExample : public FriExampleAbstract{
         void getCartesianWrench();
         void getJacobian();
 
+        void sendJointPositions(std::vector<double> &command);
+        void sendJointVelocities(std::vector<double> &command);
+        void sendJointTorque(std::vector<double> &command);
+        void sendJointImpedance(std::vector<double> &stiffness, std::vector<double> &damping);
+        void sendCartesianPose(std::vector<double> &position, std::vector<double> &orientation);
+        void sendCartesianVel(std::vector<double> &linear, std::vector<double> &angular);
+        void sendCartesianWrench(std::vector<double> &force, std::vector<double> &torque);
+        void sendCartesianImpedance(std::vector<double> &stiffness, std::vector<double> &damping);
+
         RTT::InputPort<lwr_fri::FriJointState>  iport_fri_joint_state;
         RTT::InputPort<geometry_msgs::Pose>     iport_cart_pos;
         RTT::InputPort<KDL::Frame>              iport_cart_frame;

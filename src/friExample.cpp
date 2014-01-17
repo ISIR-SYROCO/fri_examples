@@ -24,6 +24,15 @@ FriExample::FriExample(std::string const& name) : FriExampleAbstract(name){
     this->addOperation("getCartesianWrench", &FriExample::getCartesianWrench, this, RTT::OwnThread);
     this->addOperation("getJacobian", &FriExample::getJacobian, this, RTT::OwnThread);
 
+    this->addOperation("sendJointPositions", &FriExample::sendJointPositions, this, RTT::OwnThread);
+    this->addOperation("sendJointVelocities", &FriExample::sendJointVelocities, this, RTT::OwnThread);
+    this->addOperation("sendJointTorque", &FriExample::sendJointTorque, this, RTT::OwnThread);
+    this->addOperation("sendJointImpedance", &FriExample::sendJointImpedance, this, RTT::OwnThread);
+    this->addOperation("sendCartesianPose", &FriExample::sendCartesianPose, this, RTT::OwnThread);
+    this->addOperation("sendCartesianVel", &FriExample::sendCartesianVel, this, RTT::OwnThread);
+    this->addOperation("sendCartesianWrench", &FriExample::sendCartesianWrench, this, RTT::OwnThread);
+    this->addOperation("sendCartesianImpedance", &FriExample::sendCartesianImpedance, this, RTT::OwnThread);
+
     this->addOperation("setControlStrategy", &FriExample::setControlStrategy, this, RTT::OwnThread);
 }
 
@@ -158,6 +167,38 @@ void FriExample::getJacobian(){
         std::cout << "Jacobian: " << std::endl;
         std::cout << jacobian_data.data << std::endl;
     }
+
+}
+
+void FriExample::sendJointPositions(std::vector<double> &command){
+
+}
+
+void FriExample::sendJointVelocities(std::vector<double> &command){
+
+}
+
+void FriExample::sendJointTorque(std::vector<double> &command){
+
+}
+
+void FriExample::sendJointImpedance(std::vector<double> &stiffness, std::vector<double> &damping){
+
+}
+
+void FriExample::sendCartesianPose(std::vector<double> &position, std::vector<double> &orientation){
+
+}
+
+void FriExample::sendCartesianVel(std::vector<double> &linear, std::vector<double> &angular){
+
+}
+
+void FriExample::sendCartesianWrench(std::vector<double> &force, std::vector<double> &torque){
+
+}
+
+void FriExample::sendCartesianImpedance(std::vector<double> &stiffness, std::vector<double> &damping){
 
 }
 
