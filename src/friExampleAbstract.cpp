@@ -51,7 +51,7 @@ void FriExampleAbstract::doStop(){}
 void FriExampleAbstract::cleanupHook(){}
 
 void FriExampleAbstract::setControlStrategy(int mode){
-    if(mode != 10 || mode != 20 || mode != 30){
+    if(mode != 10 && mode != 20 && mode != 30){
         std::cout << "Please set a valid control mode: " << std::endl;
         std::cout << "10: Joint position" << std::endl;
         std::cout << "20: Cartesian stiffness" << std::endl;
