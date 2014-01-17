@@ -28,10 +28,20 @@ DEF friISIR( )
   $FRI_TO_REA[i]=0.0
  ENDFOR
 
- ;Initialisation of variables for FRI
+ ;Initialisation of the system variables for FRI
+ ;Base frame
  $STIFFNESS.BASE = {X 0, Y 0, Z 0, A 0, B 0, C 0} 
+
+ ;End effector frame
  $STIFFNESS.TOOL = TOOL_DATA[1]
+
+ ;Control Strategy
  $STIFFNESS.STRATEGY = 10
+
+ ;Strategy control mode flag
+ $FRI_TO_INT[2] = 10
+
+ ;Apply changes
  $STIFFNESS.COMMIT = TRUE
 
  ;Force to be in T1 mode
@@ -53,26 +63,39 @@ DEF friISIR( )
 
  ;Test open FRI with datarate 20 msec
  retVal=FRIOPEN(20)
+
  WAIT FOR ($FriState==#MON)
+ ;FRI Mode flag
+ $FRI_TO_INT[1] = 2
 
  ;Waiting for remote pc to send $FRI_FRM_INT[1]==1    
  WAIT FOR ($FRI_FRM_INT[1]==1)	
 
  WAIT FOR ($FriQuality==#PERFECT)
  retVal=FRISTART(1.0)
- WAIT FOR ($FriState==#CMD)
 
- ;Control strategy mode is stored in $FRI_FRM_INT[2]
- prevCtrlMode = $FRI_FRM_INT[2]
+ WAIT FOR ($FriState==#CMD)
+ ;FRI in command mode
+ $FRI_TO_INT[1] = 1
+
  ;loop while waiting for remote pc to send $FRI_FRM_INT[1]==2
  REPEAT
+  IF ($FRI_TO_INT[2] <> $FRI_FRM_INT[2]) THEN
+   ;New control mode set request
+   ;Go back to monitor mode
+   retVal = FRISTOP()
+   WAIT FOR ($FriState==#MON)
+   $FRI_TO_INT[1] = 2
 
-  IF (prevCtrlMode <> $FRI_FRM_INT[2]) THEN
-   ;New control mode set
+   ;Set new Strategy 
    $STIFFNESS.STRATEGY = $FRI_FRM_INT[2]
    $STIFFNESS.COMMIT = TRUE
-   prevCtrlMode = $FRI_FRM_INT[2]
-   HALT
+   $FRI_TO_INT[2] = $FRI_FRM_INT[2]
+
+   ;Go back to command mode
+   retVal = FRISTART(1.0)
+   WAIT FOR ($FriState==#CMD)
+   $FRI_TO_INT[1] = 1
   ENDIF 
  UNTIL $FRI_FRM_INT[1]==2
 
