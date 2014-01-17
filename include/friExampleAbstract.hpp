@@ -78,5 +78,11 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     void setControlStrategy(int mode);
 
+    /** @brief Check if the selected control mode is the required one
+     *  @param modeRequired : the required mode
+     *  @return True : if the current mode match the required one
+     */
+    bool requiresControlMode(int modeRequired);
+
 };
 #endif

@@ -63,3 +63,13 @@ void FriExampleAbstract::setControlStrategy(int mode){
     }
 }
 
+bool FriExampleAbstract::requiresControlMode(int modeRequired){
+    if (controlMode == modeRequired){
+        return true;
+    }
+    else{
+        std::cout << "Cannot proceed, current control mode is " << controlMode
+            << "required control mode is " << modeRequired << std::endl;
+        return false;
+    }
+}
