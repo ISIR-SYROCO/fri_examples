@@ -39,7 +39,7 @@ DEF friISIR( )
  $STIFFNESS.STRATEGY = 10
 
  ;Strategy control mode flag
- $FRI_TO_INT[2] = 10
+ CTRL_STRGY_FLAG(10)
 
  ;Apply changes
  $STIFFNESS.COMMIT = TRUE
@@ -65,8 +65,8 @@ DEF friISIR( )
  retVal=FRIOPEN(20)
 
  WAIT FOR ($FriState==#MON)
- ;FRI Mode flag
- $FRI_TO_INT[1] = 2
+ ;FRI Monitor Mode flag
+ FRI_MON_MODE_FLAG()
 
  ;Waiting for remote pc to send $FRI_FRM_INT[1]==1    
  WAIT FOR ($FRI_FRM_INT[1]==1)	
@@ -76,7 +76,7 @@ DEF friISIR( )
 
  WAIT FOR ($FriState==#CMD)
  ;FRI in command mode
- $FRI_TO_INT[1] = 1
+ FRI_CMD_MODE_FLAG()
 
  ;loop while waiting for remote pc to send $FRI_FRM_INT[1]==2
  REPEAT
@@ -85,17 +85,17 @@ DEF friISIR( )
    ;Go back to monitor mode
    retVal = FRISTOP()
    WAIT FOR ($FriState==#MON)
-   $FRI_TO_INT[1] = 2
+   FRI_MON_MODE_FLAG()
 
    ;Set new Strategy 
    $STIFFNESS.STRATEGY = $FRI_FRM_INT[2]
    $STIFFNESS.COMMIT = TRUE
-   $FRI_TO_INT[2] = $FRI_FRM_INT[2]
+   CTRL_STRGY_FLAG($FRI_FRM_INT[2])
 
    ;Go back to command mode
    retVal = FRISTART(1.0)
    WAIT FOR ($FriState==#CMD)
-   $FRI_TO_INT[1] = 1
+   FRI_CMD_MODE_FLAG()
   ENDIF 
  UNTIL $FRI_FRM_INT[1]==2
 
@@ -149,3 +149,16 @@ DEFFCT REAL CLAMP(v:IN, minval:IN, maxval:IN)
 
  RETURN r
 ENDFCT
+
+DEF FRI_MON_MODE_FLAG()
+ $FRI_TO_INT[1] = 2
+END
+
+DEF FRI_CMD_MODE_FLAG()
+ $FRI_TO_INT[1] = 1
+END
+
+DEF CTRL_STRGY_FLAG(X:IN)
+ INT X   
+ $FRI_TO_INT[2] = X
+END
