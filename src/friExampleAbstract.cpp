@@ -6,6 +6,8 @@
 FriExampleAbstract::FriExampleAbstract(std::string const& name) : RTT::TaskContext(name){
     this->addPort("fromFRI", port_fri_to_krl);
     this->addPort("toFRI", port_fri_frm_krl);
+
+    this->addOperation("setControlStrategy", &FriExampleAbstract::setControlStrategy, this, RTT::OwnThread);
 }
 
 FriExampleAbstract::~FriExampleAbstract(){

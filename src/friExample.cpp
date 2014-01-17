@@ -32,8 +32,6 @@ FriExample::FriExample(std::string const& name) : FriExampleAbstract(name){
     this->addOperation("sendCartesianVel", &FriExample::sendCartesianVel, this, RTT::OwnThread);
     this->addOperation("sendCartesianWrench", &FriExample::sendCartesianWrench, this, RTT::OwnThread);
     this->addOperation("sendCartesianImpedance", &FriExample::sendCartesianImpedance, this, RTT::OwnThread);
-
-    this->addOperation("setControlStrategy", &FriExample::setControlStrategy, this, RTT::OwnThread);
 }
 
 FriExample::~FriExample(){
