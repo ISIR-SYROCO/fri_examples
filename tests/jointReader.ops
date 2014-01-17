@@ -1,5 +1,5 @@
 import("lwr_fri")
-import("FriExampleJointReader")
+import("fri_examples")
 
 loadComponent("lwr", "lwr_fri::FRIComponent")
 loadComponent("jointReader", "FriExampleJointReader")

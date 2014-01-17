@@ -1,5 +1,5 @@
 import("lwr_fri")
-import("FriExample")
+import("fri_examples")
 
 loadComponent("lwr", "lwr_fri::FRIComponent")
 loadComponent("friExample", "FriExample")
