@@ -84,5 +84,13 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     bool requiresControlMode(int modeRequired);
 
+    /** @brief Get the FRI Mode
+     */
+    void getFRIMode();
+
+    /** @brief Get the control strategy mode
+     */
+    void getControlStrategy();
+
 };
 #endif
