@@ -16,6 +16,15 @@ FriExample::FriExample(std::string const& name) : FriExampleAbstract(name){
     this->addPort("CartesianWrench_i", iport_cart_wrench);
     this->addPort("Jacobian_i", iport_jacobian);
 
+    this->addPort("JointPositions_o", oport_joint_position);
+    this->addPort("JointVelocities_o", oport_joint_velocities);
+    this->addPort("JointTorques_o", oport_joint_efforts);
+    this->addPort("JointImpedance_o", oport_joint_impedance);
+    this->addPort("CartesianPosition_o", oport_cartesian_pose);
+    this->addPort("CartesianVelocity_o", oport_cartesian_twist);
+    this->addPort("CartesianWrench_o", oport_cartesian_wrench);
+    this->addPort("CartesianImpedance_o", oport_cartesian_impedance);
+
     this->addOperation("getFRIJointState", &FriExample::getFRIJointState, this, RTT::OwnThread);
     this->addOperation("getCartesianPosition", &FriExample::getCartesianPosition, this, RTT::OwnThread);
     this->addOperation("getCartesianFrame", &FriExample::getCartesianFrame, this, RTT::OwnThread);
