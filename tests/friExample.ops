@@ -50,14 +50,6 @@ cpstiffness[3] = 300
 cpstiffness[4] = 300
 cpstiffness[5] = 300
 
-var array cpdamping(6)
-cpdamping[0] = 0.7
-cpdamping[1] = 0.7
-cpdamping[2] = 0.7
-cpdamping[3] = 0.7
-cpdamping[4] = 0.7
-cpdamping[5] = 0.7
-
 var array axisstiffness(7)
 axisstiffness[0] = 200
 axisstiffness[1] = 200
@@ -67,17 +59,5 @@ axisstiffness[4] = 200
 axisstiffness[5] = 200
 axisstiffness[6] = 200
 
-friExample.setControlStrategy(20)
-
-var array desCartP(3)
-desCartP[0] = 0.45567
-desCartP[1] = 5.04549e-06
-desCartP[2] = 0.645547
-
-var array desCartO(4)
-desCartO[0] = 2.65183e-05
-desCartO[1] = 0.953734
-desCartO[2] = 1.49181e-05
-desCartO[3] = 0.300651
-
+//friExample.setControlStrategy(20)
 
