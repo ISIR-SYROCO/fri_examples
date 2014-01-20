@@ -7,7 +7,6 @@ FriExampleAbstract::FriExampleAbstract(std::string const& name) : RTT::TaskConte
     this->addPort("fromFRI", port_fri_to_krl);
     this->addPort("toFRI", port_fri_frm_krl);
 
-    this->addOperation("getControlStrategy", &FriExampleAbstract::getControlStrategy, this, RTT::OwnThread);
     this->addOperation("getFRIMode", &FriExampleAbstract::getFRIMode, this, RTT::OwnThread);
 
     this->addOperation("setControlStrategy", &FriExampleAbstract::setControlStrategy, this, RTT::OwnThread);
@@ -89,19 +88,8 @@ void FriExampleAbstract::getFRIMode(){
             std::cout << "FRI in Monitor Mode" << std::endl;
         }
     }
-}
-
-void FriExampleAbstract::getControlStrategy(){
-    RTT::FlowStatus fri_frm_krl_fs = port_fri_frm_krl.read(fri_frm_krl);
-    if(fri_frm_krl_fs == RTT::NewData){
-        if(fri_frm_krl.intData[2] == 10){
-            std::cout << "Joint position control" << std::endl;
-        }
-        else if(fri_frm_krl.intData[2] == 20){
-            std::cout << "Cartesian impedance control" << std::endl;
-        }
-        else if(fri_frm_krl.intData[2] == 30){
-            std::cout << "Joint impedance control" << std::endl;
-        }
+    else{
+        std::cout << "Cannot read FRI Mode" << std::endl;
     }
 }
+

@@ -88,9 +88,5 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     void getFRIMode();
 
-    /** @brief Get the control strategy mode
-     */
-    void getControlStrategy();
-
 };
 #endif
