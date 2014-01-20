@@ -3,10 +3,10 @@
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF friISIR( )
- ;FOLD Info
+ ;FOLD ProgramInfo
   ; Copyright 2014 ISIR-CNRS 
   ; Author: Sovannara Hak
- ;ENDFOLD (Info)
+ ;ENDFOLD (ProgramInfo)
 
  ;FOLD INI
   ;FOLD BASISTECH INI
@@ -19,6 +19,8 @@ DEF friISIR( )
   ;ENDFOLD (USER INI)
  ;ENDFOLD (INI)
 
+ EXT resetSTIFFNESS()
+
  ;stop fri in case it is already running
  retVal=FRISTOP()	
 
@@ -28,21 +30,8 @@ DEF friISIR( )
   $FRI_TO_REA[i]=0.0
  ENDFOR
 
- ;Initialisation of the system variables for FRI
- ;Base frame
- $STIFFNESS.BASE = {X 0, Y 0, Z 0, A 0, B 0, C 0} 
-
- ;End effector frame
- $STIFFNESS.TOOL = TOOL_DATA[1]
-
- ;Control Strategy
- $STIFFNESS.STRATEGY = 10
-
- ;Strategy control mode flag
- CTRL_STRGY_FLAG(10)
-
- ;Apply changes
- $STIFFNESS.COMMIT = TRUE
+ ;Reset $STIFFNESS system variable to default value
+ resetSTIFFNESS()
 
  ;Force to be in T1 mode
  IF $MODE_OP<>#t1 then
@@ -66,7 +55,7 @@ DEF friISIR( )
 
  WAIT FOR ($FriState==#MON)
  ;FRI Monitor Mode flag
- FRI_MON_MODE_FLAG()
+ $FRI_TO_INT[1] = FRI_MON_MODE_FLAG()
 
  ;Waiting for remote pc to send $FRI_FRM_INT[1]==1    
  WAIT FOR ($FRI_FRM_INT[1]==1)	
@@ -76,7 +65,7 @@ DEF friISIR( )
 
  WAIT FOR ($FriState==#CMD)
  ;FRI in command mode
- FRI_CMD_MODE_FLAG()
+ $FRI_TO_INT[1] = FRI_CMD_MODE_FLAG()
 
  ;loop while waiting for remote pc to send $FRI_FRM_INT[1]==2
  REPEAT
@@ -85,17 +74,16 @@ DEF friISIR( )
    ;Go back to monitor mode
    retVal = FRISTOP()
    WAIT FOR ($FriState==#MON)
-   FRI_MON_MODE_FLAG()
+   $FRI_TO_INT[1] = FRI_MON_MODE_FLAG()
 
    ;Set new Strategy 
    $STIFFNESS.STRATEGY = $FRI_FRM_INT[2]
    $STIFFNESS.COMMIT = TRUE
-   CTRL_STRGY_FLAG($FRI_FRM_INT[2])
 
    ;Go back to command mode
    retVal = FRISTART(1.0)
    WAIT FOR ($FriState==#CMD)
-   FRI_CMD_MODE_FLAG()
+   $FRI_TO_INT[1] = FRI_CMD_MODE_FLAG()
   ENDIF 
  UNTIL $FRI_FRM_INT[1]==2
 
@@ -111,6 +99,7 @@ DEF friISIR( )
  WAIT SEC 0.5
  retVal = FRICLOSE()
 
+ resetSTIFFNESS()
  ;move to Home-Position
  PTP { a1 0,a2 90,a3 0,a4 0,a5 0,a6 0,e1 0}
 
@@ -150,15 +139,11 @@ DEFFCT REAL CLAMP(v:IN, minval:IN, maxval:IN)
  RETURN r
 ENDFCT
 
-DEF FRI_MON_MODE_FLAG()
- $FRI_TO_INT[1] = 2
+DEFFCT INT FRI_MON_MODE_FLAG()
+ RETURN 2
 END
 
-DEF FRI_CMD_MODE_FLAG()
- $FRI_TO_INT[1] = 1
+DEFFCT FRI_CMD_MODE_FLAG()
+ RETURN 1
 END
 
-DEF CTRL_STRGY_FLAG(X:IN)
- INT X   
- $FRI_TO_INT[2] = X
-END
