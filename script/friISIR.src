@@ -1,5 +1,5 @@
-&ACCESS RVO
-&REL 82
+&ACCESS RVP
+&REL 87
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF friISIR( )
@@ -19,7 +19,6 @@ DEF friISIR( )
   ;ENDFOLD (USER INI)
  ;ENDFOLD (INI)
 
- EXT resetSTIFFNESS()
 
  ;stop fri in case it is already running
  retVal=FRISTOP()	
@@ -32,6 +31,7 @@ DEF friISIR( )
 
  ;Reset $STIFFNESS system variable to default value
  resetSTIFFNESS()
+ $FRI_TO_INT[2] = 10 
 
  ;Force to be in T1 mode
  IF $MODE_OP<>#t1 then
@@ -55,7 +55,7 @@ DEF friISIR( )
 
  WAIT FOR ($FriState==#MON)
  ;FRI Monitor Mode flag
- $FRI_TO_INT[1] = FRI_MON_MODE_FLAG()
+ $FRI_TO_INT[1] = 2
 
  ;Waiting for remote pc to send $FRI_FRM_INT[1]==1    
  WAIT FOR ($FRI_FRM_INT[1]==1)	
@@ -65,7 +65,7 @@ DEF friISIR( )
 
  WAIT FOR ($FriState==#CMD)
  ;FRI in command mode
- $FRI_TO_INT[1] = FRI_CMD_MODE_FLAG()
+ $FRI_TO_INT[1] = 1
 
  ;loop while waiting for remote pc to send $FRI_FRM_INT[1]==2
  REPEAT
@@ -74,17 +74,19 @@ DEF friISIR( )
    ;Go back to monitor mode
    retVal = FRISTOP()
    WAIT FOR ($FriState==#MON)
-   $FRI_TO_INT[1] = FRI_MON_MODE_FLAG()
+   $FRI_TO_INT[1] = 2
 
    ;Set new Strategy 
    $STIFFNESS.STRATEGY = $FRI_FRM_INT[2]
    $STIFFNESS.COMMIT = TRUE
+   $FRI_TO_INT[2] = $FRI_FRM_INT[2]
 
    ;Go back to command mode
    retVal = FRISTART(1.0)
    WAIT FOR ($FriState==#CMD)
-   $FRI_TO_INT[1] = FRI_CMD_MODE_FLAG()
+   $FRI_TO_INT[1] = 1
   ENDIF 
+  HALT
  UNTIL $FRI_FRM_INT[1]==2
 
  ;Need to clamp in case commands sent by FRI 
@@ -138,12 +140,3 @@ DEFFCT REAL CLAMP(v:IN, minval:IN, maxval:IN)
 
  RETURN r
 ENDFCT
-
-DEFFCT INT FRI_MON_MODE_FLAG()
- RETURN 2
-END
-
-DEFFCT FRI_CMD_MODE_FLAG()
- RETURN 1
-END
-

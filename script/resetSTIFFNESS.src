@@ -1,8 +1,7 @@
-&ACCESS RVO
+&ACCESS RV1
 &REL 1
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
-
 DEF resetSTIFFNESS( )
  ;FOLD ProgramInfo
   ; Copyright 2014 ISIR-CNRS 
