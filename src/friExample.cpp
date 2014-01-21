@@ -42,8 +42,6 @@ FriExample::FriExample(std::string const& name) : FriExampleAbstract(name){
     this->addOperation("sendCartesianVel", &FriExample::sendCartesianVel, this, RTT::OwnThread);
     this->addOperation("sendCartesianWrench", &FriExample::sendCartesianWrench, this, RTT::OwnThread);
     this->addOperation("sendCartesianImpedance", &FriExample::sendCartesianImpedance, this, RTT::OwnThread);
-
-    this->addOperation("dummygoto_q", &FriExample::dummygoto_q, this, RTT::OwnThread);
 }
 
 FriExample::~FriExample(){
@@ -327,43 +325,6 @@ void FriExample::sendCartesianImpedance(std::vector<double> &stiffness, std::vec
         cart_impedance.damping.angular.z = damping[5];
 
         oport_cartesian_impedance.write(cart_impedance);
-    }
-}
-
-void FriExample::dummygoto_q(std::vector<double> &qdes){
-    if(!requiresControlMode(30)){
-        return;
-    }
-    if(qdes.size() != 7){
-        std::cout << "Wrong vector size" << std::endl;
-        return;
-    }
-
-    double lambda = 0.1;
-    bool update = true;
-    while(update){
-        std::vector<double> qerror(7, 0.0);
-        sensor_msgs::JointState joint_state_data;
-        RTT::FlowStatus joint_state_fs = iport_joint_state.read(joint_state_data);
-        for(int i = 0; i < 7; i++){
-            qerror[i] = qdes[i] - joint_state_data.position[i];
-        }
-        double normQerror = 0;
-        BOOST_FOREACH(double d, qerror){
-            normQerror += d*d;
-            normQerror = sqrt(normQerror);
-        }
-
-        if(normQerror < 0.1){
-            update = false;
-        }
-        else{
-            motion_control_msgs::JointVelocities joint_vel_command;
-            for(int i = 0; i < 7; i++){
-                joint_vel_command.velocities[i] = lambda * qerror[i];
-            }
-            oport_joint_velocities.write(joint_vel_command);
-        }
     }
 }
 

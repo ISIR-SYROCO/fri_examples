@@ -88,8 +88,6 @@ class FriExample : public FriExampleAbstract{
          */
         void sendCartesianImpedance(std::vector<double> &stiffness, std::vector<double> &damping);
 
-        void dummygoto_q(std::vector<double> &des);
-
         RTT::InputPort<lwr_fri::FriJointState>  iport_fri_joint_state;
         RTT::InputPort<geometry_msgs::Pose>     iport_cart_pos;
         RTT::InputPort<KDL::Frame>              iport_cart_frame;
