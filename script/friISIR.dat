@@ -1,5 +1,5 @@
 &ACCESS RVP
-&REL 87
+&REL 88
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEFDAT friISIR

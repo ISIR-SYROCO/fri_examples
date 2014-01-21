@@ -1,5 +1,5 @@
 &ACCESS RVP
-&REL 87
+&REL 88
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF friISIR( )
@@ -88,7 +88,7 @@ DEF friISIR( )
    WAIT FOR ($FriState==#CMD)
    $FRI_TO_INT[1] = 1
   ENDIF 
-  HALT
+  
  UNTIL $FRI_FRM_INT[1]==2
 
  ;Need to clamp in case commands sent by FRI 
