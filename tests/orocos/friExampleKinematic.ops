@@ -31,4 +31,3 @@ friExample.configure
 friExample.setPeriod(0.02)
 
 lwr.start
-friExample.start

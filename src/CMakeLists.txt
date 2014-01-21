@@ -12,14 +12,6 @@
 #
 include_directories(${PROJECT_SOURCE_DIR}/include)
 add_library(friExampleAbstract friExampleAbstract.cpp)
-orocos_component(FriExample friExample.cpp) # ...you may add multiple source files
-orocos_component(FriExampleKinematic friExampleKinematic.cpp) # ...you may add multiple source files
-orocos_component(FriExampleJointReader friExampleJointReader.cpp) # ...you may add multiple source files
-orocos_component(FriExampleCartesianPosReader friExampleCartesianPosReader.cpp) # ...you may add multiple source files
-target_link_libraries(FriExample friExampleAbstract)
-target_link_libraries(FriExampleKinematic friExampleAbstract)
-target_link_libraries(FriExampleJointReader friExampleAbstract)
-target_link_libraries(FriExampleCartesianPosReader friExampleAbstract)
 
 #
 # You may add multiple orocos_component statements.
@@ -30,9 +22,3 @@ target_link_libraries(FriExampleCartesianPosReader friExampleAbstract)
 # Installs in the include/orocos/fri_examples/ directory
 #
 orocos_install_headers(friExampleAbstract.hpp) # ...you may add multiple header files
-orocos_install_headers(friExample.hpp) # ...you may add multiple header files
-orocos_install_headers(friExampleJointReader.hpp) # ...you may add multiple header files
-orocos_install_headers(friExampleCartesianPosReader.hpp) # ...you may add multiple header files
-#
-# You may add multiple orocos_install_headers statements.
-

@@ -23,6 +23,7 @@ include( ${OROCOS-RTT_USE_FILE_PATH}/UseOROCOS-RTT.cmake )
 # Rest of the configuration is in src/
 add_subdirectory( include )
 add_subdirectory( src )
+add_subdirectory( tests )
 
 #
 # Generates and installs our package. Must be the last statement such
