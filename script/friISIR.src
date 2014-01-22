@@ -1,5 +1,5 @@
 &ACCESS RVP
-&REL 88
+&REL 89
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF friISIR( )
@@ -19,7 +19,7 @@ DEF friISIR( )
   ;ENDFOLD (USER INI)
  ;ENDFOLD (INI)
 
-
+ 
  ;stop fri in case it is already running
  retVal=FRISTOP()	
 

@@ -1,5 +1,5 @@
-&ACCESS RVP1
-&REL 15
+&ACCESS RVO
+&REL 17
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF resetSTIFFNESS( )
@@ -31,7 +31,7 @@ DEF resetSTIFFNESS( )
  ISIRSTIFFNESS.BASE = {X 0, Y 0, Z 0, A 0, B 0, C 0} 
 
  ;End effector frame
- ISIRSTIFFNESS.TOOL = TOOL_DATA[1]
+ ISIRSTIFFNESS.TOOL = TOOL_DATA[2]
 
  ;Cartesian Spring Stiffness [0.01, 5000] N/m
  ISIRSTIFFNESS.CPSTIFFNESS = {X 2000, Y 2000, Z 2000, A 200, B 200, C 200}
@@ -52,7 +52,7 @@ DEF resetSTIFFNESS( )
  ISIRSTIFFNESS.MAXFORCE = {X 70.0, Y 70.0, Z 70.0, A 10.0, B 10.0, C 10.0}
 
  ;Limitation of the axis specific deviation in degree
- ISIRSTIFFNESS.AXISMAXDELTA = {A1 10.0, A2 10.0, A3 10.0, A4 10.0, A5 10.0, A6 10.0, E1 10.0}
+ ISIRSTIFFNESS.AXISMAXDELTA = {A1 90.0, A2 90.0, A3 90.0, A4 90.0, A5 90.0, A6 90.0, E1 90.0}
 
  ;Limitation of the axis specific max torque
  ISIRSTIFFNESS.AXISMAXDELTATRQ = {A1 10.0, A2 10.0, A3 10.0, A4 10.0, A5 10.0, A6 10.0, E1 10.0}
