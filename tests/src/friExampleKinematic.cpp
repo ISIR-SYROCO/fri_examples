@@ -54,7 +54,7 @@ void FriExampleKinematic::updateHook(){
     RTT::FlowStatus joint_state_fs = iport_joint_state.read(joint_state_data);
 
     if(joint_state_fs == RTT::NewData){
-        for(int i = 0; i < LWRDOF; i++){
+        for(unsigned int i = 0; i < LWRDOF; i++){
             qerror[i] = qdes[i] - joint_state_data.position[i];
         }
         double normQerror = 0;
@@ -67,7 +67,7 @@ void FriExampleKinematic::updateHook(){
             return;
         }
         else{
-            for(int i = 0; i < LWRDOF; i++){
+            for(unsigned int i = 0; i < LWRDOF; i++){
                 command.velocities[i] = lambda * qerror[i];
             }
             oport_joint_velocities.write(command);

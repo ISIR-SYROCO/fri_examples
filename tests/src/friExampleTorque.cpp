@@ -41,7 +41,7 @@ void FriExampleTorque::updateHook(){
         motion_control_msgs::JointEfforts joint_eff_command;
 
         if(fri_jointStateFS == RTT::NewData){
-            for(int i = 0; i < LWRDOF; i++){
+            for(unsigned int i = 0; i < LWRDOF; i++){
                 joint_eff_command.efforts[i] = fri_joint_state_data.gravity[i]; 
             }
         }
