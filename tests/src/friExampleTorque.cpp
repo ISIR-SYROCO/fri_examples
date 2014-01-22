@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 #include <math.h>
 
-FriExampleKinematic::FriExampleKinematic(std::string const& name) : FriExampleAbstract(name){
+FriExampleTorque::FriExampleTorque(std::string const& name) : FriExampleAbstract(name){
     this->addPort("FRIJointState_i", iport_fri_joint_state);
     this->addPort("JointState_i", iport_joint_state);
 
@@ -16,27 +16,47 @@ FriExampleKinematic::FriExampleKinematic(std::string const& name) : FriExampleAb
     this->addPort("JointTorques_o", oport_joint_efforts);
     this->addPort("JointImpedance_o", oport_joint_impedance);
 
-    this->addOperation("setJointImpedance", &FriExampleKinematic::setJointImpedance, this, RTT::OwnThread);
+    this->addOperation("setJointImpedance", &FriExampleTorque::setJointImpedance, this, RTT::OwnThread);
 
 }
 
-FriExampleKinematic::~FriExampleKinematic(){
+FriExampleTorque::~FriExampleTorque(){
 }
 
-bool FriExampleKinematic::doStart(){
+bool FriExampleTorque::doStart(){
+    //setting stiffness
+    std::cout << "Setting the stiffness and damping" << std::endl;
+    std::vector<double> stiff(LWRDOF, 100.0);
+    std::vector<double> damp(LWRDOF, 0.7);
+    setJointImpedance(stiff, damp);
+    return true;
 }
 
-void FriExampleKinematic::updateHook(){
+void FriExampleTorque::updateHook(){
+    if(requiresControlMode(30)){
+        //Get gravity terms
+        lwr_fri::FriJointState fri_joint_state_data;
+        RTT::FlowStatus fri_jointStateFS = iport_fri_joint_state.read(fri_joint_state_data);
+
+        motion_control_msgs::JointEfforts joint_eff_command;
+
+        if(fri_jointStateFS == RTT::NewData){
+            for(int i = 0; i < LWRDOF; i++){
+                joint_eff_command.efforts[i] = fri_joint_state_data.gravity[i]; 
+            }
+        }
+
+    }
 }
 
-void FriExampleKinematic::setJointImpedance(std::vector<double> &stiffness, std::vector<double> &damping){
-    if(stiffness.size() != 7 || damping.size() != 7){
-        std::cout << "Wrong vector size, should be 7,7" << std::endl;
+void FriExampleTorque::setJointImpedance(std::vector<double> &stiffness, std::vector<double> &damping){
+    if(stiffness.size() != LWRDOF || damping.size() != LWRDOF){
+        std::cout << "Wrong vector size, should be " <<  LWRDOF << ", " << LWRDOF << std::endl;
         return;
     }
     else{
         lwr_fri::FriJointImpedance joint_impedance_command;
-        for(unsigned int i = 0; i < 7; i++){
+        for(unsigned int i = 0; i < LWRDOF; i++){
             joint_impedance_command.stiffness[i] = stiffness[i];
             joint_impedance_command.damping[i] = damping[i];
         }
@@ -45,5 +65,5 @@ void FriExampleKinematic::setJointImpedance(std::vector<double> &stiffness, std:
     }
 }
 
-ORO_CREATE_COMPONENT(FriExampleKinematic)
+ORO_CREATE_COMPONENT(FriExampleTorque)
 
