@@ -29,6 +29,7 @@ bool FriExampleAbstract::configureHook(){
     fri_to_krl.intData[0]=1;
     //Set control strategy to joint position
     fri_to_krl.intData[1]=10;
+    controlMode = 10;
 
     return true;
 }
