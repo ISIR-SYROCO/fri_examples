@@ -31,6 +31,10 @@ class FriExampleTorque : public FriExampleAbstract{
          */
         void setJointImpedance(std::vector<double> &stiffness, std::vector<double> &damping);
 
+        void getFRIJointState();
+	void setT(double t);
+	double torque;
+
         RTT::InputPort<lwr_fri::FriJointState>  iport_fri_joint_state;
         RTT::InputPort<sensor_msgs::JointState> iport_joint_state;
 

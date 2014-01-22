@@ -17,6 +17,9 @@ FriExampleTorque::FriExampleTorque(std::string const& name) : FriExampleAbstract
     this->addPort("JointImpedance_o", oport_joint_impedance);
 
     this->addOperation("setJointImpedance", &FriExampleTorque::setJointImpedance, this, RTT::OwnThread);
+    this->addOperation("getFRIJointState", &FriExampleTorque::getFRIJointState, this, RTT::OwnThread);
+    this->addOperation("setT", &FriExampleTorque::setT, this, RTT::OwnThread);
+    torque = 0.0;
 
 }
 
@@ -34,13 +37,30 @@ bool FriExampleTorque::doStart(){
 
 void FriExampleTorque::updateHook(){
     if(requiresControlMode(30)){
-        motion_control_msgs::JointEfforts joint_eff_command;
+        lwr_fri::FriJointState fri_joint_state_data;
+	RTT::FlowStatus fs = iport_fri_joint_state.read(fri_joint_state_data);
+	if(fs == RTT::NewData){
 
-        for(int i = 0; i < LWRDOF; i++){
-            joint_eff_command.efforts[i] = 0.0; 
-        }
-        oport_joint_efforts.write(joint_eff_command);
+            //Get current joint position fri_joint_state_data.msrJntPos
+            //Send it back
+	    motion_control_msgs::JointPositions joint_position_command;
+	    joint_position_command.positions.assign(7, 0.0);
+            for(unsigned int i = 0; i < LWRDOF; i++){
+                joint_position_command.positions[i] = fri_joint_state_data.msrJntPos[i];
+            }
+
+	    motion_control_msgs::JointEfforts joint_eff_command;
+
+	    joint_eff_command.efforts.assign(LWRDOF, 0.0); 
+	    joint_eff_command.efforts[2] = torque;
+	    oport_joint_efforts.write(joint_eff_command);
+	    oport_joint_position.write(joint_position_command);
+	}
     }
+}
+
+void FriExampleTorque::setT(double t){
+    torque = t;
 }
 
 void FriExampleTorque::setJointImpedance(std::vector<double> &stiffness, std::vector<double> &damping){
@@ -59,5 +79,47 @@ void FriExampleTorque::setJointImpedance(std::vector<double> &stiffness, std::ve
     }
 }
 
+void FriExampleTorque::getFRIJointState(){
+    lwr_fri::FriJointState fri_joint_state_data;
+    RTT::FlowStatus fri_jointStateFS = iport_fri_joint_state.read(fri_joint_state_data);
+
+    if(fri_jointStateFS == RTT::NewData){
+        std::cout << "Measured Joint configuration" << std::endl;
+        BOOST_FOREACH(float f, fri_joint_state_data.msrJntPos){
+            std::cout << f << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Commanded Joint configuration before FRI" << std::endl;
+        BOOST_FOREACH(float f, fri_joint_state_data.cmdJntPos){
+            std::cout << f << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Commanded Joint configuration FRI offset" << std::endl;
+        BOOST_FOREACH(float f, fri_joint_state_data.cmdJntPosFriOffset){
+            std::cout << f << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Measured Joint torque actuator" << std::endl;
+        BOOST_FOREACH(float f, fri_joint_state_data.msrJntTrq){
+            std::cout << f << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Estimated External Joint torque sensor" << std::endl;
+        BOOST_FOREACH(float f, fri_joint_state_data.estExtJntTrq){
+            std::cout << f << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Gravity compensation" << std::endl;
+        BOOST_FOREACH(float f, fri_joint_state_data.gravity){
+            std::cout << f << " ";
+        }
+        std::cout << std::endl;
+    }
+}
 ORO_CREATE_COMPONENT(FriExampleTorque)
 
