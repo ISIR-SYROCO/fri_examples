@@ -34,18 +34,12 @@ bool FriExampleTorque::doStart(){
 
 void FriExampleTorque::updateHook(){
     if(requiresControlMode(30)){
-        //Get gravity terms
-        lwr_fri::FriJointState fri_joint_state_data;
-        RTT::FlowStatus fri_jointStateFS = iport_fri_joint_state.read(fri_joint_state_data);
-
         motion_control_msgs::JointEfforts joint_eff_command;
 
-        if(fri_jointStateFS == RTT::NewData){
-            for(int i = 0; i < LWRDOF; i++){
-                joint_eff_command.efforts[i] = fri_joint_state_data.gravity[i]; 
-            }
+        for(int i = 0; i < LWRDOF; i++){
+            joint_eff_command.efforts[i] = 0.0; 
         }
-
+        oport_joint_efforts.write(joint_eff_command);
     }
 }
 
