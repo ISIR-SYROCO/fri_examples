@@ -10,6 +10,8 @@ FriExampleAbstract::FriExampleAbstract(std::string const& name) : RTT::TaskConte
     this->addOperation("getFRIMode", &FriExampleAbstract::getFRIMode, this, RTT::OwnThread);
 
     this->addOperation("setControlStrategy", &FriExampleAbstract::setControlStrategy, this, RTT::OwnThread);
+
+    LWRDOF = 7;
 }
 
 FriExampleAbstract::~FriExampleAbstract(){

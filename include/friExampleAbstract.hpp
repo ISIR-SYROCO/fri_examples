@@ -26,6 +26,8 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     int controlMode;
 
+    unsigned int LWRDOF;
+
     /**
      * Output port to send shared arrays to the KRC
      */
