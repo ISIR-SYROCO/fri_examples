@@ -41,8 +41,11 @@ void FriExampleTorque::updateHook(){
 	RTT::FlowStatus fs = iport_fri_joint_state.read(fri_joint_state_data);
 	if(fs == RTT::NewData){
 
-            //Get current joint position fri_joint_state_data.msrJntPos
-            //Send it back
+        //The controller makes an interpolation between msrJntPos and cmdJntPos
+        //to generate a trajectory. However, the distance between them has to be small
+        //so that the generated trajectory does not violate velocities limits.
+        //So we get current joint position fri_joint_state_data.msrJntPos
+        //and send it back to the controller in order to keep a msrJntPos and cmdJntPos close.
 	    motion_control_msgs::JointPositions joint_position_command;
 	    joint_position_command.positions.assign(7, 0.0);
             for(unsigned int i = 0; i < LWRDOF; i++){
