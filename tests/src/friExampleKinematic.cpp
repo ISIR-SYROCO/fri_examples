@@ -21,7 +21,7 @@ FriExampleKinematic::FriExampleKinematic(std::string const& name) : FriExampleAb
 
     this->addOperation("setLambda", &FriExampleKinematic::setLambda, this, RTT::OwnThread);
 
-    qdes.resize(7);
+    qdes.resize(LWRDOF);
     lambda = 0.05;
 }
 
@@ -37,6 +37,7 @@ bool FriExampleKinematic::doStart(){
             *it = d;
             ++it;
         }
+        return true;
     }
     else{
         std::cout << "Cannot read robot position, fail to start" << std::endl;
@@ -46,14 +47,14 @@ bool FriExampleKinematic::doStart(){
 
 void FriExampleKinematic::updateHook(){
     motion_control_msgs::JointVelocities command;
-    command.velocities.assign(7, 0.0);
+    command.velocities.assign(LWRDOF, 0.0);
 
-    std::vector<double> qerror(7, 0.0);
+    std::vector<double> qerror(LWRDOF, 0.0);
     sensor_msgs::JointState joint_state_data;
     RTT::FlowStatus joint_state_fs = iport_joint_state.read(joint_state_data);
 
     if(joint_state_fs == RTT::NewData){
-        for(int i = 0; i < 7; i++){
+        for(int i = 0; i < LWRDOF; i++){
             qerror[i] = qdes[i] - joint_state_data.position[i];
         }
         double normQerror = 0;
@@ -66,7 +67,7 @@ void FriExampleKinematic::updateHook(){
             return;
         }
         else{
-            for(int i = 0; i < 7; i++){
+            for(int i = 0; i < LWRDOF; i++){
                 command.velocities[i] = lambda * qerror[i];
             }
             oport_joint_velocities.write(command);
@@ -87,13 +88,13 @@ void FriExampleKinematic::setLambda(double l){
 }
 
 void FriExampleKinematic::setJointImpedance(std::vector<double> &stiffness, std::vector<double> &damping){
-    if(stiffness.size() != 7 || damping.size() != 7){
-        std::cout << "Wrong vector size, should be 7,7" << std::endl;
+    if(stiffness.size() != LWRDOF || damping.size() != LWRDOF){
+        std::cout << "Wrong vector size, should be " <<  LWRDOF << ", " << LWRDOF << std::endl;
         return;
     }
     else{
         lwr_fri::FriJointImpedance joint_impedance_command;
-        for(unsigned int i = 0; i < 7; i++){
+        for(unsigned int i = 0; i < LWRDOF; i++){
             joint_impedance_command.stiffness[i] = stiffness[i];
             joint_impedance_command.damping[i] = damping[i];
         }
