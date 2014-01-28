@@ -125,5 +125,9 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     void friStart();
 
+    /** @brief Ask KRL exit
+     */
+    void stopKrlScript();
+
 };
 #endif

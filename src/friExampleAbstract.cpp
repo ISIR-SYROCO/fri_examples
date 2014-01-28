@@ -30,6 +30,7 @@ FriExampleAbstract::FriExampleAbstract(std::string const& name) : RTT::TaskConte
 
     this->addOperation("friStart", &FriExampleAbstract::friStart, this, RTT::OwnThread);
     this->addOperation("friStop", &FriExampleAbstract::friStop, this, RTT::OwnThread);
+    this->addOperation("stopKrlScript", &FriExampleAbstract::stopKrlScript, this, RTT::OwnThread);
 
     LWRDOF = 7;
 }
@@ -126,4 +127,10 @@ void FriExampleAbstract::friStart(){
     fri_to_krl.intData[0]=1;
     port_fri_to_krl.write(fri_to_krl);
     return;
+}
+
+void FriExampleAbstract::stopKrlScript(){
+    //Put 3 in $FRI_FRM_INT[1] to trigger fri_stop()
+    fri_to_krl.intData[0]=3;
+    port_fri_to_krl.write(fri_to_krl);
 }
