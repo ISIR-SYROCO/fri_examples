@@ -55,6 +55,7 @@ class FriExampleAbstract : public RTT::TaskContext{
     RTT::InputPort<sensor_msgs::JointState> iport_joint_state;
     RTT::InputPort<geometry_msgs::Wrench>   iport_cart_wrench;
     RTT::InputPort<KDL::Jacobian>           iport_jacobian;
+    RTT::InputPort<Eigen::MatrixXd >        iport_mass_matrix;
 
     RTT::OutputPort<motion_control_msgs::JointPositions>  oport_joint_position;
     RTT::OutputPort<motion_control_msgs::JointVelocities> oport_joint_velocities;

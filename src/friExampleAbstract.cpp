@@ -14,6 +14,7 @@ FriExampleAbstract::FriExampleAbstract(std::string const& name) : RTT::TaskConte
     this->addPort("JointState_i", iport_joint_state);
     this->addPort("CartesianWrench_i", iport_cart_wrench);
     this->addPort("Jacobian_i", iport_jacobian);
+    this->addPort("MassMatrix_i", iport_mass_matrix);
 
     this->addPort("JointPositions_o", oport_joint_position);
     this->addPort("JointVelocities_o", oport_joint_velocities);
