@@ -8,14 +8,6 @@
 #include <math.h>
 
 FriExampleKinematic::FriExampleKinematic(std::string const& name) : FriExampleAbstract(name){
-    this->addPort("FRIJointState_i", iport_fri_joint_state);
-    this->addPort("JointState_i", iport_joint_state);
-
-    this->addPort("JointPositions_o", oport_joint_position);
-    this->addPort("JointVelocities_o", oport_joint_velocities);
-    this->addPort("JointTorques_o", oport_joint_efforts);
-    this->addPort("JointImpedance_o", oport_joint_impedance);
-
     this->addOperation("setDesiredQ", &FriExampleKinematic::setDesiredQ, this, RTT::OwnThread);
     this->addOperation("setJointImpedance", &FriExampleKinematic::setJointImpedance, this, RTT::OwnThread);
 
@@ -37,6 +29,7 @@ bool FriExampleKinematic::doStart(){
             *it = d;
             ++it;
         }
+        friStart();
         return true;
     }
     else{

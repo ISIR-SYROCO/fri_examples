@@ -7,9 +7,29 @@ FriExampleAbstract::FriExampleAbstract(std::string const& name) : RTT::TaskConte
     this->addPort("fromFRI", port_fri_to_krl);
     this->addPort("toFRI", port_fri_frm_krl);
 
+    this->addPort("RobotState_i", iport_robot_state);
+    this->addPort("FRIJointState_i", iport_fri_joint_state);
+    this->addPort("CartesianPosition_i", iport_cart_pos);
+    this->addPort("CartesianPositionFrame_i", iport_cart_frame);
+    this->addPort("JointState_i", iport_joint_state);
+    this->addPort("CartesianWrench_i", iport_cart_wrench);
+    this->addPort("Jacobian_i", iport_jacobian);
+
+    this->addPort("JointPositions_o", oport_joint_position);
+    this->addPort("JointVelocities_o", oport_joint_velocities);
+    this->addPort("JointTorques_o", oport_joint_efforts);
+    this->addPort("JointImpedance_o", oport_joint_impedance);
+    this->addPort("CartesianPosition_o", oport_cartesian_pose);
+    this->addPort("CartesianVelocity_o", oport_cartesian_twist);
+    this->addPort("CartesianWrench_o", oport_cartesian_wrench);
+    this->addPort("CartesianImpedance_o", oport_cartesian_impedance);
+
     this->addOperation("getFRIMode", &FriExampleAbstract::getFRIMode, this, RTT::OwnThread);
 
     this->addOperation("setControlStrategy", &FriExampleAbstract::setControlStrategy, this, RTT::OwnThread);
+
+    this->addOperation("friStart", &FriExampleAbstract::friStart, this, RTT::OwnThread);
+    this->addOperation("friStop", &FriExampleAbstract::friStop, this, RTT::OwnThread);
 
     LWRDOF = 7;
 }
@@ -35,23 +55,21 @@ bool FriExampleAbstract::configureHook(){
 }
 
 bool FriExampleAbstract::startHook(){
-    //Send arrays to KRC
-    port_fri_to_krl.write(fri_to_krl);
     return doStart();
 }
 
 bool FriExampleAbstract::doStart(){
+    friStart();
     return true;
 }
 
 void FriExampleAbstract::stopHook(){
     doStop();
-    //Put 2 in $FRI_FRM_INT[1] to trigger fri_stop()
-    fri_to_krl.intData[0]=2;
-    port_fri_to_krl.write(fri_to_krl);
 }
 
-void FriExampleAbstract::doStop(){}
+void FriExampleAbstract::doStop(){
+    stopKrlScript();
+}
 
 void FriExampleAbstract::cleanupHook(){}
 

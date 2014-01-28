@@ -8,14 +8,6 @@
 #include <math.h>
 
 FriExampleTorque::FriExampleTorque(std::string const& name) : FriExampleAbstract(name){
-    this->addPort("FRIJointState_i", iport_fri_joint_state);
-    this->addPort("JointState_i", iport_joint_state);
-
-    this->addPort("JointPositions_o", oport_joint_position);
-    this->addPort("JointVelocities_o", oport_joint_velocities);
-    this->addPort("JointTorques_o", oport_joint_efforts);
-    this->addPort("JointImpedance_o", oport_joint_impedance);
-
     this->addOperation("setJointImpedance", &FriExampleTorque::setJointImpedance, this, RTT::OwnThread);
     this->addOperation("getFRIJointState", &FriExampleTorque::getFRIJointState, this, RTT::OwnThread);
     this->addOperation("setT", &FriExampleTorque::setT, this, RTT::OwnThread);
@@ -32,33 +24,34 @@ bool FriExampleTorque::doStart(){
     std::vector<double> stiff(LWRDOF, 100.0);
     std::vector<double> damp(LWRDOF, 0.7);
     setJointImpedance(stiff, damp);
+    friStart();
     return true;
 }
 
 void FriExampleTorque::updateHook(){
     if(requiresControlMode(30)){
         lwr_fri::FriJointState fri_joint_state_data;
-	RTT::FlowStatus fs = iport_fri_joint_state.read(fri_joint_state_data);
-	if(fs == RTT::NewData){
+        RTT::FlowStatus fs = iport_fri_joint_state.read(fri_joint_state_data);
+        if(fs == RTT::NewData){
 
-        //The controller makes an interpolation between msrJntPos and cmdJntPos
-        //to generate a trajectory. However, the distance between them has to be small
-        //so that the generated trajectory does not violate velocities limits.
-        //So we get current joint position fri_joint_state_data.msrJntPos
-        //and send it back to the controller in order to keep a msrJntPos and cmdJntPos close.
-	    motion_control_msgs::JointPositions joint_position_command;
-	    joint_position_command.positions.assign(7, 0.0);
+            //The controller makes an interpolation between msrJntPos and cmdJntPos
+            //to generate a trajectory. However, the distance between them has to be small
+            //so that the generated trajectory does not violate velocities limits.
+            //So we get current joint position fri_joint_state_data.msrJntPos
+            //and send it back to the controller in order to keep a msrJntPos and cmdJntPos close.
+            motion_control_msgs::JointPositions joint_position_command;
+            joint_position_command.positions.assign(7, 0.0);
             for(unsigned int i = 0; i < LWRDOF; i++){
                 joint_position_command.positions[i] = fri_joint_state_data.msrJntPos[i];
             }
 
-	    motion_control_msgs::JointEfforts joint_eff_command;
+            motion_control_msgs::JointEfforts joint_eff_command;
 
-	    joint_eff_command.efforts.assign(LWRDOF, 0.0); 
-	    joint_eff_command.efforts[2] = torque;
-	    oport_joint_efforts.write(joint_eff_command);
-	    oport_joint_position.write(joint_position_command);
-	}
+            joint_eff_command.efforts.assign(LWRDOF, 0.0); 
+            joint_eff_command.efforts[2] = torque;
+            oport_joint_efforts.write(joint_eff_command);
+            oport_joint_position.write(joint_position_command);
+        }
     }
 }
 

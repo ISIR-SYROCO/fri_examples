@@ -88,22 +88,6 @@ class FriExample : public FriExampleAbstract{
          */
         void sendCartesianImpedance(std::vector<double> &stiffness, std::vector<double> &damping);
 
-        RTT::InputPort<lwr_fri::FriJointState>  iport_fri_joint_state;
-        RTT::InputPort<geometry_msgs::Pose>     iport_cart_pos;
-        RTT::InputPort<KDL::Frame>              iport_cart_frame;
-        RTT::InputPort<tFriRobotState>          iport_robot_state;
-        RTT::InputPort<sensor_msgs::JointState> iport_joint_state;
-        RTT::InputPort<geometry_msgs::Wrench>   iport_cart_wrench;
-        RTT::InputPort<KDL::Jacobian>           iport_jacobian;
-
-        RTT::OutputPort<motion_control_msgs::JointPositions>  oport_joint_position;
-        RTT::OutputPort<motion_control_msgs::JointVelocities> oport_joint_velocities;
-        RTT::OutputPort<motion_control_msgs::JointEfforts>    oport_joint_efforts;
-        RTT::OutputPort<lwr_fri::FriJointImpedance>           oport_joint_impedance;
-        RTT::OutputPort<geometry_msgs::Pose>                  oport_cartesian_pose;
-        RTT::OutputPort<geometry_msgs::Twist>                 oport_cartesian_twist;
-        RTT::OutputPort<geometry_msgs::Wrench>                oport_cartesian_wrench;
-        RTT::OutputPort<lwr_fri::CartesianImpedance>          oport_cartesian_impedance;
 };
 
 #endif
