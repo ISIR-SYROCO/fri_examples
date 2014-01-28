@@ -96,3 +96,16 @@ void FriExampleAbstract::getFRIMode(){
     }
 }
 
+void FriExampleAbstract::friStop(){
+    //Put 2 in $FRI_FRM_INT[1] to trigger fri_stop()
+    fri_to_krl.intData[0]=2;
+    port_fri_to_krl.write(fri_to_krl);
+    return;
+}
+
+void FriExampleAbstract::friStart(){
+    //Put 1 in $FRI_FRM_INT[1] to trigger fri_stop()
+    fri_to_krl.intData[0]=1;
+    port_fri_to_krl.write(fri_to_krl);
+    return;
+}

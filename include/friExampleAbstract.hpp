@@ -90,5 +90,13 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     void getFRIMode();
 
+    /** @brief Ask KRL script for a friStop()
+     */
+    void friStop();
+
+    /** @brief Ask KRL script for a friStart()
+     */
+    void friStart();
+
 };
 #endif

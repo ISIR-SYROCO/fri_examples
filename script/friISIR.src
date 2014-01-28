@@ -61,6 +61,7 @@ DEF friISIR( )
  WAIT FOR ($FRI_FRM_INT[1]==1)	
 
  WAIT FOR ($FriQuality==#PERFECT)
+ ;Argument of FRISTART is a scale to be applied to the robot limits
  retVal=FRISTART(1.0)
 
  WAIT FOR ($FriState==#CMD)
@@ -69,12 +70,14 @@ DEF friISIR( )
 
  ;loop while waiting for remote pc to send $FRI_FRM_INT[1]==2
  REPEAT
+  ;$FRI_*_INT[2] is the control strategy
   IF ($FRI_TO_INT[2] <> $FRI_FRM_INT[2]) THEN
    ;New control mode set request
-   ;Go back to monitor mode
-   retVal = FRISTOP()
-   WAIT FOR ($FriState==#MON)
-   $FRI_TO_INT[1] = 2
+   ;Go back to monitor mode if needed
+   IF ($FRI_TO_INT[1] == 1) THEN
+    retVal = FRISTOP()
+    WAIT FOR ($FriState==#MON)
+    $FRI_TO_INT[1] = 2
 
    ;Set new Strategy 
    ISIRSTIFFNESS = $STIFFNESS
@@ -88,16 +91,30 @@ DEF friISIR( )
    WAIT FOR ($FriState==#CMD)
    $FRI_TO_INT[1] = 1
   ENDIF 
+
+  IF ($FRI_FRM_INT[1] == 2) AND ($FRI_TO_INT[1] == 1) THEN
+   ;friStop asked
+   retVal=FRISTOP()
+   WAIT FOR ($FriState==#MON)
+   ;Send monitor mode feedback to remote pc
+   $FRI_TO_INT[1] = 2
   
- UNTIL $FRI_FRM_INT[1]==2
+  IF ($FRI_FRM_INT[1] == 1) AND ($FRI_TO_INT[1] == 2) THEN
+   ;fristart asked
+   retVal=FRISTART(1.0)
+   WAIT FOR ($FriState==#CMD)
+   $FRI_TO_INT[1] = 1
+  
+ UNTIL $FRI_FRM_INT[1]==3
 
  ;Need to clamp in case commands sent by FRI 
  ;hit joint limits
  PTP CLAMP_AXES($AXIS_ACT_MES)
 
  HALT
- retVal=FRISTOP()	
- WAIT FOR ($FriState==#MON)
+ IF ($FRI_TO_INT[1] == 1) THEN
+  retVal=FRISTOP()	
+  WAIT FOR ($FriState==#MON)
 
  $FRI_TO_INT[1]=0
  WAIT SEC 0.5
