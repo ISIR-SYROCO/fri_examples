@@ -36,6 +36,10 @@ class FriExample : public FriExampleAbstract{
         void getCartesianWrench();
         void getJacobian();
 
+        /** @brief Get the mass matrix
+         */
+        void getMassMatrix();
+
         /** @brief Send desired joint position
          * @pre Required control mode is 10
          * @param command The desired joint position (rad), size 7

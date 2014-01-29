@@ -35,6 +35,7 @@ connect("lwr.CartesianPositionFrame", "friExample.CartesianPositionFrame_i", cp)
 connect("lwr.JointState", "friExample.JointState_i", cp)
 connect("lwr.CartesianWrench", "friExample.CartesianWrench_i", cp)
 connect("lwr.Jacobian", "friExample.Jacobian_i", cp)
+connect("lwr.MassMatrix", "friExample.MassMatrix_i", cp)
 
 friExample.configure
 friExample.setPeriod(1)

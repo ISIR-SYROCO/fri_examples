@@ -16,6 +16,7 @@ FriExample::FriExample(std::string const& name) : FriExampleAbstract(name){
     this->addOperation("getJointState", &FriExample::getJointState, this, RTT::OwnThread);
     this->addOperation("getCartesianWrench", &FriExample::getCartesianWrench, this, RTT::OwnThread);
     this->addOperation("getJacobian", &FriExample::getJacobian, this, RTT::OwnThread);
+    this->addOperation("getMassMatrix", &FriExample::getMassMatrix, this, RTT::OwnThread);
 
     this->addOperation("sendJointPositions", &FriExample::sendJointPositions, this, RTT::OwnThread);
     this->addOperation("sendJointVelocities", &FriExample::sendJointVelocities, this, RTT::OwnThread);
@@ -154,6 +155,15 @@ void FriExample::getJacobian(){
     if(jacobian_fs == RTT::NewData){
         std::cout << "Jacobian: " << std::endl;
         std::cout << jacobian_data.data << std::endl;
+    }
+}
+
+void FriExample::getMassMatrix(){
+    Eigen::Matrix<double, 7, 7> mass_matrix;
+    RTT::FlowStatus mass_matrix_fs = iport_mass_matrix.read(mass_matrix);
+    if(mass_matrix_fs == RTT::NewData){
+        std::cout << "Mass matrix " << std::endl;
+        std::cout << mass_matrix << std::endl;
     }
 }
 
