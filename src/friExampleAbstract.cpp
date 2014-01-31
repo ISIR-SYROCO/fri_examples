@@ -141,39 +141,47 @@ void FriExampleAbstract::stopKrlScript(){
 
 void FriExampleAbstract::initializeCommand(){
     //Get current joint position and set it as desired position
-    lwr_fri::FriJointState fri_joint_state_data;
-    RTT::FlowStatus fri_joint_state_fs = iport_fri_joint_state.read(fri_joint_state_data);
-    if (fri_joint_state_fs == RTT::NewData){
-        motion_control_msgs::JointPositions joint_position_command;
-        joint_position_command.positions.assign(7, 0.0);
-        for (unsigned int i = 0; i < LWRDOF; i++){
-            joint_position_command.positions[i] = fri_joint_state_data.msrJntPos[i];
+    if (oport_joint_position.connected()){ 
+        lwr_fri::FriJointState fri_joint_state_data;
+        RTT::FlowStatus fri_joint_state_fs = iport_fri_joint_state.read(fri_joint_state_data);
+        if (fri_joint_state_fs == RTT::NewData){
+            motion_control_msgs::JointPositions joint_position_command;
+            joint_position_command.positions.assign(7, 0.0);
+            for (unsigned int i = 0; i < LWRDOF; i++){
+                joint_position_command.positions[i] = fri_joint_state_data.msrJntPos[i];
+            }
+            oport_joint_position.write(joint_position_command);
         }
-        oport_joint_position.write(joint_position_command);
     }
 
-    //Get cartesian position and set it as desired position
-    geometry_msgs::Pose cartPosData;
-    RTT::FlowStatus cart_pos_fs = iport_cart_pos.read(cartPosData);
-    if (cart_pos_fs == RTT::NewData){
-        oport_cartesian_pose.write(cartPosData);
+    if(oport_cartesian_pose.connected()){
+        //Get cartesian position and set it as desired position
+        geometry_msgs::Pose cartPosData;
+        RTT::FlowStatus cart_pos_fs = iport_cart_pos.read(cartPosData);
+        if (cart_pos_fs == RTT::NewData){
+            oport_cartesian_pose.write(cartPosData);
+        }
     }
     
-    //Send 0 torque and force
-    geometry_msgs::Wrench cart_wrench_command;
-    cart_wrench_command.force.x = 0.0;
-    cart_wrench_command.force.y = 0.0;
-    cart_wrench_command.force.z = 0.0;
-    cart_wrench_command.torque.x = 0.0;
-    cart_wrench_command.torque.y = 0.0;
-    cart_wrench_command.torque.z = 0.0;
+    if(oport_cartesian_wrench.connected()){
+        //Send 0 torque and force
+        geometry_msgs::Wrench cart_wrench_command;
+        cart_wrench_command.force.x = 0.0;
+        cart_wrench_command.force.y = 0.0;
+        cart_wrench_command.force.z = 0.0;
+        cart_wrench_command.torque.x = 0.0;
+        cart_wrench_command.torque.y = 0.0;
+        cart_wrench_command.torque.z = 0.0;
 
-    oport_cartesian_wrench.write(cart_wrench_command);
+        oport_cartesian_wrench.write(cart_wrench_command);
+    }
 
-    //Send 0 joint torque
-    motion_control_msgs::JointEfforts joint_eff_command;
-    joint_eff_command.efforts.assign(LWRDOF, 0.0); 
+    if (oport_joint_efforts.connected()){
+        //Send 0 joint torque
+        motion_control_msgs::JointEfforts joint_eff_command;
+        joint_eff_command.efforts.assign(LWRDOF, 0.0); 
 
-    oport_joint_efforts.write(joint_eff_command);
+        oport_joint_efforts.write(joint_eff_command);
+    }
 
 }
