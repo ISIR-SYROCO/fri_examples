@@ -107,10 +107,10 @@ bool FriExampleAbstract::requiresControlMode(int modeRequired){
 void FriExampleAbstract::getFRIMode(){
     RTT::FlowStatus fri_frm_krl_fs = port_fri_frm_krl.read(fri_frm_krl);
     if(fri_frm_krl_fs == RTT::NewData){
-        if(fri_frm_krl.intData[1] == 1){
+        if(fri_frm_krl.intData[0] == 1){
             std::cout << "FRI in Command Mode" << std::endl;
         }
-        else if(fri_frm_krl.intData[1] == 2){
+        else if(fri_frm_krl.intData[0] == 2){
             std::cout << "FRI in Monitor Mode" << std::endl;
         }
     }
