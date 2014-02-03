@@ -30,5 +30,5 @@ friExample.configure
 friExample.setPeriod(0.02)
 
 lwr.start
-friExample.setControlStrategy(30)
 friExample.start
+friExample.setControlStrategy(30)
