@@ -73,7 +73,8 @@ void FriExampleAbstract::stopHook(){
 }
 
 void FriExampleAbstract::doStop(){
-    stopKrlScript();
+    friStop();
+    //stopKrlScript();
 }
 
 void FriExampleAbstract::cleanupHook(){}
