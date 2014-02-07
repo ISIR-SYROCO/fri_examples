@@ -29,7 +29,6 @@ bool FriExampleTorque::doStart(){
 }
 
 void FriExampleTorque::updateHook(){
-    lwr_fri::FriJointState fri_joint_state_data;
     RTT::FlowStatus fs = iport_fri_joint_state.read(fri_joint_state_data);
     if(fs == RTT::NewData){
 
@@ -54,6 +53,9 @@ void FriExampleTorque::updateHook(){
             oport_joint_position.write(joint_position_command);
         }
     }
+    else{
+        std::cout << "No new fri_joint_state data" << std::endl; 
+    }
 }
 
 void FriExampleTorque::setT(double t){
@@ -77,7 +79,7 @@ void FriExampleTorque::setJointImpedance(std::vector<double> &stiffness, std::ve
 }
 
 void FriExampleTorque::getFRIJointState(){
-    lwr_fri::FriJointState fri_joint_state_data;
+    //lwr_fri::FriJointState fri_joint_state_data;
     RTT::FlowStatus fri_jointStateFS = iport_fri_joint_state.read(fri_joint_state_data);
 
     if(fri_jointStateFS == RTT::NewData){
