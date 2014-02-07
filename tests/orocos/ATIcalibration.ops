@@ -17,7 +17,7 @@ cp.type = DATA
 //Use mutexes
 cp.lock_policy = LOCKED
 
-/Port connection
+//Port connection
 connect("friExample.fromFRI", "lwr.toKRL", cp)
 connect("friExample.JointPositions_o", "lwr.JointPositionCommand", cp)
 connect("friExample.JointVelocities_o", "lwr.JointVelocityCommand", cp)
@@ -28,12 +28,17 @@ connect("lwr.fromKRL", "friExample.toFRI", cp)
 connect("lwr.FriJointState", "friExample.FRIJointState_i", cp)
 connect("lwr.JointState", "friExample.JointState_i", cp)
 
-connect("ATI.FTvalues","ATI_i",cp)
+connect("ATI.FTvalues","friExample.ATI_i",cp)
 //connect("friExample.ATI_calibration_results","ATI_FT_calibration_data",cp)
 
 friExample.setPeriod(0.02)
 
 lwr.start
 
+ATI.configure
+ATI.start
 
 friExample.configure
+friExample.start
+
+
