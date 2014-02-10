@@ -36,14 +36,6 @@ class FriExampleTorque : public FriExampleAbstract{
         void getFRIJointState();
         void setT(double t);
         double torque;
-
-        RTT::InputPort<lwr_fri::FriJointState>  iport_fri_joint_state;
-        RTT::InputPort<sensor_msgs::JointState> iport_joint_state;
-
-        RTT::OutputPort<motion_control_msgs::JointPositions>  oport_joint_position;
-        RTT::OutputPort<motion_control_msgs::JointVelocities> oport_joint_velocities;
-        RTT::OutputPort<motion_control_msgs::JointEfforts>    oport_joint_efforts;
-        RTT::OutputPort<lwr_fri::FriJointImpedance>           oport_joint_impedance;
 };
 
 #endif
