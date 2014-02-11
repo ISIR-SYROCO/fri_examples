@@ -91,7 +91,20 @@ void FriExampleAbstract::setControlStrategy(int mode){
     else{
         fri_to_krl.intData[1] = mode;
         controlMode = mode;
+        //Asking for a mode change
         port_fri_to_krl.write(fri_to_krl);
+
+        //Check that fri has changed its mode and is ready
+        RTT::FlowStatus fri_frm_krl_fs = port_fri_frm_krl.read(fri_frm_krl);
+        bool fri_ready = false;
+        while(fri_ready == false){
+            if(fri_frm_krl_fs == RTT::NewData){
+                //If current fri mode is desired mode and fri is back to command mode
+                if(fri_frm_krl.intData[1] == mode && fri_frm_krl.intData[0] == 1){
+                    fri_ready = true;
+                }
+            }
+        }
         controlModeUpdated = 1;
     }
 }
