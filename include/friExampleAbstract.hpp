@@ -38,6 +38,12 @@ class FriExampleAbstract : public RTT::TaskContext{
 
     unsigned int LWRDOF;
 
+    /** @brief Flag
+     * 0 : need update
+     * 1 : updated
+     */
+    int controlModeUpdated;
+
     /**
      * Output port to send shared arrays to the KRC
      */

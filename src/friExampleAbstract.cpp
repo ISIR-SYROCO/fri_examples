@@ -52,6 +52,7 @@ bool FriExampleAbstract::configureHook(){
     //Set control strategy to joint position
     fri_to_krl.intData[1]=10;
     controlMode = 10;
+    controlModeUpdated = 1;
 
     return true;
 }
@@ -74,7 +75,7 @@ void FriExampleAbstract::stopHook(){
 
 void FriExampleAbstract::doStop(){
     friStop();
-    //stopKrlScript();
+    stopKrlScript();
 }
 
 void FriExampleAbstract::cleanupHook(){}
@@ -91,6 +92,7 @@ void FriExampleAbstract::setControlStrategy(int mode){
         fri_to_krl.intData[1] = mode;
         controlMode = mode;
         port_fri_to_krl.write(fri_to_krl);
+        controlModeUpdated = 1;
     }
 }
 
@@ -99,8 +101,11 @@ bool FriExampleAbstract::requiresControlMode(int modeRequired){
         return true;
     }
     else{
-        std::cout << "Cannot proceed, current control mode is " << controlMode
-            << " required control mode is " << modeRequired << std::endl;
+        if(controlModeUpdated == 1){
+            std::cout << "Cannot proceed, current control mode is " << controlMode
+                << " required control mode is " << modeRequired << std::endl;
+            controlModeUpdated = 0;
+        }
         return false;
     }
 }
