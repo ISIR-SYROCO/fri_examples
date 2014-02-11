@@ -36,6 +36,12 @@ class FriExampleAbstract : public RTT::TaskContext{
      */
     int controlMode;
 
+    /** @brief Store current fri mode
+     * 1 = Command
+     * 2 = Monitor
+     */
+    int friMode;
+
     unsigned int LWRDOF;
 
     /** @brief Flag

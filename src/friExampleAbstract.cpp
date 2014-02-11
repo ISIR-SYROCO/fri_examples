@@ -158,6 +158,8 @@ void FriExampleAbstract::friStart(){
 }
 
 void FriExampleAbstract::stopKrlScript(){
+    //Back to position control
+    setControlStrategy(10);
     //Put 3 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=3;
     port_fri_to_krl.write(fri_to_krl);
