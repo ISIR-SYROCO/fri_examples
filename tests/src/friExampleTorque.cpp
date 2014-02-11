@@ -50,8 +50,8 @@ void FriExampleTorque::updateHook(){
 
         if(requiresControlMode(30)){
             oport_joint_efforts.write(joint_eff_command);
-            oport_joint_position.write(joint_position_command);
         }
+        oport_joint_position.write(joint_position_command);
     }
     else{
         std::cout << "No new fri_joint_state data" << std::endl; 
