@@ -52,6 +52,7 @@ bool FriExampleAbstract::configureHook(){
     //Set control strategy to joint position
     fri_to_krl.intData[1]=10;
     controlMode = 10;
+    friMode = 1;
     controlModeUpdated = 1;
 
     return true;
@@ -127,9 +128,11 @@ void FriExampleAbstract::getFRIMode(){
     RTT::FlowStatus fri_frm_krl_fs = port_fri_frm_krl.read(fri_frm_krl);
     if(fri_frm_krl_fs == RTT::NewData){
         if(fri_frm_krl.intData[0] == 1){
+            friMode = 1;
             std::cout << "FRI in Command Mode" << std::endl;
         }
         else if(fri_frm_krl.intData[0] == 2){
+            friMode = 2;
             std::cout << "FRI in Monitor Mode" << std::endl;
         }
     }
@@ -142,6 +145,7 @@ void FriExampleAbstract::friStop(){
     //Put 2 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=2;
     port_fri_to_krl.write(fri_to_krl);
+    friMode = 2;
     return;
 }
 
@@ -149,6 +153,7 @@ void FriExampleAbstract::friStart(){
     //Put 1 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=1;
     port_fri_to_krl.write(fri_to_krl);
+    friMode = 1;
     return;
 }
 
