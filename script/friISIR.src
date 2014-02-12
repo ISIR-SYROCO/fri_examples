@@ -1,5 +1,5 @@
-&ACCESS RVO
-&REL 94
+&ACCESS RVP
+&REL 96
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF friISIR( )
@@ -33,6 +33,7 @@ DEF friISIR( )
  resetSTIFFNESS()
  $FRI_TO_INT[2] = 10 
 
+ BAS(#TOOL,2)
  ;Force to be in T1 mode
  IF $MODE_OP<>#t1 then
   REPEAT
