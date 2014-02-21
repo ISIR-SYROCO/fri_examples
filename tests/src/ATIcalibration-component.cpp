@@ -91,17 +91,13 @@ void ATIcalibration::updateHook(){
  fri_frm_krl = m_fromFRI.get();
  if(fri_frm_krl.intData[0] == 1){ //command mode
  std::vector<double> JState;
- std::vector<double> commanded_pos;
  //requiresControlMode(10);
  //getFRIMode();
  JState.resize(LWRDOF);
  RTT::FlowStatus joint_state_fs =iport_msr_joint_pos.read(JState);
- iport_cmd_joint_pos.read(commanded_pos);
- //std::cout<<commanded_pos[0]<<" "<<commanded_pos[1]<<" "<<commanded_pos[2]<<" "<<commanded_pos[3]<<" "<<commanded_pos[4]<<" "<<commanded_pos[5]<<" "<<commanded_pos[6]<<std::endl;
  if(joint_state_fs == RTT::NewData){
  	if(!end_calibration)
  	{
- 		//if(joints_position_command == position1 && JState == position1)
 		if(joints_position_command == position1 && t==tf)
  		{
 			//on enregistre la valeur des composantes du capteur
@@ -123,7 +119,6 @@ void ATIcalibration::updateHook(){
 
  		}else
  		{
- 			//if(joints_position_command == position2 && JState == position2)
 			if(joints_position_command == position2 && t == tf)
  			{
 				//on enregistre la valeur des composantes du capteur
@@ -145,7 +140,6 @@ void ATIcalibration::updateHook(){
 
  			}else
 			{
-				//if(joints_position_command == position3 && JState == position3)
 				if(joints_position_command == position3 && t==tf)
         			{
                 			//on enregistre la valeur des composantes du capteur
@@ -172,10 +166,9 @@ void ATIcalibration::updateHook(){
  	for(i=0;i<7;i++){
  		joints_position_command_interp[i]=JState_init[i]+(joints_position_command[i]-JState_init[i])*(10*pow(t/tf,3)-15*pow(t/tf,4)+6*pow(t/tf,5));
  	}
-	//std::cout<< joints_position_command[5] << " "<< joints_position_command_interp[5] <<" "<<JState_init[5]<<" "<<JState[5]<<std::endl;// joints_position_command_interp.positions[1]<<" "<< joints_position_command_interp.positions[2] <<" "<< joints_position_command_interp.positions[3] <<" "<< joints_position_command_interp.positions[4] <<" "<< joints_position_command_interp.positions[5] <<" "<< joints_position_command_interp.positions[6] <<std::endl;
+	
 	if(oport_joint_position.connected()){
  		oport_joint_position.write(joints_position_command_interp);
-		//std::cout<<"connected"<<std::endl;
 	}
 	
  	t+=FRIRate;

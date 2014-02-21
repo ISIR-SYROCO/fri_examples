@@ -59,7 +59,7 @@ bool FriRTNetExampleAbstract::configureHook(){
     fri_to_krl.intData[0]=1;
     //Set control strategy to joint position
     fri_to_krl.intData[1]=10;
-    controlMode = 10;
+   /* controlMode = 10;*/ //this is control mode 1 for friRTNet
 
     return true;
 }
@@ -90,29 +90,26 @@ void FriRTNetExampleAbstract::cleanupHook(){}
 void FriRTNetExampleAbstract::setPeer(std::string name){
 	peer = getPeer(name);
 	assert(peer);
-	std::cout<<"getAttributes from  "<< name << std::endl;
         m_toFRI = peer->attributes()->getAttribute("toKRL");
 	m_fromFRI= peer->attributes()->getAttribute("fromKRL");
-	std::cout<<"getAttributes ok" << std::endl;
-
 }
 
 void FriRTNetExampleAbstract::setControlStrategy(int mode){
 
-    if(mode != 10 && mode != 20 && mode != 30){
+    if(mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6){
         std::cout << "Please set a valid control mode: " << std::endl;
-        std::cout << "10: Joint position" << std::endl;
-        std::cout << "20: Cartesian stiffness" << std::endl;
-        std::cout << "30: Joint stiffness" << std::endl;
+        std::cout << "1: Joint position" << std::endl;
+        std::cout << "2: Joint velocity" << std::endl;
+        std::cout << "3: Joint torque" << std::endl; 
+	std::cout << "4: Cartesian position" << std::endl;
+        std::cout << "5: Cartesian force" << std::endl;
+	std::cout << "6: Cartesian Twist" << std::endl;
         return;
     }
     else{
         fri_to_krl.intData[1] = mode;
         controlMode = mode;
-        //port_fri_to_krl.write(fri_to_krl);
-	std::cout<<"setAttribute toFri control strategy "<< std::endl;
 	m_toFRI.set(fri_to_krl);
-	std::cout<<"setAttribute toFri ok  " << std::endl;
     }
 }
 
@@ -150,7 +147,6 @@ void FriRTNetExampleAbstract::friStop(){
 
     //Put 2 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=2;
-    //port_fri_to_krl.write(fri_to_krl);
     m_toFRI.set(fri_to_krl);
     return;
 }
@@ -159,10 +155,7 @@ void FriRTNetExampleAbstract::friStart(){
 
     //Put 1 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=1;
-    //port_fri_to_krl.write(fri_to_krl);
-	std::cout<<"setAttribute toFri fristart  " << std::endl;
     m_toFRI.set(fri_to_krl);
-	std::cout<<"setAttribute toFri fristart ok  " << std::endl;
     return;
 }
 
@@ -170,7 +163,6 @@ void FriRTNetExampleAbstract::stopKrlScript(){
 
     //Put 3 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=3;
-    //port_fri_to_krl.write(fri_to_krl);
     m_toFRI.set(fri_to_krl);
 }
 
@@ -188,7 +180,6 @@ void FriRTNetExampleAbstract::initializeCommand(){
                 joint_position_command_init[i] = fri_joint_state_data[i];
             }
             oport_joint_position.write(joint_position_command_init);
-		std::cout<< "mirror command init " << joint_position_command_init[5] << std::endl;
         }
     }
 

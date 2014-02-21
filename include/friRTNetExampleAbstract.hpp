@@ -22,8 +22,8 @@
 class FriRTNetExampleAbstract : public RTT::TaskContext{
   public:
 	RTT::TaskContext* peer;
-	RTT::Attribute<tFriKrlData> m_toFRI;
-	RTT::Attribute<tFriKrlData> m_fromFRI;
+
+
     /**
      * Shared arrays from the remote pc to the KRC
      */
@@ -46,14 +46,14 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     unsigned int LWRDOF;
 
     /**
-     * Output port to send shared arrays to the KRC
+     * Attribute to send shared arrays to the KRC
      */
-   // RTT::OutputPort<tFriKrlData> port_fri_to_krl;
+  	RTT::Attribute<tFriKrlData> m_toFRI;
 
     /**
-     * Input port to read shared arrays from the KRC
+     * Attribute to read shared arrays from the KRC
      */
-   // RTT::InputPort<tFriKrlData> port_fri_frm_krl;
+	RTT::Attribute<tFriKrlData> m_fromFRI;
 
     RTT::InputPort<tFriRobotState>          	iport_robot_state;
     RTT::InputPort<tFriIntfState>		iport_Fri_state;

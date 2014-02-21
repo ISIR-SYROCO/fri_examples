@@ -12,7 +12,6 @@ setActivity("friExample",0.02,50,ORO_SCHED_RT)
 
 lwr.control_mode=1;
 lwr.local_port=49938
-lwr.configure
 
 var ConnPolicy cp
 //Only last data written is accessible
@@ -20,42 +19,24 @@ cp.type = DATA
 //Use mutexes
 cp.lock_policy = LOCKED
 
-
 connectPeers("lwr","friExample")
-
 friExample.setPeer("lwr")
 
 //Port connection
-//connect("friExample.fromFRI", "lwr.toKRL", cp)
-//connect("friExample.JointPositions_o", "lwr.JointPositionCommand", cp)
-//connect("friExample.JointVelocities_o", "lwr.JointVelocityCommand", cp)
-//connect("friExample.JointTorques_o", "lwr.JointEffortCommand", cp)
-//connect("friExample.JointImpedance_o", "lwr.FriJointImpedance", cp)
 
 connect("lwr.msrJntPos","friExample.MsrJntPos_i",cp)
+connect("lwr.cmdJntPos","friExample.CmdJntPos_i", cp) //setpoint feedback
 
 connect("friExample.JointPositions_o", "lwr.desJntPos", cp)
-connect("lwr.cmdJntPos","friExample.CmdJntPos_i", cp) //retour de la consigne
-//connect("friExample.JointVelocities_o", "lwr.desJntVel", cp)
-//connect("friExample.JointTorques_o", "lwr.desAddJntTrq", cp)
-//connect("friExample.JointImpedance_o", "lwr.desJntImpedance", cp)
-
-//connect("lwr.fromKRL", "friExample.toFRI", cp)
-//connect("lwr.FriJointState", "friExample.FRIJointState_i", cp)
-//connect("lwr.JointState", "friExample.JointState_i", cp)
-
-
 
 connect("ATI.FTvalues","friExample.ATI_i",cp)
-
 //connect("friExample.ATI_calibration_results","ATI_FT_calibration_data",cp)
 
-
+lwr.configure
 lwr.start
 
 ATI.configure
 ATI.start
-
 
 friExample.configure
 friExample.start
