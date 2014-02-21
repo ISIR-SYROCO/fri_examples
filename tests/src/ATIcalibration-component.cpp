@@ -2,7 +2,7 @@
 #include <rtt/Component.hpp>
 #include <iostream>
 #include <cmath> 
-
+// 0x0042 = code de bias pour le capteur!!
 ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstract(name)
 {
  this->addPort("ATI_i", iport_ATI_values);
@@ -13,7 +13,7 @@ ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstrac
  valeurY.resize(6);
  tf_min.resize(LWRDOF);
  FRIRate=0.02; //20ms
- velocity_limit=0.15; //T1: 250mm/s selon l'end effector, choix arbitraire de 0.15 rad/s
+ velocity_limit=0.2; //T1: 250mm/s selon l'end effector, choix arbitraire de 0.15 rad/s
  end_calibration=false;
  t=0;
  position1.resize(LWRDOF);

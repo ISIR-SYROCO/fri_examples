@@ -35,6 +35,6 @@ class ATIcalibration : public FriRTNetExampleAbstract{
     int i;
 
     RTT::InputPort< std::vector<double> > iport_ATI_values;
-    RTT::OutputPort< Eigen::Matrix<double,6,3> > oport_calibration_results;
+    RTT::OutputPort< Eigen::Matrix<double,3,6> > oport_calibration_results;
 };
 #endif

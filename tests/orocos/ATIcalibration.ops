@@ -30,15 +30,15 @@ connect("lwr.cmdJntPos","friExample.CmdJntPos_i", cp) //setpoint feedback
 connect("friExample.JointPositions_o", "lwr.desJntPos", cp)
 
 connect("ATI.FTvalues","friExample.ATI_i",cp)
-//connect("friExample.ATI_calibration_results","ATI_FT_calibration_data",cp)
+connect("friExample.ATI_calibration_results","ATI.FT_calibration_data",cp)
 
 lwr.configure
 lwr.start
 
 ATI.configure
-ATI.start
+//ATI.start
 
 friExample.configure
-friExample.start
+//friExample.start
 
 

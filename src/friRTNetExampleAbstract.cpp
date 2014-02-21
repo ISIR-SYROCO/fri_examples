@@ -96,7 +96,7 @@ void FriRTNetExampleAbstract::setPeer(std::string name){
 
 void FriRTNetExampleAbstract::setControlStrategy(int mode){
 
-    if(mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6){
+    if(mode != 10 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6){
         std::cout << "Please set a valid control mode: " << std::endl;
         std::cout << "1: Joint position" << std::endl;
         std::cout << "2: Joint velocity" << std::endl;
