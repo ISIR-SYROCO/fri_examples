@@ -7,7 +7,7 @@ orocos_component(ATIcalibration src/ATIcalibration-component.cpp) # ...you may a
 target_link_libraries(FriExample friExampleAbstract)
 target_link_libraries(FriExampleKinematic friExampleAbstract)
 target_link_libraries(FriExampleTorque friExampleAbstract)
-target_link_libraries(ATIcalibration friExampleAbstract)
+target_link_libraries(ATIcalibration friRTNetExampleAbstract)
 
 #
 # You may add multiple orocos_component statements.

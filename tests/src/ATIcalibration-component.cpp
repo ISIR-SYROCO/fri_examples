@@ -1,8 +1,9 @@
 #include "ATIcalibration-component.hpp"
 #include <rtt/Component.hpp>
 #include <iostream>
+#include <cmath> 
 
-ATIcalibration::ATIcalibration(std::string const& name) : FriExampleAbstract(name)
+ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstract(name)
 {
  this->addPort("ATI_i", iport_ATI_values);
  this->addPort("ATI_calibration_results", oport_calibration_results);
@@ -15,12 +16,12 @@ ATIcalibration::ATIcalibration(std::string const& name) : FriExampleAbstract(nam
  velocity_limit=0.15; //T1: 250mm/s selon l'end effector, choix arbitraire de 0.15 rad/s
  end_calibration=false;
  t=0;
- position1.positions.resize(LWRDOF);
- position2.positions.resize(LWRDOF);
- position3.positions.resize(LWRDOF);
- JState_init.position.resize(LWRDOF);
- joints_position_command.positions.resize(LWRDOF);
- joints_position_command_interp.positions.resize(LWRDOF);
+ position1.resize(LWRDOF);
+ position2.resize(LWRDOF);
+ position3.resize(LWRDOF);
+ JState_init.resize(LWRDOF);
+ joints_position_command.resize(LWRDOF);
+ joints_position_command_interp.resize(LWRDOF);
  std::cout << "ATIcalibration constructed !" <<std::endl;
 }
 
@@ -29,29 +30,29 @@ ATIcalibration::~ATIcalibration(){
 
 bool ATIcalibration::configureHook(){
 
- position1.positions[0]=0;
- position1.positions[1]=0;
- position1.positions[2]=0;
- position1.positions[3]=1.57;
- position1.positions[4]=0;
- position1.positions[5]=-1.57;
- position1.positions[6]=0;
+ position1[0]=0;
+ position1[1]=0;
+ position1[2]=0;
+ position1[3]=1.57;
+ position1[4]=0;
+ position1[5]=-1.57;
+ position1[6]=0;
 
- position2.positions[0]=0;
- position2.positions[1]=0;
- position2.positions[2]=0;
- position2.positions[3]=1.57;
- position2.positions[4]=0;
- position2.positions[5]=0;
- position2.positions[6]=0;
+ position2[0]=0;
+ position2[1]=0;
+ position2[2]=0;
+ position2[3]=1.57;
+ position2[4]=0;
+ position2[5]=0;
+ position2[6]=0;
 
- position3.positions[0]=0;
- position3.positions[1]=0;
- position3.positions[2]=0;
- position3.positions[3]=1.57;
- position3.positions[4]=0;
- position3.positions[5]=0;
- position3.positions[6]=1.57;
+ position3[0]=0;
+ position3[1]=0;
+ position3[2]=0;
+ position3[3]=1.57;
+ position3[4]=0;
+ position3[5]=0;
+ position3[6]=1.57;
 
 
  joints_position_command = position1;
@@ -61,10 +62,13 @@ bool ATIcalibration::configureHook(){
 }
 
 bool ATIcalibration::doStart(){
- RTT::FlowStatus joint_state_fs=iport_joint_state.read(JState_init);
- if(joint_state_fs == RTT::NewData){
+ setControlStrategy(10);
+ RTT::FlowStatus joint_state_fs=iport_msr_joint_pos.read(JState_init);
+ //if(joint_state_fs == RTT::NewData){
  	for(i=0;i<7;i++){
- 		tf_min[i]=(15*abs(joints_position_command.positions[i]-JState_init.position[i])/(8*velocity_limit));
+ 		tf_min[i]=(15*std::abs(joints_position_command[i]-JState_init[i])/(8*velocity_limit));
+		std::cout << "tf_min["<< i <<"]= " <<tf_min[i]<<" JState_init["<< i <<"]= "<<JState_init[i]<<std::endl;
+		std::cout << joints_position_command[i]<< " " <<JState_init[i] <<" "<<std::abs(joints_position_command[i]-JState_init[i])<<std::endl;
  	}
  	tf=tf_min[0];
  	for(i=1;i<7;i++){
@@ -73,24 +77,32 @@ bool ATIcalibration::doStart(){
 		}
  	}
 	friStart();
-	return true;
 	std::cout << "ATIcalibration started !" <<std::endl;
 	std::cout << "tf= " <<tf<<std::endl;
- }else
- {
+	return true;
+// }else
+/* {
 	std::cout << "Cannot read robot position, fail to start" << std::endl;
         return false;
- }
+ }*/
 }
 
 void ATIcalibration::updateHook(){
- sensor_msgs::JointState JState;
- JState.position.resize(LWRDOF);
- RTT::FlowStatus joint_state_fs =iport_joint_state.read(JState);
+ fri_frm_krl = m_fromFRI.get();
+ if(fri_frm_krl.intData[0] == 1){ //command mode
+ std::vector<double> JState;
+ std::vector<double> commanded_pos;
+ //requiresControlMode(10);
+ //getFRIMode();
+ JState.resize(LWRDOF);
+ RTT::FlowStatus joint_state_fs =iport_msr_joint_pos.read(JState);
+ iport_cmd_joint_pos.read(commanded_pos);
+ //std::cout<<commanded_pos[0]<<" "<<commanded_pos[1]<<" "<<commanded_pos[2]<<" "<<commanded_pos[3]<<" "<<commanded_pos[4]<<" "<<commanded_pos[5]<<" "<<commanded_pos[6]<<std::endl;
  if(joint_state_fs == RTT::NewData){
  	if(!end_calibration)
  	{
- 		if(joints_position_command.positions == position1.positions && JState.position == position1.positions)
+ 		//if(joints_position_command == position1 && JState == position1)
+		if(joints_position_command == position1 && t==tf)
  		{
 			//on enregistre la valeur des composantes du capteur
 			iport_ATI_values.read(valeurZ);
@@ -100,7 +112,7 @@ void ATIcalibration::updateHook(){
 			JState_init=JState;
 			t=0;
 			for(i=0;i<7;i++){
-				tf_min[i]=(15*abs(joints_position_command.positions[i]-JState_init.position[i])/(8*velocity_limit));
+				tf_min[i]=(15*std::abs(joints_position_command[i]-JState_init[i])/(8*velocity_limit));
 			}
 			tf=tf_min[0];
 		 	for(i=1;i<7;i++){
@@ -111,7 +123,8 @@ void ATIcalibration::updateHook(){
 
  		}else
  		{
- 			if(joints_position_command.positions == position2.positions && JState.position == position2.positions)
+ 			//if(joints_position_command == position2 && JState == position2)
+			if(joints_position_command == position2 && t == tf)
  			{
 				//on enregistre la valeur des composantes du capteur
         			iport_ATI_values.read(valeurX);
@@ -121,7 +134,7 @@ void ATIcalibration::updateHook(){
 				JState_init=JState;
 				t=0;
 				for(i=0;i<7;i++){
-					tf_min[i]=(15*abs(joints_position_command.positions[i]-JState_init.position[i])/(8*velocity_limit));
+					tf_min[i]=(15*std::abs(joints_position_command[i]-JState_init[i])/(8*velocity_limit));
 				}
 				tf=tf_min[0];
 				for(i=1;i<7;i++){
@@ -132,7 +145,8 @@ void ATIcalibration::updateHook(){
 
  			}else
 			{
-				if(joints_position_command.positions == position3.positions && JState.position == position3.positions)
+				//if(joints_position_command == position3 && JState == position3)
+				if(joints_position_command == position3 && t==tf)
         			{
                 			//on enregistre la valeur des composantes du capteur
                 			iport_ATI_values.read(valeurY);
@@ -152,14 +166,18 @@ void ATIcalibration::updateHook(){
 		results.row(1)=Eigen::VectorXd::Map(&valeurX[0],valeurX.size());
 		results.row(2)=Eigen::VectorXd::Map(&valeurY[0],valeurY.size());
 		oport_calibration_results.write(results);
-		FriExampleAbstract::stopHook();
+		FriRTNetExampleAbstract::stopHook();
  	}
  	//avant (ici) il faut faire l'interpolation
  	for(i=0;i<7;i++){
- 		joints_position_command_interp.positions[i]=JState_init.position[i]+(joints_position_command.positions[i]-JState_init.position[i])*(10*pow(t/tf,3)-15*pow(t/tf,4)+6*pow(t/tf,5));
+ 		joints_position_command_interp[i]=JState_init[i]+(joints_position_command[i]-JState_init[i])*(10*pow(t/tf,3)-15*pow(t/tf,4)+6*pow(t/tf,5));
  	}
-	std::cout<< joints_position_command_interp.positions[5] <<" "<<JState_init.position[5]<<" "<<JState.position[5]<<std::endl;// joints_position_command_interp.positions[1]<<" "<< joints_position_command_interp.positions[2] <<" "<< joints_position_command_interp.positions[3] <<" "<< joints_position_command_interp.positions[4] <<" "<< joints_position_command_interp.positions[5] <<" "<< joints_position_command_interp.positions[6] <<std::endl;
- 	oport_joint_position.write(joints_position_command_interp);
+	//std::cout<< joints_position_command[5] << " "<< joints_position_command_interp[5] <<" "<<JState_init[5]<<" "<<JState[5]<<std::endl;// joints_position_command_interp.positions[1]<<" "<< joints_position_command_interp.positions[2] <<" "<< joints_position_command_interp.positions[3] <<" "<< joints_position_command_interp.positions[4] <<" "<< joints_position_command_interp.positions[5] <<" "<< joints_position_command_interp.positions[6] <<std::endl;
+	if(oport_joint_position.connected()){
+ 		oport_joint_position.write(joints_position_command_interp);
+		//std::cout<<"connected"<<std::endl;
+	}
+	
  	t+=FRIRate;
  	if(t>tf)
  	{
@@ -168,6 +186,7 @@ void ATIcalibration::updateHook(){
  }
  	/*se stoppe tout seul à la fin stopHook()*/
 	//  std::cout << "ATIcalibration executes updateHook !" <<std::endl;
+}
 }
 
 void ATIcalibration::setFRIRate(double period_ms){

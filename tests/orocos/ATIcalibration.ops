@@ -2,13 +2,16 @@ import("ATISensor")
 import("lwr_fri")
 import("fri_examples")
 
-loadComponent("lwr","lwr_fri::FRIComponent")
+loadComponent("lwr","lwr_fri::FRIRTNetComponent")
 loadComponent("friExample","ATIcalibration")
 loadComponent("ATI","ATISensor")
 
 setActivity("lwr",0,99,ORO_SCHED_RT)
+setActivity("ATI",1,10,ORO_SCHED_RT)
+setActivity("friExample",0.02,50,ORO_SCHED_RT)
 
-lwr.udp_port=49938
+lwr.control_mode=1;
+lwr.local_port=49938
 lwr.configure
 
 var ConnPolicy cp
@@ -17,26 +20,42 @@ cp.type = DATA
 //Use mutexes
 cp.lock_policy = LOCKED
 
-//Port connection
-connect("friExample.fromFRI", "lwr.toKRL", cp)
-connect("friExample.JointPositions_o", "lwr.JointPositionCommand", cp)
-connect("friExample.JointVelocities_o", "lwr.JointVelocityCommand", cp)
-connect("friExample.JointTorques_o", "lwr.JointEffortCommand", cp)
-connect("friExample.JointImpedance_o", "lwr.FriJointImpedance", cp)
 
-connect("lwr.fromKRL", "friExample.toFRI", cp)
-connect("lwr.FriJointState", "friExample.FRIJointState_i", cp)
-connect("lwr.JointState", "friExample.JointState_i", cp)
+connectPeers("lwr","friExample")
+
+friExample.setPeer("lwr")
+
+//Port connection
+//connect("friExample.fromFRI", "lwr.toKRL", cp)
+//connect("friExample.JointPositions_o", "lwr.JointPositionCommand", cp)
+//connect("friExample.JointVelocities_o", "lwr.JointVelocityCommand", cp)
+//connect("friExample.JointTorques_o", "lwr.JointEffortCommand", cp)
+//connect("friExample.JointImpedance_o", "lwr.FriJointImpedance", cp)
+
+connect("lwr.msrJntPos","friExample.MsrJntPos_i",cp)
+
+connect("friExample.JointPositions_o", "lwr.desJntPos", cp)
+connect("lwr.cmdJntPos","friExample.CmdJntPos_i", cp) //retour de la consigne
+//connect("friExample.JointVelocities_o", "lwr.desJntVel", cp)
+//connect("friExample.JointTorques_o", "lwr.desAddJntTrq", cp)
+//connect("friExample.JointImpedance_o", "lwr.desJntImpedance", cp)
+
+//connect("lwr.fromKRL", "friExample.toFRI", cp)
+//connect("lwr.FriJointState", "friExample.FRIJointState_i", cp)
+//connect("lwr.JointState", "friExample.JointState_i", cp)
+
+
 
 connect("ATI.FTvalues","friExample.ATI_i",cp)
+
 //connect("friExample.ATI_calibration_results","ATI_FT_calibration_data",cp)
 
-friExample.setPeriod(0.02)
 
 lwr.start
 
 ATI.configure
 ATI.start
+
 
 friExample.configure
 friExample.start

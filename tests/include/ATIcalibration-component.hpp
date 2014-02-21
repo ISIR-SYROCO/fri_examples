@@ -2,9 +2,9 @@
 #define OROCOS_ATICALIBRATION_COMPONENT_HPP
 
 #include <rtt/RTT.hpp>
-#include "friExampleAbstract.hpp"
+#include "friRTNetExampleAbstract.hpp"
 #include <Eigen/Dense>
-class ATIcalibration : public FriExampleAbstract{
+class ATIcalibration : public FriRTNetExampleAbstract{
   public:
     ATIcalibration(std::string const& name);
     ~ATIcalibration();
@@ -13,14 +13,14 @@ class ATIcalibration : public FriExampleAbstract{
     void updateHook();
     void setFRIRate(double period_ms);
 
-    sensor_msgs::JointState JState_init;
+    std::vector<double> JState_init;//msr_joint_positions
     bool end_calibration;
-    motion_control_msgs::JointPositions joints_position_command;
-    motion_control_msgs::JointPositions joints_position_command_interp;
+    std::vector<double> joints_position_command;
+    std::vector<double> joints_position_command_interp;
    //Positions de calibration à vérifier notamment au niveau des axes (Xcapteur = -Xpoignet, Ycapteur=-Ypoignet, Zcapteur=Zpoignet)
-    motion_control_msgs::JointPositions position1;
-    motion_control_msgs::JointPositions position2;
-    motion_control_msgs::JointPositions position3;
+    std::vector<double> position1;
+    std::vector<double> position2;
+    std::vector<double> position3;
 
     double FRIRate;
     double velocity_limit;
