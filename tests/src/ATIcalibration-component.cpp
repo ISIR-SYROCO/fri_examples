@@ -7,6 +7,7 @@ ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstrac
 {
  this->addPort("ATI_i", iport_ATI_values);
  this->addPort("ATI_calibration_results", oport_calibration_results);
+ this->addPort("BiasOrder_o",oport_bias_order);
  this->addOperation("setFRIRate", &ATIcalibration::setFRIRate, this, RTT::OwnThread);
  valeurZ.resize(6);
  valeurX.resize(6);
@@ -103,6 +104,8 @@ void ATIcalibration::updateHook(){
 			//on enregistre la valeur des composantes du capteur
 			iport_ATI_values.read(valeurZ);
 			std::cout<< "valeur lu position 1 (Z) = "<< " Fx= "<< valeurZ[0] <<" Fy= "<< valeurZ[1]<<" Fz= "<< valeurZ[2] << " Tx= "<<valeurZ[3]<<" Ty= "<<valeurZ[4] << " Tz= "<<valeurZ[5] <<std::endl;
+			std::cout<< "sending bias order "<<std::endl;
+			oport_bias_order.write(true);
 			//on change de position de commande
 			joints_position_command = position2;
 			JState_init=JState;
