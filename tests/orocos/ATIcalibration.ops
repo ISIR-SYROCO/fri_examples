@@ -9,7 +9,7 @@ loadComponent("ATI","ATISensor")
 loadComponent("dKinematics","DirectKinematics")
 
 setActivity("lwr",0,99,ORO_SCHED_RT)
-setActivity("ATI",1,10,ORO_SCHED_RT)
+setActivity("ATI",0.5,10,ORO_SCHED_RT)
 setActivity("friExample",0.02,50,ORO_SCHED_RT)
 setActivity("dKinematics",0,30,ORO_SCHED_RT)
 

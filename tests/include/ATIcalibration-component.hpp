@@ -21,7 +21,7 @@ class ATIcalibration : public FriRTNetExampleAbstract{
     std::vector<double> position1;
     std::vector<double> position2;
     std::vector<double> position3;
-
+    std::vector<double> position4;
     double FRIRate;
     double velocity_limit;
     double tf;
