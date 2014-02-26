@@ -96,7 +96,7 @@ void FriRTNetExampleAbstract::setPeer(std::string name){
 
 void FriRTNetExampleAbstract::setControlStrategy(int mode){
 
-    if(mode != 10 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6){
+    if(mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6){
         std::cout << "Please set a valid control mode: " << std::endl;
         std::cout << "1: Joint position" << std::endl;
         std::cout << "2: Joint velocity" << std::endl;
@@ -107,9 +107,23 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
         return;
     }
     else{
-        fri_to_krl.intData[1] = mode;
-        controlMode = mode;
-	m_toFRI.set(fri_to_krl);
+        RTT::Property<int> * control_mode_prop;
+        peer->properties()->getProperties("control_mode");
+        control_mode_prop->set(mode);
+        if (mode == 1 && mode == 2){
+            fri_to_krl.intData[1] = 10;
+            controlMode = 10;
+        }
+        else if (mode == 3){
+            fri_to_krl.intData[1] = 30;
+            controlMode = 30;
+        }
+        else if (mode == 4 && mode == 5 && mode == 6){
+            fri_to_krl.intData[1] = 20;
+            controlMode = 20;
+        }
+
+        m_toFRI.set(fri_to_krl);
     }
 }
 
