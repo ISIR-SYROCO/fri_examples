@@ -1,8 +1,8 @@
 // Copyright 2014 ISIR-CNRS
-// Author: Sovannara Hak
+// Author: Guillaume Hamon
 
-#ifndef OROCOS_FRI_EXAMPLE_ABSTRACT_HPP
-#define OROCOS_FRI_EXAMPLE_ABSTRACT_HPP
+#ifndef OROCOS_FRI_RTNET_EXAMPLE_ABSTRACT_HPP
+#define OROCOS_FRI_RTNET_EXAMPLE_ABSTRACT_HPP
 
 #include <rtt/RTT.hpp>
 
@@ -17,8 +17,13 @@
 #include <motion_control_msgs/typekit/Types.hpp>
 #include <sensor_msgs/typekit/Types.hpp>
 
-class FriExampleAbstract : public RTT::TaskContext{
+#include <rtt/Attribute.hpp>
+
+class FriRTNetExampleAbstract : public RTT::TaskContext{
   public:
+	RTT::TaskContext* peer;
+
+
     /**
      * Shared arrays from the remote pc to the KRC
      */
@@ -34,52 +39,45 @@ class FriExampleAbstract : public RTT::TaskContext{
      * controlMode = 20  : Cartesian stiffness
      * controlMode = 30  : Joint stiffness
      */
-    int controlMode;
 
-    /** @brief Store current fri mode
-     * 1 = Command
-     * 2 = Monitor
-     */
-    int friMode;
+
+    int controlMode;
 
     unsigned int LWRDOF;
 
-    /** @brief Flag
-     * 0 : need update
-     * 1 : updated
+    /**
+     * Attribute to send shared arrays to the KRC
      */
-    int controlModeUpdated;
+  	RTT::Attribute<tFriKrlData> m_toFRI;
 
     /**
-     * Output port to send shared arrays to the KRC
+     * Attribute to read shared arrays from the KRC
      */
-    RTT::OutputPort<tFriKrlData> port_fri_to_krl;
+	RTT::Attribute<tFriKrlData> m_fromFRI;
 
-    /**
-     * Input port to read shared arrays from the KRC
-     */
-    RTT::InputPort<tFriKrlData> port_fri_frm_krl;
+    RTT::InputPort<tFriRobotState>          	iport_robot_state;
+    RTT::InputPort<tFriIntfState>		iport_Fri_state;
+    RTT::InputPort< std::vector<double> >       iport_msr_joint_pos;
+    RTT::InputPort< std::vector<double> >       iport_cmd_joint_pos;
+    RTT::InputPort< std::vector<double> >       iport_cmd_joint_pos_fri_offset;
+    RTT::InputPort< geometry_msgs::Pose >      	iport_msr_cart_pos;
+    RTT::InputPort< geometry_msgs::Pose >      	iport_cmd_cart_pos;
+    RTT::InputPort< geometry_msgs::Pose >      	iport_cmd_cart_pos_fri_offset;
+    RTT::InputPort< std::vector<double> >       iport_msr_joint_trq;
+    RTT::InputPort< std::vector<double> >       iport_est_ext_joint_trq;
+    RTT::InputPort< geometry_msgs::Wrench >     iport_est_ext_tcp_wrench;
 
-    RTT::InputPort<lwr_fri::FriJointState>  iport_fri_joint_state;
-    RTT::InputPort<geometry_msgs::Pose>     iport_cart_pos;
-    RTT::InputPort<KDL::Frame>              iport_cart_frame;
-    RTT::InputPort<tFriRobotState>          iport_robot_state;
-    RTT::InputPort<sensor_msgs::JointState> iport_joint_state;
-    RTT::InputPort<geometry_msgs::Wrench>   iport_cart_wrench;
-    RTT::InputPort<KDL::Jacobian>           iport_jacobian;
-    RTT::InputPort< Eigen::Matrix<double, 7, 7> >        iport_mass_matrix;
+ //   RTT::InputPort< Eigen::Matrix<double, 7, 7> >        iport_mass_matrix;
 
-    RTT::OutputPort<motion_control_msgs::JointPositions>  oport_joint_position;
-    RTT::OutputPort<motion_control_msgs::JointVelocities> oport_joint_velocities;
-    RTT::OutputPort<motion_control_msgs::JointEfforts>    oport_joint_efforts;
-    RTT::OutputPort<lwr_fri::FriJointImpedance>           oport_joint_impedance;
-    RTT::OutputPort<geometry_msgs::Pose>                  oport_cartesian_pose;
-    RTT::OutputPort<geometry_msgs::Twist>                 oport_cartesian_twist;
-    RTT::OutputPort<geometry_msgs::Wrench>                oport_cartesian_wrench;
-    RTT::OutputPort<lwr_fri::CartesianImpedance>          oport_cartesian_impedance;
+    RTT::OutputPort< std::vector<double> >  	oport_joint_position;
+    RTT::OutputPort< std::vector<double> > 	oport_joint_velocities;
+    RTT::OutputPort< std::vector<double> >    	oport_add_joint_trq;
+    RTT::OutputPort<geometry_msgs::Pose>        oport_cartesian_pose;
+    RTT::OutputPort<geometry_msgs::Twist>       oport_cartesian_twist;
+    RTT::OutputPort<geometry_msgs::Wrench>      oport_cartesian_wrench;
 
-    FriExampleAbstract(std::string const& name);
-    ~FriExampleAbstract();
+    FriRTNetExampleAbstract(std::string const& name);
+    ~FriRTNetExampleAbstract();
 
     /** @brief Orocos Configure Hook
      * Initialization of the shared array between
@@ -115,6 +113,9 @@ class FriExampleAbstract : public RTT::TaskContext{
     /** @brief Orocos Cleanup hook
      */
     virtual void cleanupHook();
+
+    /* define the lwr_fri peer name to share attributes toKrl and fromKrl*/
+    void setPeer(std::string name);
 
     /** @brief Set control strategy
      */
