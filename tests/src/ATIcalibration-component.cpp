@@ -65,13 +65,14 @@ bool ATIcalibration::configureHook(){
  	position4[6]=0;
 
  	joints_position_command = position1;
+	setControlStrategy(1);
 
   	std::cout << "ATIcalibration configured !" <<std::endl;
   	return true;
 }
 
 bool ATIcalibration::doStart(){
- 	setControlStrategy(10);
+
  	RTT::FlowStatus joint_state_fs=iport_msr_joint_pos.read(JState_init);
  	//if(joint_state_fs == RTT::NewData){
  	for(i=0;i<7;i++){
@@ -193,6 +194,7 @@ void ATIcalibration::updateHook(){
 				/*********** test ****************/
 				if (t==tf){
 					FriRTNetExampleAbstract::stopHook();
+					return;
 					//std::cout<<"end test, ending calibration component"<<std::endl;
 				}
  			}
