@@ -2,6 +2,7 @@
 #include <rtt/Component.hpp>
 #include <iostream>
 #include <cmath> 
+#include <boost/foreach.hpp>
 
 ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstract(name)
 {
@@ -193,7 +194,7 @@ void ATIcalibration::updateHook(){
 				}
 				/*********** test ****************/
 				if (t==tf){
-					FriRTNetExampleAbstract::stopHook();
+					FriRTNetExampleAbstract::stop();
 					return;
 					//std::cout<<"end test, ending calibration component"<<std::endl;
 				}
