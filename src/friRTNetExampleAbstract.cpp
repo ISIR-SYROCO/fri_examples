@@ -108,7 +108,7 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
     else{
         RTT::Property<int> control_mode_prop = peer->properties()->getProperty("control_mode");
         control_mode_prop.set(mode);
-        if (mode == 1 && mode == 2){
+        if (mode == 1 || mode == 2){
             fri_to_krl.intData[1] = 10;
             controlMode = 10;
         }
@@ -116,7 +116,7 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
             fri_to_krl.intData[1] = 30;
             controlMode = 30;
         }
-        else if (mode == 4 && mode == 5 && mode == 6){
+        else if (mode == 4 || mode == 5 || mode == 6){
             fri_to_krl.intData[1] = 20;
             controlMode = 20;
         }
