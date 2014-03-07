@@ -92,10 +92,12 @@ void FriRTNetExampleAbstract::setPeer(std::string name){
 	assert(peer);
         m_toFRI = peer->attributes()->getAttribute("toKRL");
 	m_fromFRI= peer->attributes()->getAttribute("fromKRL");
+        control_mode_prop = peer->properties()->getProperty("control_mode");
+
 }
 
 void FriRTNetExampleAbstract::setControlStrategy(int mode){
-    if(mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6){
+    if(mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6 && mode != 7){
         std::cout << "Please set a valid control mode: " << std::endl;
         std::cout << "1: Joint position" << std::endl;
         std::cout << "2: Joint velocity" << std::endl;
@@ -103,18 +105,20 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
 	std::cout << "4: Cartesian position" << std::endl;
         std::cout << "5: Cartesian force" << std::endl;
 	std::cout << "6: Cartesian Twist" << std::endl;
+	std::cout << "7: Joint Position and torque for objects picking" << std::endl;
         return;
     }
     else{
-        RTT::Property<int> control_mode_prop = peer->properties()->getProperty("control_mode");
-        control_mode_prop.set(mode);
+
+
         if (mode == 1 || mode == 2){
             fri_to_krl.intData[1] = 10;
             controlMode = 10;
         }
-        else if (mode == 3){
+        else if (mode == 3 || mode == 7){
             fri_to_krl.intData[1] = 30;
             controlMode = 30;
+	    control_mode_prop.set(7);
         }
         else if (mode == 4 || mode == 5 || mode == 6){
             fri_to_krl.intData[1] = 20;
@@ -122,6 +126,7 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
         }
 
         m_toFRI.set(fri_to_krl);
+
     }
 }
 
@@ -134,6 +139,24 @@ bool FriRTNetExampleAbstract::requiresControlMode(int modeRequired){
             << " required control mode is " << modeRequired << std::endl;
         return false;
     }
+}
+
+bool FriRTNetExampleAbstract::setLwrControlMode(){
+	tFriRobotState robot_state;
+	iport_robot_state.read(robot_state);
+	if(control_mode_prop.get()==7){
+		std::cout<<"control mode 7"<<std::endl;
+		return true;
+	}else{
+		 if(robot_state.control==30){
+			control_mode_prop.set(7);
+			std::cout<<"control mode changed to  7"<<std::endl;
+			return true;
+		}else{
+			std::cout<<"control mode "<< control_mode_prop.get() << " strategy "<< robot_state.control<<std::endl;
+			return false;
+		}
+	}
 }
 
 void FriRTNetExampleAbstract::getFRIMode(){

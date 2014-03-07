@@ -1,7 +1,7 @@
 #include "ATIcalibration-component.hpp"
 #include <rtt/Component.hpp>
 #include <iostream>
-#include <cmath> 
+#include <cmath>
 #include <boost/foreach.hpp>
 
 ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstract(name)
@@ -9,15 +9,20 @@ ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstrac
  	this->addPort("ATI_i", iport_ATI_values);
  	this->addPort("ATI_calibration_results", oport_calibration_results);
  	this->addPort("BiasOrder_o",oport_bias_order);
+	this->addPort("addJntTorque_o",oport_add_joint_torque);
+	this->addPort("estExtJntTrq_i",iport_est_ext_joint_torque);
+	this->addPort("msrJntTrq_i", iport_msr_joint_torque);
  	this->addOperation("setFRIRate", &ATIcalibration::setFRIRate, this, RTT::OwnThread);
+
+ 	FRIRate=0.02; //20ms
+	velocity_limit=0.2; //T1: 250mm/s selon l'end effector, choix arbitraire de 0.2 rad/s
+ 	end_calibration=false;
+ 	t=0;
+
  	valeurZ.resize(6);
  	valeurX.resize(6);
  	valeurY.resize(6);
  	tf_min.resize(LWRDOF);
- 	FRIRate=0.02; //20ms
-	velocity_limit=0.2; //T1: 250mm/s selon l'end effector, choix arbitraire de 0.15 rad/s
- 	end_calibration=false;
- 	t=0;
  	position1.resize(LWRDOF);
  	position2.resize(LWRDOF);
  	position3.resize(LWRDOF);
@@ -25,61 +30,45 @@ ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstrac
  	JState_init.resize(LWRDOF);
  	joints_position_command.resize(LWRDOF);
  	joints_position_command_interp.resize(LWRDOF);
- 	std::cout << "ATIcalibration constructed !" <<std::endl;
+	external_torque.resize(LWRDOF);
+	msr_torque.resize(LWRDOF);
+	JState.resize(LWRDOF);
+
+	std::cout << "ATIcalibration constructed !" <<std::endl;
 }
 
 ATIcalibration::~ATIcalibration(){
 }
 
 bool ATIcalibration::configureHook(){
+	double w[7]={0,0,0,1.57,0,-1.57,0};
+	position1.assign(&w[0],&w[0]+7);
+	w[5]=0;
+	position2.assign(&w[0],&w[0]+7);
+	w[6]=1.57;
+	position3.assign(&w[0],&w[0]+7);
 
- 	position1[0]=0;
- 	position1[1]=0;
- 	position1[2]=0;
- 	position1[3]=1.57;
- 	position1[4]=0;
- 	position1[5]=-1.57;
- 	position1[6]=0;
-
- 	position2[0]=0;
- 	position2[1]=0;
- 	position2[2]=0;
- 	position2[3]=1.57;
- 	position2[4]=0;
- 	position2[5]=0;
- 	position2[6]=0;
-
- 	position3[0]=0;
- 	position3[1]=0;
- 	position3[2]=0;
- 	position3[3]=1.57;
- 	position3[4]=0;
- 	position3[5]=0;
- 	position3[6]=1.57;
-
-	position4[0]=0;
- 	position4[1]=0;
- 	position4[2]=0;
- 	position4[3]=0;
- 	position4[4]=0;
- 	position4[5]=0;
- 	position4[6]=0;
+	for(i=0;i<7;i++)
+	{
+		std::cout<<position1[i]<<" "<<std::endl;
+		position4[i]=0;
+		msr_torque[i]=0;
+        	external_torque[i] = 0;
+ 	}
 
  	joints_position_command = position1;
-	setControlStrategy(1);
-
   	std::cout << "ATIcalibration configured !" <<std::endl;
   	return true;
 }
 
 bool ATIcalibration::doStart(){
 
- 	RTT::FlowStatus joint_state_fs=iport_msr_joint_pos.read(JState_init);
- 	//if(joint_state_fs == RTT::NewData){
+ RTT::FlowStatus joint_state_fs=iport_msr_joint_pos.read(JState_init);
+// if(joint_state_fs == RTT::NewData){
  	for(i=0;i<7;i++){
  		tf_min[i]=(15*std::abs(joints_position_command[i]-JState_init[i])/(8*velocity_limit));
-		std::cout << "tf_min["<< i <<"]= " <<tf_min[i]<<" JState_init["<< i <<"]= "<<JState_init[i]<<std::endl;
-		std::cout << joints_position_command[i]<< " " <<JState_init[i] <<" "<<std::abs(joints_position_command[i]-JState_init[i])<<std::endl;
+	//	std::cout << "tf_min["<< i <<"]= " <<tf_min[i]<<" JState_init["<< i <<"]= "<<JState_init[i]<<std::endl;
+	//	std::cout << joints_position_command[i]<< " " <<JState_init[i] <<" "<<std::abs(joints_position_command[i]-JState_init[i])<<std::endl;
  	}
  	tf=tf_min[0];
  	for(i=1;i<7;i++){
@@ -87,9 +76,23 @@ bool ATIcalibration::doStart(){
 			tf=tf_min[i];
 		}
  	}
+	RTT::FlowStatus estExtTrq_fs=iport_est_ext_joint_torque.read(external_torque);
+	if (estExtTrq_fs==RTT::NewData){
+		for( i=0;i<7;i++ )
+    		{
+        		external_torque[i]=external_torque[i];
+		}
+
+		oport_add_joint_torque.write(external_torque);
+	}
+	/*for(i=0; i<7; i++ )
+    	{
+        	std::cout << external_torque[i] << " ";
+   	}
+	std::cout<<std::endl;*/
 	friStart();
 	std::cout << "ATIcalibration started !" <<std::endl;
-	std::cout << "tf= " <<tf<<std::endl;
+	//std::cout << "tf= " <<tf<<std::endl;
 	return true;
 // }else
 /* {
@@ -101,11 +104,28 @@ bool ATIcalibration::doStart(){
 void ATIcalibration::updateHook(){
  	fri_frm_krl = m_fromFRI.get();
  	if(fri_frm_krl.intData[0] == 1){ //command mode
- 		std::vector<double> JState;
- 		//requiresControlMode(10);
- 		//getFRIMode();
- 		JState.resize(LWRDOF);
+
  		RTT::FlowStatus joint_state_fs =iport_msr_joint_pos.read(JState);
+
+		RTT::FlowStatus estExtTrq_fs=iport_est_ext_joint_torque.read(external_torque);
+		if (estExtTrq_fs==RTT::NewData){
+			for(i=0; i<7; i++ )
+    			{
+        			external_torque[i]=external_torque[i];
+   			}
+			oport_add_joint_torque.write(external_torque);
+			/*for( i=0; i<7; i++ )
+	   		{
+        			std::cout << external_torque[i] << " ";
+   			}
+			std::cout<<std::endl;*/
+			RTT::FlowStatus msr_trq_fs=iport_msr_joint_torque.read(msr_torque);
+			for(i=0;i<7;i++){
+				std::cout<< msr_torque[i] << " ";
+			}
+			std::cout<<std::endl;
+		}
+
  		if(joint_state_fs == RTT::NewData){
  			if(!end_calibration)
  			{
@@ -169,16 +189,16 @@ void ATIcalibration::updateHook(){
 
 
 				if(joints_position_command != position4){
-				
+
 					//calibration terminée
-					//changer les attributs de ATISensor qui se débrouillera avec les calculs de rotation etc...
+					//envoyer les mesures à ATISensor qui se débrouillera avec les calculs de rotation et de compensation
 					Eigen::MatrixXd results(3,6);
 					results.row(0)=Eigen::VectorXd::Map(&valeurZ[0],valeurZ.size());
 					results.row(1)=Eigen::VectorXd::Map(&valeurX[0],valeurX.size());
 					results.row(2)=Eigen::VectorXd::Map(&valeurY[0],valeurY.size());
 					oport_calibration_results.write(results);
 
-					/********* test ******************/
+					/********* test ****************** retour à la position initiale, vérification d'une valeur Fnorm quasi nulle (compensation du poids active) */
 					joints_position_command = position4;
 					JState_init=JState;
 					t=0;
@@ -192,37 +212,41 @@ void ATIcalibration::updateHook(){
 						}
  					}
 				}
-				/*********** test ****************/
+					/*********** test ****************/
 				if (t==tf){
+					//fin de vie du composant
 					FriRTNetExampleAbstract::stop();
 					return;
-					//std::cout<<"end test, ending calibration component"<<std::endl;
 				}
  			}
- 			//avant (ici) il faut faire l'interpolation
+ 			//interpolation
  			for(i=0;i<7;i++){
  				joints_position_command_interp[i]=JState_init[i]+(joints_position_command[i]-JState_init[i])*(10*pow(t/tf,3)-15*pow(t/tf,4)+6*pow(t/tf,5));
  			}
-	
+
 			if(oport_joint_position.connected()){
  				oport_joint_position.write(joints_position_command_interp);
+				for(i=0;i<7;i++){
+					std::cout<< joints_position_command_interp[i] << " ";
+				}
+				std::cout<<std::endl;
 			}
-	
+
  			t+=FRIRate;
  			if(t>tf)
  			{
 				t=tf;
  			}
  		}
- 		/*se stoppe tout seul à la fin stopHook()*/
-		//  std::cout << "ATIcalibration executes updateHook !" <<std::endl;
-	}
+
+ 	}
 }
 
 void ATIcalibration::setFRIRate(double period_ms){
 	FRIRate=period_ms;
 	std::cout << "FRI period set to "<< FRIRate << " ms" <<std::endl;
 }
+
 
 /*
  * Using this macro, only one component may live
