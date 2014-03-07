@@ -1,5 +1,5 @@
-&ACCESS RVO
-&REL 100
+&ACCESS RVP
+&REL 109
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF friISIR( )
@@ -59,7 +59,22 @@ DEF friISIR( )
  $FRI_TO_INT[1] = 2
 
  ;Waiting for remote pc to send $FRI_FRM_INT[1]==1    
- WAIT FOR ($FRI_FRM_INT[1]==1)	
+
+ REPEAT
+  ;$FRI_*_INT[2] is the control strategy
+  IF ($FRI_TO_INT[2] <> $FRI_FRM_INT[2]) THEN
+   ;New control mode set request
+    $FRI_TO_INT[1] = 2
+
+   ;Set new Strategy 
+   ISIRSTIFFNESS = $STIFFNESS
+   ISIRSTIFFNESS.STRATEGY = $FRI_FRM_INT[2]
+   $STIFFNESS = ISIRSTIFFNESS
+   $STIFFNESS.COMMIT = TRUE
+   $FRI_TO_INT[2] = $FRI_FRM_INT[2]
+
+   ENDIF
+ UNTIL ($FRI_FRM_INT[1]==1)	
 
  WAIT FOR ($FriQuality==#PERFECT)
  ;Argument of FRISTART is a scale to be applied to the robot limits
