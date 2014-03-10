@@ -33,7 +33,7 @@ dKinematics.configure
 
 connect("lwr.msrJntPos","friExample.MsrJntPos_i",cp)
 connect("lwr.cmdJntPos","friExample.CmdJntPos_i", cp)
-connect("lwr.msrJntPos","dKinematics.JntPos_i", cp)
+//connect("lwr.msrJntPos","dKinematics.JntPos_i", cp)
 connect("lwr.estExtJntTrq","friExample.estExtJntTrq_i",cp)
 connect("lwr.msrJntTrq","friExample.msrJntTrq_i",cp)
 

@@ -1,9 +1,18 @@
+// Copyright (C) 2014 ISIR-CNRS
+// Author: Guillaume Hamon, hamon@isir.upmc.fr
+
 #ifndef OROCOS_ATICALIBRATION_COMPONENT_HPP
 #define OROCOS_ATICALIBRATION_COMPONENT_HPP
 
 #include <rtt/RTT.hpp>
 #include "friRTNetExampleAbstract.hpp"
 #include <Eigen/Dense>
+#include <rtt/Component.hpp>
+#include <iostream>
+#include <cmath>
+#include <boost/foreach.hpp>
+
+
 class ATIcalibration : public FriRTNetExampleAbstract{
   public:
     ATIcalibration(std::string const& name);

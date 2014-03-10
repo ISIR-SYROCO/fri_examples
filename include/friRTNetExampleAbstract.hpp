@@ -55,6 +55,9 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
 	RTT::Attribute<tFriKrlData> m_fromFRI;
 
+	/**
+	 * Property to get and set the control_mode (1 to 7)
+	 */
 	RTT::Property<int> control_mode_prop;
 
     RTT::InputPort<tFriRobotState>          	iport_robot_state;
@@ -149,6 +152,11 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     void initializeCommand();
 
+/* seems useless now
+
     bool setLwrControlMode();
+
+*/
+
 };
 #endif
