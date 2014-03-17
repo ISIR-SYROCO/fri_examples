@@ -4,6 +4,12 @@
     </description>
     <license></license>
     <author>Sovannara Hak</author>
+    <export>
+        <cpp
+            cflags="-I${prefix}/include"
+            lflags="-L${prefix}/lib -lfriExampleAbstract -lfriRTNetExampleAbstract"
+        />
+    </export>
     <depend package="rtt" />
     <depend package="orocos_kdl" />
     <depend package="tf_conversions"/>
