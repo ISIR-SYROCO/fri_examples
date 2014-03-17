@@ -7,9 +7,6 @@
 FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT::TaskContext(name){
 
 
-  // this->addAttribute("toFRI", m_toFRI);
-  // this->addAttribute("fromFRI", m_fromFRI);
-
     this->addPort("RobotState_i", iport_robot_state);
     this->addPort("FriState_i", iport_Fri_state);
     this->addPort("MsrJntPos_i", iport_msr_joint_pos);
@@ -87,15 +84,18 @@ void FriRTNetExampleAbstract::doStop(){
 
 void FriRTNetExampleAbstract::cleanupHook(){}
 
+//define peer (lwr_fri component) and get access to attributes and properties
 void FriRTNetExampleAbstract::setPeer(std::string name){
 	peer = getPeer(name);
 	assert(peer);
         m_toFRI = peer->attributes()->getAttribute("toKRL");
 	m_fromFRI= peer->attributes()->getAttribute("fromKRL");
+        control_mode_prop = peer->properties()->getProperty("control_mode");
+
 }
 
 void FriRTNetExampleAbstract::setControlStrategy(int mode){
-    if(mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6){
+    if(mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 5 && mode != 6 && mode != 7){
         std::cout << "Please set a valid control mode: " << std::endl;
         std::cout << "1: Joint position" << std::endl;
         std::cout << "2: Joint velocity" << std::endl;
@@ -103,25 +103,28 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
 	std::cout << "4: Cartesian position" << std::endl;
         std::cout << "5: Cartesian force" << std::endl;
 	std::cout << "6: Cartesian Twist" << std::endl;
+	std::cout << "7: Joint Position and torque for objects picking" << std::endl; //perform joint impedance control (position + torque compensation of the load)
         return;
     }
     else{
-        RTT::Property<int> control_mode_prop = peer->properties()->getProperty("control_mode");
-        control_mode_prop.set(mode);
+
+
         if (mode == 1 || mode == 2){
             fri_to_krl.intData[1] = 10;
-            controlMode = 10;
+            controlMode = 10; // joint position control
         }
-        else if (mode == 3){
+        else if (mode == 3 || mode == 7){
             fri_to_krl.intData[1] = 30;
-            controlMode = 30;
+            controlMode = 30; // joint impedance control
+	    control_mode_prop.set(7);
         }
         else if (mode == 4 || mode == 5 || mode == 6){
             fri_to_krl.intData[1] = 20;
-            controlMode = 20;
+            controlMode = 20; // cartesian impedance control
         }
 
         m_toFRI.set(fri_to_krl);
+
     }
 }
 
@@ -136,23 +139,40 @@ bool FriRTNetExampleAbstract::requiresControlMode(int modeRequired){
     }
 }
 
+/* seems useless now
+
+bool FriRTNetExampleAbstract::setLwrControlMode(){
+	tFriRobotState robot_state;
+	iport_robot_state.read(robot_state);
+	if(control_mode_prop.get()==7){
+		std::cout<<"control mode 7"<<std::endl;
+		return true;
+	}else{
+		 if(robot_state.control==30){
+			control_mode_prop.set(7);
+			std::cout<<"control mode changed to  7"<<std::endl;
+			return true;
+		}else{
+			std::cout<<"control mode "<< control_mode_prop.get() << " strategy "<< robot_state.control<<std::endl;
+			return false;
+		}
+	}
+}
+
+*/
+
 void FriRTNetExampleAbstract::getFRIMode(){
 
-    //RTT::FlowStatus fri_frm_krl_fs = port_fri_frm_krl.read(fri_frm_krl);
 	fri_frm_krl = m_fromFRI.get();
-   // if(fri_frm_krl_fs == RTT::NewData){
         if(fri_frm_krl.intData[0] == 1){
-            std::cout << "FRI in Command Mode" << std::endl;
+        	std::cout << "FRI in Command Mode" << std::endl;
         }else{
-	    if(fri_frm_krl.intData[0] == 2){
-            std::cout << "FRI in Monitor Mode" << std::endl;
-            }else{
-        	std::cout << "Cannot read FRI Mode" << std::endl;
-    	    }
-       }
-    /*else{
-        std::cout << "Cannot read FRI Mode" << std::endl;
-    }*/
+	   	if(fri_frm_krl.intData[0] == 2){
+    	        	std::cout << "FRI in Monitor Mode" << std::endl;
+            	}else{
+        		std::cout << "Cannot read FRI Mode" << std::endl;
+    	    	}
+        }
 }
 
 void FriRTNetExampleAbstract::friStop(){
@@ -182,14 +202,13 @@ void FriRTNetExampleAbstract::stopKrlScript(){
 void FriRTNetExampleAbstract::initializeCommand(){
     //Get current joint position and set it as desired position
     if (oport_joint_position.connected()){
-        std::vector<double> fri_joint_state_data;
-        //RTT::FlowStatus fri_joint_state_fs = iport_fri_joint_state.read(fri_joint_state_data);
-	RTT::FlowStatus fri_joint_state_fs = iport_msr_joint_pos.read(fri_joint_state_data);
-        if (fri_joint_state_fs == RTT::NewData){
+        std::vector<double> measured_jointPosition;
+	RTT::FlowStatus measured_jointPosition_fs = iport_msr_joint_pos.read(measured_jointPosition);
+        if (measured_jointPosition_fs == RTT::NewData){
             std::vector<double> joint_position_command_init;
             joint_position_command_init.assign(7, 0.0);
             for (unsigned int i = 0; i < LWRDOF; i++){
-                joint_position_command_init[i] = fri_joint_state_data[i];
+                joint_position_command_init[i] = measured_jointPosition[i];
             }
             oport_joint_position.write(joint_position_command_init);
         }
