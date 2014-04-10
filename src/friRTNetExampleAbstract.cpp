@@ -12,12 +12,12 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addPort("MsrJntPos_i", iport_msr_joint_pos);
     this->addPort("CmdJntPos_i", iport_cmd_joint_pos);
     this->addPort("CmdJntPosFriOffset_i", iport_cmd_joint_pos_fri_offset);
-    this->addPort("MsrCartPos_i", iport_msr_cart_pos);
+    this->addPort("MsrCartPos_i", iport_cart_pos);
     this->addPort("CmdCartPos_i", iport_cmd_cart_pos);
     this->addPort("CmdCartPosFriOffset_i", iport_cmd_cart_pos_fri_offset);
     this->addPort("MsrJntTrq_i", iport_msr_joint_trq);
     this->addPort("EstExtJntTrq_i", iport_est_ext_joint_trq);
-    this->addPort("EstExtTcpWrench_i", iport_est_ext_tcp_wrench);
+    this->addPort("EstExtTcpWrench_i", iport_cart_wrench);
    // this->addPort("MassMatrix_i", iport_mass_matrix);
 
     this->addPort("JointPositions_o", oport_joint_position);
@@ -217,7 +217,7 @@ void FriRTNetExampleAbstract::initializeCommand(){
     if(oport_cartesian_pose.connected()){
         //Get cartesian position and set it as desired position
         geometry_msgs::Pose cartPosData;
-        RTT::FlowStatus cart_pos_fs = iport_msr_cart_pos.read(cartPosData);
+        RTT::FlowStatus cart_pos_fs = iport_cart_pos.read(cartPosData);
         if (cart_pos_fs == RTT::NewData){
             oport_cartesian_pose.write(cartPosData);
         }
