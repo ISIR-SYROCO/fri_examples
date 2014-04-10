@@ -26,6 +26,7 @@ connect("friExample.JointVelocities_o", "lwr.desJntVel", cp)
 connect("friExample.JointTorques_o", "lwr.desAddJntTrq", cp)
 
 connect("lwr.msrJntPos", "friExample.MsrJntPos_i", cp)
+connect("lwr.events", "friExample.Events_i", cp)
 
 friExample.configure
 friExample.setPeriod(0.02)

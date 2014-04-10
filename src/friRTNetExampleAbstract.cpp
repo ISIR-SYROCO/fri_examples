@@ -18,6 +18,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addPort("MsrJntTrq_i", iport_msr_joint_trq);
     this->addPort("EstExtJntTrq_i", iport_est_ext_joint_trq);
     this->addPort("EstExtTcpWrench_i", iport_cart_wrench);
+    this->addPort("Events_i", iport_events);
    // this->addPort("MassMatrix_i", iport_mass_matrix);
 
     this->addPort("JointPositions_o", oport_joint_position);
@@ -57,6 +58,15 @@ bool FriRTNetExampleAbstract::configureHook(){
     //Set control strategy to joint position
     fri_to_krl.intData[1]=10;
    /* controlMode = 10;*/ //this is control mode 1 for friRTNet
+
+    if (!iport_robot_state.connected()){
+        std::cout << this->getName() << ".RobotState_i port not connected, cannot configure" << std::endl;
+        return false;
+    }
+    if (!iport_events.connected()){
+        std::cout << this->getName() << ".Events_i port not connected, cannot configure" << std::endl;
+        return false;
+    }
 
     return true;
 }
@@ -180,6 +190,12 @@ void FriRTNetExampleAbstract::friStop(){
     //Put 2 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=2;
     m_toFRI.set(fri_to_krl);
+
+    //Wait until KRC return MONITOR_MODE
+    std::string fri_mode("e_fri_unkown_mode");
+    while (fri_mode != "e_fri_mon_mode"){
+        iport_events.read(fri_mode);
+    }
     return;
 }
 
@@ -188,6 +204,12 @@ void FriRTNetExampleAbstract::friStart(){
     //Put 1 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=1;
     m_toFRI.set(fri_to_krl);
+
+    //Wait until KRC return COMMAND_MODE
+    std::string fri_mode("e_fri_unkown_mode");
+    while (fri_mode != "e_fri_cmd_mode"){
+        iport_events.read(fri_mode);
+    }
     return;
 }
 
