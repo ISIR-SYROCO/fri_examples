@@ -19,7 +19,10 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addPort("EstExtJntTrq_i", iport_est_ext_joint_trq);
     this->addPort("EstExtTcpWrench_i", iport_cart_wrench);
     this->addPort("Events_i", iport_events);
-   // this->addPort("MassMatrix_i", iport_mass_matrix);
+    this->addPort("MassMatrix_i", iport_mass_matrix);
+    this->addPort("Jacobian_i", jacobianPort);
+    this->addPort("gravity_i", gravityPort);
+
 
     this->addPort("JointPositions_o", oport_joint_position);
     this->addPort("JointVelocities_o", oport_joint_velocities);

@@ -74,7 +74,9 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     RTT::InputPort< geometry_msgs::Wrench >     iport_cart_wrench;
     RTT::InputPort< std::string >               iport_events;
 
- //   RTT::InputPort< Eigen::Matrix<double, 7, 7> >        iport_mass_matrix;
+    RTT::InputPort<KDL::Jacobian> jacobianPort;
+    RTT::InputPort<std::vector<double> > gravityPort;
+    RTT::InputPort< Eigen::Matrix<double, 7, 7> > iport_mass_matrix;
 
     RTT::OutputPort< std::vector<double> >  	oport_joint_position;
     RTT::OutputPort< std::vector<double> > 	oport_joint_velocities;
