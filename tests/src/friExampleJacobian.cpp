@@ -67,7 +67,6 @@ void FriExampleJacobian::updateHook(){
 					//Eigen::VectorXd Couple(J.columns());
 					Eigen::VectorXd Couple(LWRDOF);
 					Eigen::VectorXd calcul0(LWRDOF);
-					std::cout<<JS.velocity[0]<<" / "<<JS.velocity[1]<<" / "<<JS.velocity[2]<<std::endl<<std::endl;
 					for(int i=0;i<LWRDOF;i++){
 						calcul0(i)=(double)Kd*(double)(JS.velocity[i]);
 					}

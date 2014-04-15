@@ -44,6 +44,7 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     int controlMode;
 
     unsigned int LWRDOF;
+    unsigned int fri_desired_mode;
 
     /**
      * Attribute to send shared arrays to the KRC
@@ -144,6 +145,7 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /** @brief Ask KRL script for a friStart()
      */
     void friStart();
+    void friReset();
 
     /** @brief Ask KRL exit
      */

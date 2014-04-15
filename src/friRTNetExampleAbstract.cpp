@@ -36,6 +36,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
 
     this->addOperation("friStart", &FriRTNetExampleAbstract::friStart, this, RTT::OwnThread);
     this->addOperation("friStop", &FriRTNetExampleAbstract::friStop, this, RTT::OwnThread);
+    this->addOperation("friReset", &FriRTNetExampleAbstract::friReset, this, RTT::OwnThread);
     this->addOperation("stopKrlScript", &FriRTNetExampleAbstract::stopKrlScript, this, RTT::OwnThread);
 
     LWRDOF = 7;
@@ -191,11 +192,6 @@ void FriRTNetExampleAbstract::friStop(){
     fri_to_krl.intData[0]=2;
     m_toFRI.set(fri_to_krl);
 
-    //Wait until KRC return MONITOR_MODE
-    std::string fri_mode("e_fri_unkown_mode");
-    while (fri_mode != "e_fri_mon_mode"){
-        iport_events.read(fri_mode);
-    }
     return;
 }
 
@@ -205,12 +201,17 @@ void FriRTNetExampleAbstract::friStart(){
     fri_to_krl.intData[0]=1;
     m_toFRI.set(fri_to_krl);
 
-    //Wait until KRC return COMMAND_MODE
-    std::string fri_mode("e_fri_unkown_mode");
-    while (fri_mode != "e_fri_cmd_mode"){
-        iport_events.read(fri_mode);
-    }
     return;
+}
+
+void FriRTNetExampleAbstract::friReset(){
+    //initialize the arrays that will be send to KRL
+    for(int i=0; i<16; ++i){
+        fri_to_krl.intData[i]=0;
+        fri_to_krl.realData[i]=0.0;
+    }
+
+    m_toFRI.set(fri_to_krl);
 }
 
 void FriRTNetExampleAbstract::stopKrlScript(){

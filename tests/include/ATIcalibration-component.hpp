@@ -11,7 +11,8 @@
 #include <iostream>
 #include <cmath>
 #include <boost/foreach.hpp>
-
+#include <rtt/os/TimeService.hpp>
+#include <rtt/Time.hpp>
 
 class ATIcalibration : public FriRTNetExampleAbstract{
   public:
@@ -37,6 +38,8 @@ class ATIcalibration : public FriRTNetExampleAbstract{
     double velocity_limit;
     double tf;
     double t;
+    int n;
+
     std::vector<double> valeurZ;
     std::vector<double> valeurX;
     std::vector<double> valeurY;

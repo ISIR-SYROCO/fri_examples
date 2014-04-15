@@ -29,16 +29,12 @@ connect("lwr.msrJntPos", "friExample.MsrJntPos_i", cp)
 connect("lwr.events", "friExample.Events_i", cp)
 
 friExample.configure
-friExample.setPeriod(0.02)
-
-
+friExample.setPeriod(0.001)
 
 lwr.control_mode=7
+friExample.friReset
 lwr.start
+#friExample.setControlStrategy(7)
 
-
-friExample.setControlStrategy(7)
-
-
-friExample.start
+#friExample.start
 

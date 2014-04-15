@@ -39,6 +39,16 @@ bool FriExampleTorqueRTNet::configureHook(){
 
 void FriExampleTorqueRTNet::updateHook(){
 
+    std::string fri_mode("e_fri_unkown_mode");
+    bool fri_cmd_mode = false;
+    RTT::FlowStatus fs_event = iport_events.read(fri_mode);
+    if (fri_mode == "e_fri_cmd_mode")
+        fri_cmd_mode = true;
+    else if (fri_mode == "e_fri_mon_mode")
+        fri_cmd_mode = false;
+
+
+
     RTT::FlowStatus fs = iport_msr_joint_pos.read(fri_joint_state_data);
     if(fs == RTT::NewData){
 
@@ -58,10 +68,15 @@ void FriExampleTorqueRTNet::updateHook(){
         joint_eff_command.assign(LWRDOF, 0.0); 
         joint_eff_command[2] = torque;
 
-        if(requiresControlMode(30)){
-            oport_add_joint_trq.write(joint_eff_command);
+	if (fri_cmd_mode){
+            if(requiresControlMode(30)){
+                oport_add_joint_trq.write(joint_eff_command);
+            }
+            oport_joint_position.write(joint_position_command);
         }
-        oport_joint_position.write(joint_position_command);
+	else{
+	    //std::cout << "KRC in monitor mode, not writing command" << std::endl;	
+	}
     }
     else{
         std::cout << "No new fri_joint_state data" << std::endl; 
