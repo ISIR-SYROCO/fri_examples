@@ -145,7 +145,7 @@ void FriExampleAbstract::friStart(){
     return;
 }
 
-void FriRTNetExampleAbstract::friReset(){
+void FriExampleAbstract::friReset(){
     //initialize the arrays that will be send to KRL
     for(int i=0; i<16; ++i){
         fri_to_krl.intData[i]=0;
