@@ -69,6 +69,7 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     RTT::InputPort< geometry_msgs::Pose >      	iport_cart_pos;
     RTT::InputPort< geometry_msgs::Pose >      	iport_cmd_cart_pos;
     RTT::InputPort< geometry_msgs::Pose >      	iport_cmd_cart_pos_fri_offset;
+    RTT::InputPort< std::vector<double> >       iport_msr_joint_vel;
     RTT::InputPort< std::vector<double> >       iport_msr_joint_trq;
     RTT::InputPort< std::vector<double> >       iport_est_ext_joint_trq;
     RTT::InputPort< geometry_msgs::Wrench >     iport_cart_wrench;

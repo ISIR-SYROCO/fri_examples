@@ -15,6 +15,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addPort("MsrCartPos_i", iport_cart_pos);
     this->addPort("CmdCartPos_i", iport_cmd_cart_pos);
     this->addPort("CmdCartPosFriOffset_i", iport_cmd_cart_pos_fri_offset);
+    this->addPort("msrJntVel_i", iport_msr_joint_vel);
     this->addPort("MsrJntTrq_i", iport_msr_joint_trq);
     this->addPort("EstExtJntTrq_i", iport_est_ext_joint_trq);
     this->addPort("EstExtTcpWrench_i", iport_cart_wrench);

@@ -40,7 +40,7 @@ class FriExampleJacobianRTNet : public FriRTNetExampleAbstract{
 	KDL::Jacobian J;
 	geometry_msgs::Pose X;
 	double Kp, Kd;
-	sensor_msgs::JointState JS; /** à changer: non realtime **/
+	std::vector<double> Joint_vel; /** à changer: non realtime **/
 };
 
 #endif
