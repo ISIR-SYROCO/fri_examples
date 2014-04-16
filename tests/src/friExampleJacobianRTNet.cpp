@@ -19,7 +19,7 @@ FriExampleJacobianRTNet::FriExampleJacobianRTNet(std::string const& name) : FriE
     //Xdes.z=0.5;
     Kp=6.0;
     Kd=0.1;
-    /* non realtime */JS.velocity.assign(7,0.0);
+    Joint_vel.resize(LWRDOF);
 }
 
 FriExampleJacobianRTNet::~FriExampleJacobianRTNet(){
@@ -68,11 +68,10 @@ void FriExampleJacobianRTNet::updateHook(){
 		std::vector<double> joint_eff_command;
         	joint_eff_command.assign(LWRDOF, 0.0);
 
- /************* non real time **********************/
 		RTT::FlowStatus cartPos_fs =  iport_cart_pos.read(X);
 			if(cartPos_fs==RTT::NewData){
-				RTT::FlowStatus joint_state_fs = iport_joint_state.read(JS);
-				if(joint_state_fs==RTT::NewData){
+				RTT::FlowStatus joint_vel_fs = iport_msr_joint_vel.read(Joint_vel);
+				if(joint_vel_fs==RTT::NewData){
 					Eigen::MatrixXd Jac(6,7);
 					Jac.noalias() = J.data;
 					Jac.transposeInPlace();
@@ -84,9 +83,9 @@ void FriExampleJacobianRTNet::updateHook(){
 					Eigen::VectorXd calcul0(LWRDOF);
 
 					for(int i=0;i<LWRDOF;i++){
-						calcul0(i)=(double)Kd*(double)(JS.velocity[i]);
+						calcul0(i)=(double)Kd*(double)(Joint_vel[i]);
 					}
-/**************************  ***********************/
+
 
 					for(int i=0;i<Jac.rows();i++){
 						double results=0;

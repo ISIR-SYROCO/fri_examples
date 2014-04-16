@@ -28,9 +28,9 @@ connect("friExample.JointTorques_o", "lwr.desAddJntTrq", cp)
 
 connect("lwr.events", "friExample.Events_i", cp)
 connect("lwr.msrJntPos", "friExample.MsrJntPos_i", cp)
-
-//connect("lwr.CartesianPosition", "friExample.CartesianPosition_i", cp)
-//connect("lwr.Jacobian", "friExample.Jacobian_i", cp)
+connect("lwr.msrJntVel","friExample.msrJntVel_i",cp)
+connect("lwr.msrCartPos", "friExample.MsrCartPos_i", cp)
+connect("lwr.Jacobian", "friExample.Jacobian_i", cp)
 
 friExample.configure
 friExample.setPeriod(0.02)
