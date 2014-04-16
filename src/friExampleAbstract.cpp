@@ -31,6 +31,7 @@ FriExampleAbstract::FriExampleAbstract(std::string const& name) : RTT::TaskConte
 
     this->addOperation("friStart", &FriExampleAbstract::friStart, this, RTT::OwnThread);
     this->addOperation("friStop", &FriExampleAbstract::friStop, this, RTT::OwnThread);
+    this->addOperation("friReset", &FriExampleAbstract::friReset, this, RTT::OwnThread);
     this->addOperation("stopKrlScript", &FriExampleAbstract::stopKrlScript, this, RTT::OwnThread);
 
     LWRDOF = 7;
@@ -142,6 +143,16 @@ void FriExampleAbstract::friStart(){
     port_fri_to_krl.write(fri_to_krl);
     friMode = 1;
     return;
+}
+
+void FriRTNetExampleAbstract::friReset(){
+    //initialize the arrays that will be send to KRL
+    for(int i=0; i<16; ++i){
+        fri_to_krl.intData[i]=0;
+        fri_to_krl.realData[i]=0.0;
+    }
+
+    port_fri_to_krl.write(fri_to_krl);
 }
 
 void FriExampleAbstract::stopKrlScript(){

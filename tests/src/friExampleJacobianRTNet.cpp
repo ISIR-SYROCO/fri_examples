@@ -60,10 +60,10 @@ void FriExampleJacobianRTNet::updateHook(){
             joint_position_command[i] = fri_joint_state_data[i];
         }
 
-	// non rt --> change abstract & lwr rtnet
-	RTT::FlowStatus jacobian_fs = iport_jacobian.read(J);
+
+	RTT::FlowStatus jacobian_fs = jacobianPort.read(J);
 	if(jacobian_fs==RTT::NewData){
-	//
+	
 
 		std::vector<double> joint_eff_command;
         	joint_eff_command.assign(LWRDOF, 0.0);
@@ -80,10 +80,9 @@ void FriExampleJacobianRTNet::updateHook(){
 					Xerr(0)=0.5-(double)X.position.x;
 					Xerr(1)=0.5-(double)X.position.y;
 					Xerr(2)=0.5-(double)X.position.z;
-					//Eigen::VectorXd Couple(J.columns());
 					Eigen::VectorXd Couple(LWRDOF);
 					Eigen::VectorXd calcul0(LWRDOF);
-					std::cout<<JS.velocity[0]<<" / "<<JS.velocity[1]<<" / "<<JS.velocity[2]<<std::endl<<std::endl;
+
 					for(int i=0;i<LWRDOF;i++){
 						calcul0(i)=(double)Kd*(double)(JS.velocity[i]);
 					}
