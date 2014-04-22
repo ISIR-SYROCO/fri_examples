@@ -33,7 +33,9 @@ friExample.setPeriod(0.001)
 
 lwr.control_mode=7
 friExample.friReset
+
 lwr.start
+
 #friExample.setControlStrategy(7)
 
 #friExample.start
