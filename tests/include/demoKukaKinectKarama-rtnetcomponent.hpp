@@ -21,8 +21,10 @@ class DemoKukaKinectKaramaRTNET : public FriRTNetExampleAbstract{
         RTT::OutputPort<double> port_dummy_double;
 
         void updateHook();
+
  	bool configureHook();
         bool doStart();
+
         void setNumObs(unsigned int numObs);
 
         std::vector<double> m_joint_vel_command;

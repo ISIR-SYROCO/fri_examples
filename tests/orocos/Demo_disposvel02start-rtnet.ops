@@ -20,6 +20,7 @@ loadComponent("tfSub","TfRobotSubscriber")
 
 setActivity("lwr",0, 99, ORO_SCHED_RT)
 setActivity("tfSub",0.05, 20, ORO_SCHED_RT)
+<<<<<<< HEAD
 setActivity("RobotState",0.02, 20, ORO_SCHED_RT)
 setActivity("getDistances",0.02, 30, ORO_SCHED_RT)
 setActivity("friExample",0.02, 40, ORO_SCHED_RT)
@@ -28,11 +29,18 @@ lwr.control_mode=1
 lwr.local_port = 49938
 lwr.configure
 
+=======
+setActivity("RobotState",0.01, 20, ORO_SCHED_RT)
+setActivity("getDistances",0.02, 30, ORO_SCHED_RT)
+setActivity("friExample",0.02, 40, ORO_SCHED_RT)
+
+>>>>>>> 3b12ae142f8c3dd87bb08da419e7d42ed1cbd253
 //se connecter au topic tf de ROS
 stream("tf.tf_in",ros.topic("/tf"))
 
 connectPeers("getDistances","tf")
 connectServices("getDistances","tf")
+<<<<<<< HEAD
 
 connectPeers("lwr","friExample")
 friExample.setPeer("lwr")
@@ -42,11 +50,32 @@ getDistances.number_of_human_frames = 8
 getDistances.number_of_robot_links = 3
 getDistances.number_of_human_limbes = 7
 
+=======
+getDistances.number_of_robot_frames = 7
+getDistances.number_of_human_frames = 8
+//7
+getDistances.number_of_robot_links = 3
+getDistances.number_of_human_limbes = 7
+
+connectPeers("lwr","friExample")
+friExample.setPeer("lwr")
+
+tf.configure
+tf.start
+
+lwr.local_port=49938
+lwr.configure
+
+RobotState.configure()
+
+tfSub.configure()
+>>>>>>> 3b12ae142f8c3dd87bb08da419e7d42ed1cbd253
 
 var ConnPolicy cp
 cp.type = DATA
 //cp.size = 10
 cp.lock_policy = LOCKED
+<<<<<<< HEAD
 
 RobotState.configure()
 
@@ -58,12 +87,30 @@ tf.configure
 tf.start
 
 tfSub.configure()
+=======
+connect("lwr.msrJntPos","RobotState.JntPos_i",cp)
+
+var ConnPolicy cp_1
+cp_1.type = DATA
+//cp_1.size = 10
+cp_1.lock_policy = LOCKED
+connect("RobotState.sortie","tfSub.inCartesianState",cp_1)
+
+var ConnPolicy cp_2
+cp_2.type = DATA
+//cp_1.size = 10
+cp_2.lock_policy = LOCKED
+connect("RobotState.sizeChain","tfSub.size",cp_2)
+
+
+>>>>>>> 3b12ae142f8c3dd87bb08da419e7d42ed1cbd253
 getDistances.configure
 
 connect("lwr.msrJntPos", "friExample.MsrJntPos_i", cp)
 connect("friExample.JointVelocities_o","lwr.desJntVel", cp)
 connect("getDistances.distance","friExample.distance", cp)
 
+<<<<<<< HEAD
 connect("lwr.RobotState","friExample.RobotState_i",cp)
 connect("lwr.events", "friExample.Events_i", cp)
 
@@ -74,16 +121,31 @@ lwr.control_mode=1
 friExample.friReset
 
 
+=======
+//stream("getDistances.nav_path", ros.topic("/distances/path"))
+
+friExample.configure
+friExample.friReset
+
+lwr.control_mode=1
+>>>>>>> 3b12ae142f8c3dd87bb08da419e7d42ed1cbd253
 
 lwr.start
 RobotState.start()
 tfSub.start()
 
+<<<<<<< HEAD
 //getDistances.start
+=======
+getDistances.start
+>>>>>>> 3b12ae142f8c3dd87bb08da419e7d42ed1cbd253
 
 //friExample.setControlStrategy(1)
 
 //friExample.start
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3b12ae142f8c3dd87bb08da419e7d42ed1cbd253
