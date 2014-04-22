@@ -26,6 +26,7 @@ ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstrac
  	position2.resize(LWRDOF);
  	position3.resize(LWRDOF);
 	position4.resize(LWRDOF);
+	position5.resize(LWRDOF);
  	JState_init.resize(LWRDOF);
  	joints_position_command.resize(LWRDOF);
  	joints_position_command_interp.resize(LWRDOF);
@@ -47,6 +48,9 @@ bool ATIcalibration::configureHook(){
 	position2.assign(&w[0],&w[0]+7);
 	w[6]=1.57;
 	position3.assign(&w[0],&w[0]+7);
+
+	double w2[7]={0,1,0.5,1,0.5,0.5,0};
+	position5.assign(&w2[0],&w2[0]+7);
 
 	for(i=0;i<7;i++)
 	{
@@ -172,7 +176,7 @@ void ATIcalibration::updateHook(){
  			{ // calibration ended
 
 
-				if(joints_position_command != position4){
+				if(joints_position_command != position5){
 
 					// calibration ended, send sensor measurements to  ATISensor component which will process sensor's weight compensation computations
 					Eigen::MatrixXd results(3,6);
@@ -182,7 +186,7 @@ void ATIcalibration::updateHook(){
 					oport_calibration_results.write(results);
 
 					/********* test ****************** goes back to home position, verifying that Fnorm value is close to zero (active weight compensation) */
-					joints_position_command = position4;
+					joints_position_command = position5;
 					JState_init=JState;
 					t=0;
 					for(i=0;i<7;i++){

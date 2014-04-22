@@ -32,6 +32,7 @@ class ATIcalibration : public FriRTNetExampleAbstract{
     std::vector<double> position2;
     std::vector<double> position3;
     std::vector<double> position4;
+    std::vector<double> position5;
     std::vector<double> JState;
 
     double FRIRate;
