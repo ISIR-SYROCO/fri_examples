@@ -20,7 +20,7 @@ DemoKukaKinectKaramaRTNET::DemoKukaKinectKaramaRTNET(std::string const& name) : 
     std::fill(m_joint_vel_command.begin(), m_joint_vel_command.end(), 0.0);
 }
 
-<<<<<<< HEAD
+
 bool DemoKukaKinectKaramaRTNET::doStart(){
     //setting stiffness
     //std::cout << "Setting the stiffness and damping" << std::endl;
@@ -40,10 +40,8 @@ bool DemoKukaKinectKaramaRTNET::configureHook(){
     }
     return true;
 }
- 
 
-=======
->>>>>>> 3b12ae142f8c3dd87bb08da419e7d42ed1cbd253
+
 void DemoKukaKinectKaramaRTNET::updateHook(){
    fri_frm_krl = m_fromFRI.get(); 
    if(fri_frm_krl.intData[0] == 1){ //command mode
