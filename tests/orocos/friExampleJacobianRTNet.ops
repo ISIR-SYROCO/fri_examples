@@ -5,6 +5,7 @@ loadComponent("lwr", "lwr_fri::FRIRTNetComponent")
 loadComponent("friExample", "FriExampleJacobianRTNet")
 
 setActivity("lwr", 0, 99, ORO_SCHED_RT)
+setActivity("friExample", 0.02, 90, ORO_SCHED_RT)
 
 lwr.local_port = 49938
 lwr.configure
@@ -32,10 +33,16 @@ connect("lwr.msrJntVel","friExample.msrJntVel_i",cp)
 connect("lwr.msrCartPos", "friExample.MsrCartPos_i", cp)
 connect("lwr.Jacobian", "friExample.Jacobian_i", cp)
 
+
+
 friExample.configure
-friExample.setPeriod(0.02)
+friExample.friReset
 
 lwr.control_mode=7
 lwr.start
-friExample.setControlStrategy(7)
-friExample.start
+
+
+
+
+//friExample.setControlStrategy(7)
+//friExample.start
