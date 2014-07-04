@@ -85,6 +85,7 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     RTT::OutputPort<geometry_msgs::Pose>        oport_cartesian_pose;
     RTT::OutputPort<geometry_msgs::Twist>       oport_cartesian_twist;
     RTT::OutputPort<geometry_msgs::Wrench>      oport_cartesian_wrench;
+    RTT::OutputPort<lwr_fri::FriJointImpedance> oport_joint_impedance;
 
     FriRTNetExampleAbstract(std::string const& name);
     ~FriRTNetExampleAbstract();

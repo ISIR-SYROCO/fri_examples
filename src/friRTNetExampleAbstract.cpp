@@ -31,7 +31,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addPort("CartesianPosition_o", oport_cartesian_pose);
     this->addPort("CartesianVelocity_o", oport_cartesian_twist);
     this->addPort("CartesianWrench_o", oport_cartesian_wrench);
-
+    this->addPort("desJntImpedance_o",oport_joint_impedance);
 
     this->addOperation("getFRIMode", &FriRTNetExampleAbstract::getFRIMode, this, RTT::OwnThread);
     this->addOperation("setPeer", &FriRTNetExampleAbstract::setPeer, this, RTT::OwnThread);
