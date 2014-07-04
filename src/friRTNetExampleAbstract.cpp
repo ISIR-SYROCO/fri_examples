@@ -64,10 +64,6 @@ bool FriRTNetExampleAbstract::configureHook(){
     fri_to_krl.intData[1]=10;
    /* controlMode = 10;*/ //this is control mode 1 for friRTNet
 
-    if (!iport_robot_state.connected()){
-        std::cout << this->getName() << ".RobotState_i port not connected, cannot configure" << std::endl;
-        return false;
-    }
     if (!iport_events.connected()){
         std::cout << this->getName() << ".Events_i port not connected, cannot configure" << std::endl;
         return false;
