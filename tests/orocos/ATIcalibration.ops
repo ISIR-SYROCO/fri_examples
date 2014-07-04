@@ -2,6 +2,7 @@ import("ATISensor")
 import("lwr_fri")
 import("fri_examples")
 import("directKinematics")
+import("rtt_rosnode")
 
 loadComponent("lwr","lwr_fri::FRIRTNetComponent")
 loadComponent("friExample","ATIcalibration")
@@ -9,7 +10,7 @@ loadComponent("ATI","ATISensor")
 loadComponent("dKinematics","DirectKinematics")
 
 setActivity("lwr",0,99,ORO_SCHED_RT)
-setActivity("ATI",0.001,10,ORO_SCHED_RT)
+setActivity("ATI",0.01,10,ORO_SCHED_RT)
 setActivity("friExample",0.001,50,ORO_SCHED_RT)
 setActivity("dKinematics",0,30,ORO_SCHED_RT)
 
@@ -64,6 +65,10 @@ friExample.friReset
 lwr.control_mode=7
 lwr.start
 
+stream("friExample.ATIforce_o", ros.topic("/ati_force"))
+stream("friExample.ATItorque_o", ros.topic("/ati_torque"))
+stream("friExample.KUKAforce_o", ros.topic("/kuka_force"))
+stream("friExample.KUKAtorque_o", ros.topic("/kuka_torque"))
 
 #friExample.setControlStrategy(7)
 

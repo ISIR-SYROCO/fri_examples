@@ -11,6 +11,10 @@ ATIcalibration::ATIcalibration(std::string const& name) : FriRTNetExampleAbstrac
 	this->addPort("addJntTorque_o",oport_add_joint_torque); // used to perform load compensation
 	this->addPort("estExtJntTrq_i",iport_est_ext_joint_torque); // gets the external force/load estimation
 	//this->addPort("msrJntTrq_i", iport_msr_joint_torque); // only used for debugging
+	this->addPort("ATIforce_o", oport_ati_force);
+	this->addPort("KUKAforce_o", oport_kuka_force);
+	this->addPort("ATItorque_o", oport_ati_torque);
+	this->addPort("KUKAtorque_o", oport_kuka_torque);
  	this->addOperation("setFRIRate", &ATIcalibration::setFRIRate, this, RTT::OwnThread);
 
  	FRIRate=0.001; // FRI period of 20 ms, can be changed with setFRIRate(double period_ms) function, should match the period in the KRL script
@@ -203,20 +207,31 @@ void ATIcalibration::updateHook(){
 				if (t==tf){
 					// home position reached, ending component life
 					/********* Test comparaison force estimée / force capteur **********************/
-					if (n==50){
+					if (n==500){
 						geometry_msgs::Wrench ExtTCPWrench;
 						std::vector<double> ATIvalue;
 						ATIvalue.resize(6);
 						iport_cart_wrench.read(ExtTCPWrench);
 						iport_ATI_values.read(ATIvalue);
-					
+
 						std::cout<<"ATI Fx = "<<ATIvalue[0]<<" Kuka Estimation Fx = "<< ExtTCPWrench.force.x<<std::endl;
 						std::cout<<"ATI Fy = "<<ATIvalue[1]<<" Kuka Estimation Fy = "<< ExtTCPWrench.force.y<<std::endl;
 						std::cout<<"ATI Fz = "<<ATIvalue[2]<<" Kuka Estimation Fz = "<< ExtTCPWrench.force.z<<std::endl;
 						std::cout<<"ATI Tx = "<<ATIvalue[3]<<" Kuka Estimation Tx = "<< ExtTCPWrench.torque.x<<std::endl;
 						std::cout<<"ATI Ty = "<<ATIvalue[4]<<" Kuka Estimation Ty = "<< ExtTCPWrench.torque.y<<std::endl;
 						std::cout<<"ATI Tz = "<<ATIvalue[5]<<" Kuka Estimation Tz = "<< ExtTCPWrench.torque.z<<std::endl;
+						std_msgs::Float32 ATIForce, ATITorque, EstForce, EstTorque;
+						ATIForce.data=std::sqrt(pow(ATIvalue[0],2)+pow(ATIvalue[1],2)+pow(ATIvalue[2],2));
+						ATITorque.data=std::sqrt(pow(ATIvalue[3],2)+pow(ATIvalue[4],2)+pow(ATIvalue[5],2));
+						EstForce.data=std::sqrt(pow(ExtTCPWrench.force.x,2)+pow(ExtTCPWrench.force.y,2)+pow(ExtTCPWrench.force.z,2));
+                                                EstTorque.data=std::sqrt(pow(ExtTCPWrench.torque.x,2)+pow(ExtTCPWrench.torque.y,2)+pow(ExtTCPWrench.torque.z,2));
+						std::cout<<"ATI F = "<<ATIForce.data<<" Kuka Estimation F = "<< EstForce.data<<std::endl;
+                                                std::cout<<"ATI T = "<<ATITorque.data<<" Kuka Estimation T = "<< EstTorque.data<<std::endl;
 						std::cout<<std::endl;
+						oport_ati_force.write(ATIForce);
+						oport_ati_torque.write(ATITorque);
+						oport_kuka_force.write(EstForce);
+						oport_kuka_torque.write(EstTorque);
 						n=0;
 					}
 					n++;
@@ -233,8 +248,6 @@ void ATIcalibration::updateHook(){
 
 			if(oport_joint_position.connected()){
  				oport_joint_position.write(joints_position_command_interp);
-				
-				
 			}
 
  			t+=FRIRate;
@@ -246,7 +259,7 @@ void ATIcalibration::updateHook(){
 
  	}
 	RTT::Seconds elapsed = RTT::os::TimeService::Instance()->secondsSince( timestamp );
-	//std::cout<<"Temps : "<<elapsed<<std::endl;	
+	//std::cout<<"Temps : "<<elapsed<<std::endl;
 }
 
 void ATIcalibration::setFRIRate(double period_ms){

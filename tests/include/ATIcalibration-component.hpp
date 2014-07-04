@@ -13,6 +13,8 @@
 #include <boost/foreach.hpp>
 #include <rtt/os/TimeService.hpp>
 #include <rtt/Time.hpp>
+#include <std_msgs/Float32.h>
+#include <std_msgs/typekit/Types.h>
 
 class ATIcalibration : public FriRTNetExampleAbstract{
   public:
@@ -57,6 +59,10 @@ class ATIcalibration : public FriRTNetExampleAbstract{
     RTT::OutputPort< Eigen::Matrix<double,3,6> > oport_calibration_results;
     RTT::OutputPort< bool > oport_bias_order;
     RTT::OutputPort< std::vector<double> > oport_add_joint_torque;
+    RTT::OutputPort< std_msgs::Float32 > oport_ati_force;
+    RTT::OutputPort< std_msgs::Float32 > oport_ati_torque;
+    RTT::OutputPort< std_msgs::Float32 > oport_kuka_force;
+    RTT::OutputPort< std_msgs::Float32 > oport_kuka_torque;
 
 };
 #endif
