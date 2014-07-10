@@ -42,6 +42,8 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("friStop", &FriRTNetExampleAbstract::friStop, this, RTT::OwnThread);
     this->addOperation("friReset", &FriRTNetExampleAbstract::friReset, this, RTT::OwnThread);
     this->addOperation("stopKrlScript", &FriRTNetExampleAbstract::stopKrlScript, this, RTT::OwnThread);
+    this->addOperation("getCartPos", &FriRTNetExampleAbstract::getCartPos, this, RTT::OwnThread);
+    this->addOperation("getJacobian", &FriRTNetExampleAbstract::getJacobian, this, RTT::OwnThread);
 
     LWRDOF = 7;
 }
@@ -268,4 +270,27 @@ void FriRTNetExampleAbstract::initializeCommand(){
 
     }
 
+}
+
+std::vector<double> FriRTNetExampleAbstract::getCartPos(){
+	geometry_msgs::Pose  msr_cart_pos;
+	std::vector <double> msr_cart_pos_vector(3);
+	RTT::FlowStatus CartPos_fs = iport_cart_pos.read(msr_cart_pos);
+	msr_cart_pos_vector[0] = (double)msr_cart_pos.position.x;
+	msr_cart_pos_vector[1] = (double)msr_cart_pos.position.y;
+	msr_cart_pos_vector[2] = (double)msr_cart_pos.position.z;
+	//if (CartPos_fs == RTT::NewData)
+	return msr_cart_pos_vector;
+}
+
+std::vector<double> FriRTNetExampleAbstract::getJacobian(){
+	KDL::Jacobian  kuka_jacobian_matrix;
+	std::vector <double> kuka_jacobian_vector(42);
+	RTT::FlowStatus jacobian_fs = jacobianPort.read(kuka_jacobian_matrix);
+	for (int i=0;i<6;i++){
+		for(int j=0;j<7;j++){
+			kuka_jacobian_vector[6*i+j] = (double)kuka_jacobian_matrix.data(i,j);
+		}
+	}
+	return kuka_jacobian_vector;
 }

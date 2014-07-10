@@ -159,6 +159,10 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     void initializeCommand();
 
+    std::vector<double> getCartPos();
+
+    std::vector<double> getJacobian();
+
 /* seems useless now
 
     bool setLwrControlMode();
