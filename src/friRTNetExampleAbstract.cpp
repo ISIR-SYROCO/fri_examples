@@ -286,10 +286,12 @@ std::vector<double> FriRTNetExampleAbstract::getCartPos(){
 std::vector<double> FriRTNetExampleAbstract::getJacobian(){
 	KDL::Jacobian  kuka_jacobian_matrix;
 	std::vector <double> kuka_jacobian_vector(42);
+	Eigen::MatrixXd Jac(6,7);
 	RTT::FlowStatus jacobian_fs = jacobianPort.read(kuka_jacobian_matrix);
-	for (int i=0;i<6;i++){
-		for(int j=0;j<7;j++){
-			kuka_jacobian_vector[6*i+j] = (double)kuka_jacobian_matrix.data(i,j);
+	Jac.noalias() = kuka_jacobian_matrix.data;
+	for (int i=0;i<Jac.rows();i++){
+		for(int j=0;j<Jac.cols();j++){
+			kuka_jacobian_vector[6*i+j+i] = (double)Jac(i,j);
 		}
 	}
 	return kuka_jacobian_vector;
