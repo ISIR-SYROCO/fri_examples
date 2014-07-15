@@ -132,6 +132,8 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     void setControlStrategy(int mode);
 
+    void setTool(int toolNumber);
+
     /** @brief Check if the selected control mode is the required one
      *  @param modeRequired : the required mode
      *  @return True : if the current mode match the required one

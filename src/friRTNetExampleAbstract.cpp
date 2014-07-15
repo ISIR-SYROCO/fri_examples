@@ -141,6 +141,12 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
     }
 }
 
+void FriRTNetExampleAbstract::setTool(int toolNumber){
+	fri_to_krl.intData[2] = toolNumber;
+	m_toFRI.set(fri_to_krl);
+}
+
+
 bool FriRTNetExampleAbstract::requiresControlMode(int modeRequired){
     if (controlMode == modeRequired){
         return true;
