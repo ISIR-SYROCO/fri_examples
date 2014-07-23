@@ -25,12 +25,12 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
 
 
     /**
-     * Shared arrays from the remote pc to the KRC
+     * @brief Shared arrays from the remote pc to the KRC
      */
     tFriKrlData fri_to_krl;
 
     /**
-     * Shared arrays from the KRC to the remote pc
+     * @brief Shared arrays from the KRC to the remote pc
      */
     tFriKrlData fri_frm_krl;
 
@@ -39,52 +39,49 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      * controlMode = 20  : Cartesian stiffness
      * controlMode = 30  : Joint stiffness
      */
-
-
     int controlMode;
 
     unsigned int LWRDOF;
-    unsigned int fri_desired_mode;
 
     /**
-     * Attribute to send shared arrays to the KRC
+     * @brief Attribute to send shared arrays to the KRC
      */
   	RTT::Attribute<tFriKrlData> m_toFRI;
 
     /**
-     * Attribute to read shared arrays from the KRC
+     * @brief Attribute to read shared arrays from the KRC
      */
 	RTT::Attribute<tFriKrlData> m_fromFRI;
 
 	/**
-	 * Property to get and set the control_mode (1 to 7)
+	 * @brief Property to get and set the control_mode (1 to 7)
 	 */
 	RTT::Property<int> control_mode_prop;
 
-    RTT::InputPort<tFriRobotState>          	iport_robot_state;
-    RTT::InputPort<tFriIntfState>		iport_Fri_state;
-    RTT::InputPort< std::vector<double> >       iport_msr_joint_pos;
-    RTT::InputPort< std::vector<double> >       iport_cmd_joint_pos;
-    RTT::InputPort< std::vector<double> >       iport_cmd_joint_pos_fri_offset;
-    RTT::InputPort< geometry_msgs::Pose >      	iport_cart_pos;
-    RTT::InputPort< geometry_msgs::Pose >      	iport_cmd_cart_pos;
-    RTT::InputPort< geometry_msgs::Pose >      	iport_cmd_cart_pos_fri_offset;
-    RTT::InputPort< std::vector<double> >       iport_msr_joint_vel;
-    RTT::InputPort< std::vector<double> >       iport_msr_joint_trq;
-    RTT::InputPort< std::vector<double> >       iport_est_ext_joint_trq;
-    RTT::InputPort< geometry_msgs::Wrench >     iport_cart_wrench;
-    RTT::InputPort< std::string >               iport_events;
+    RTT::InputPort<tFriRobotState> iport_robot_state;
+    RTT::InputPort<tFriIntfState>  iport_Fri_state;
+    RTT::InputPort< std::vector<double> > iport_msr_joint_pos;
+    RTT::InputPort< std::vector<double> > iport_cmd_joint_pos;
+    RTT::InputPort< std::vector<double> > iport_cmd_joint_pos_fri_offset;
+    RTT::InputPort< geometry_msgs::Pose > iport_cart_pos;
+    RTT::InputPort< geometry_msgs::Pose > iport_cmd_cart_pos;
+    RTT::InputPort< geometry_msgs::Pose > iport_cmd_cart_pos_fri_offset;
+    RTT::InputPort< std::vector<double> > iport_msr_joint_vel;
+    RTT::InputPort< std::vector<double> > iport_msr_joint_trq;
+    RTT::InputPort< std::vector<double> > iport_est_ext_joint_trq;
+    RTT::InputPort< geometry_msgs::Wrench > iport_cart_wrench;
+    RTT::InputPort< std::string > iport_events;
 
     RTT::InputPort<KDL::Jacobian> jacobianPort;
     RTT::InputPort<std::vector<double> > gravityPort;
     RTT::InputPort< Eigen::Matrix<double, 7, 7> > iport_mass_matrix;
 
-    RTT::OutputPort< std::vector<double> >  	oport_joint_position;
-    RTT::OutputPort< std::vector<double> > 	oport_joint_velocities;
-    RTT::OutputPort< std::vector<double> >    	oport_add_joint_trq;
-    RTT::OutputPort<geometry_msgs::Pose>        oport_cartesian_pose;
-    RTT::OutputPort<geometry_msgs::Twist>       oport_cartesian_twist;
-    RTT::OutputPort<geometry_msgs::Wrench>      oport_cartesian_wrench;
+    RTT::OutputPort< std::vector<double> > oport_joint_position;
+    RTT::OutputPort< std::vector<double> > oport_joint_velocities;
+    RTT::OutputPort< std::vector<double> > oport_add_joint_trq;
+    RTT::OutputPort<geometry_msgs::Pose> oport_cartesian_pose;
+    RTT::OutputPort<geometry_msgs::Twist> oport_cartesian_twist;
+    RTT::OutputPort<geometry_msgs::Wrench> oport_cartesian_wrench;
     RTT::OutputPort<lwr_fri::FriJointImpedance> oport_joint_impedance;
 
     FriRTNetExampleAbstract(std::string const& name);
@@ -125,7 +122,8 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     virtual void cleanupHook();
 
-    /* define the lwr_fri peer name to share attributes toKrl and fromKrl*/
+    /** @brief define the lwr_fri peer name to share attributes toKrl and fromKrl
+     * */
     void setPeer(std::string name);
 
     /** @brief Set control strategy
@@ -164,12 +162,5 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     std::vector<double> getCartPos();
 
     std::vector<double> getJacobian();
-
-/* seems useless now
-
-    bool setLwrControlMode();
-
-*/
-
 };
 #endif

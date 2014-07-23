@@ -59,13 +59,6 @@ bool FriRTNetExampleAbstract::configureHook(){
         fri_to_krl.realData[i]=0.0;
     }
 
-    //We chose to put 1 on the $FRI_FRM_INT[1] to trigger the fri_start()
-    //In KRL, index starts at 1
-    //fri_to_krl.intData[0]=1;
-    //Set control strategy to joint position
-    //fri_to_krl.intData[1]=10;
-   /* controlMode = 10;*/ //this is control mode 1 for friRTNet
-
     if (!iport_events.connected()){
         std::cout << this->getName() << ".Events_i port not connected, cannot configure" << std::endl;
         return false;
@@ -113,10 +106,10 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
         std::cout << "1: Joint position" << std::endl;
         std::cout << "2: Joint velocity" << std::endl;
         std::cout << "3: Joint torque" << std::endl; 
-	std::cout << "4: Cartesian position" << std::endl;
+        std::cout << "4: Cartesian position" << std::endl;
         std::cout << "5: Cartesian force" << std::endl;
-	std::cout << "6: Cartesian Twist" << std::endl;
-	std::cout << "7: Joint Position and torque for objects picking" << std::endl; //perform joint impedance control (position + torque compensation of the load)
+        std::cout << "6: Cartesian Twist" << std::endl;
+        std::cout << "7: Joint Position and torque for objects picking" << std::endl; //perform joint impedance control (position + torque compensation of the load)
         return;
     }
     else{
@@ -157,28 +150,6 @@ bool FriRTNetExampleAbstract::requiresControlMode(int modeRequired){
         return false;
     }
 }
-
-/* seems useless now
-
-bool FriRTNetExampleAbstract::setLwrControlMode(){
-	tFriRobotState robot_state;
-	iport_robot_state.read(robot_state);
-	if(control_mode_prop.get()==7){
-		std::cout<<"control mode 7"<<std::endl;
-		return true;
-	}else{
-		 if(robot_state.control==30){
-			control_mode_prop.set(7);
-			std::cout<<"control mode changed to  7"<<std::endl;
-			return true;
-		}else{
-			std::cout<<"control mode "<< control_mode_prop.get() << " strategy "<< robot_state.control<<std::endl;
-			return false;
-		}
-	}
-}
-
-*/
 
 void FriRTNetExampleAbstract::getFRIMode(){
 
