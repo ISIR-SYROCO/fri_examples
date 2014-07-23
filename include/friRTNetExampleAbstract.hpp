@@ -42,6 +42,7 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     int controlMode;
 
     unsigned int LWRDOF;
+    unsigned int fri_desired_mode;
 
     /**
      * @brief Attribute to send shared arrays to the KRC
