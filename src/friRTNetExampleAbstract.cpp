@@ -44,7 +44,11 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("getJacobian", &FriRTNetExampleAbstract::getJacobian, this, RTT::OwnThread);
 
     this->addOperation("sendJointPosition", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
+    this->addOperation("sendJointVelocities", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
+    this->addOperation("sendAddJointTorque", &FriRTNetExampleAbstract::sendAddJointTorque, this, RTT::OwnThread);
     this->addOperation("connectOJointPosition", &FriRTNetExampleAbstract::connectOJointPosition, this, RTT::OwnThread);
+    this->addOperation("connectOJointVelocities", &FriRTNetExampleAbstract::connectOJointVelocities, this, RTT::OwnThread);
+    this->addOperation("connectOJointTorque", &FriRTNetExampleAbstract::connectOJointTorque, this, RTT::OwnThread);
 
     LWRDOF = 7;
 }
@@ -275,13 +279,47 @@ bool FriRTNetExampleAbstract::connectOJointPosition(){
     return oport_joint_position.connectTo(peer->getPort("desJntPos"));
 }
 
+bool FriRTNetExampleAbstract::connectOJointVelocities(){
+    assert(peer);
+    return oport_joint_velocities.connectTo(peer->getPort("desJntVel"));
+}
+
+bool FriRTNetExampleAbstract::connectOJointTorque(){
+    assert(peer);
+    return oport_add_joint_trq.connectTo(peer->getPort("desAddJntTrq"));
+}
+
 void FriRTNetExampleAbstract::sendJointPosition(std::vector<double> &qdes){
     if (oport_joint_position.connected()){
         if(qdes.size() == LWRDOF){
             oport_joint_position.write(qdes);
         }
         else{
-            std::cout << "Input wrong qdes vector size" << std::endl;
+            std::cout << "Input wrong qdes vector size, should be 7" << std::endl;
+        }
+    }
+    return;
+}
+
+void FriRTNetExampleAbstract::sendJointVelocities(std::vector<double> &qdotdes){
+    if (oport_joint_velocities.connected()){
+        if(qddes.size() == LWRDOF){
+            oport_joint_velocities.write(qdotdes);
+        }
+        else{
+            std::cout << "Input wrong qdotdes vector size, should be 7" << std::endl;
+        }
+    }
+    return;
+}
+
+void FriRTNetExampleAbstract::sendAddJointTorque(std::vector<double> &tau){
+    if (oport_add_joint_trq.connected()){
+        if(qddes.size() == LWRDOF){
+            oport_add_joint_trq.write(tau);
+        }
+        else{
+            std::cout << "Input wrong tau vector size, should be 7" << std::endl;
         }
     }
     return;

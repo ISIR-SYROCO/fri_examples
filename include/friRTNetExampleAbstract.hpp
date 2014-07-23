@@ -177,9 +177,25 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     bool connectOJointPosition();
 
+    /** @brief Connect joint velocities output ports with lwr_fri component
+     */
+    bool connectOJointVelocities();
+
+    /** @brief Connect joint torque output ports with lwr_fri component
+     */
+    bool connectOJointTorque();
+
     /** @brief Send Joint position in radians
      */
     void sendJointPosition(std::vector<double> &qdes);
+
+    /** @brief Send Joint velocities in radians/s
+     */
+    void sendJointVelocities(std::vector<double> &qdotdes);
+
+    /** @brief Send additionnal joint torque in Nm
+     */
+    void sendAddJointTorque(std::vector<double> &tau);
 
 };
 #endif
