@@ -49,6 +49,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("connectOJointPosition", &FriRTNetExampleAbstract::connectOJointPosition, this, RTT::OwnThread);
     this->addOperation("connectOJointVelocities", &FriRTNetExampleAbstract::connectOJointVelocities, this, RTT::OwnThread);
     this->addOperation("connectOJointTorque", &FriRTNetExampleAbstract::connectOJointTorque, this, RTT::OwnThread);
+    this->addOperation("connectOCartesianPose", &FriRTNetExampleAbstract::connectOCartesianPose, this, RTT::OwnThread);
 
     LWRDOF = 7;
 }
@@ -289,6 +290,11 @@ bool FriRTNetExampleAbstract::connectOJointTorque(){
     return oport_add_joint_trq.connectTo(peer->getPort("desAddJntTrq"));
 }
 
+bool FriRTNetExampleAbstract::connectOCartesianPose(){
+    assert(peer);
+    return oport_cartesian_pose.connectTo(peer->getPort("desCartPos"));
+}
+
 void FriRTNetExampleAbstract::sendJointPosition(std::vector<double> &qdes){
     if (oport_joint_position.connected()){
         if(qdes.size() == LWRDOF){
@@ -303,7 +309,7 @@ void FriRTNetExampleAbstract::sendJointPosition(std::vector<double> &qdes){
 
 void FriRTNetExampleAbstract::sendJointVelocities(std::vector<double> &qdotdes){
     if (oport_joint_velocities.connected()){
-        if(qddes.size() == LWRDOF){
+        if(qdotdes.size() == LWRDOF){
             oport_joint_velocities.write(qdotdes);
         }
         else{
@@ -315,8 +321,28 @@ void FriRTNetExampleAbstract::sendJointVelocities(std::vector<double> &qdotdes){
 
 void FriRTNetExampleAbstract::sendAddJointTorque(std::vector<double> &tau){
     if (oport_add_joint_trq.connected()){
-        if(qddes.size() == LWRDOF){
+        if(tau.size() == LWRDOF){
             oport_add_joint_trq.write(tau);
+        }
+        else{
+            std::cout << "Input wrong tau vector size, should be 7" << std::endl;
+        }
+    }
+    return;
+}
+
+void FriRTNetExampleAbstract::sendCartesianPose(std::vector<double> &pose){
+    if (oport_add_joint_trq.connected()){
+        if(pose.size() == 7){
+            geometry_msgs::Pose cart_pose;
+            cart_pose.position.x = pose[0];
+            cart_pose.position.y = pose[1];
+            cart_pose.position.z = pose[2];
+            cart_pose.orientation.w = pose[3];
+            cart_pose.orientation.x = pose[4];
+            cart_pose.orientation.y = pose[5];
+            cart_pose.orientation.z = pose[6];
+            oport_cartesian_pose.write(cart_pose);
         }
         else{
             std::cout << "Input wrong tau vector size, should be 7" << std::endl;
