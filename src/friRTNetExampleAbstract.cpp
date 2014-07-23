@@ -5,8 +5,6 @@
 
 
 FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT::TaskContext(name){
-
-
     this->addPort("RobotState_i", iport_robot_state);
     this->addPort("FriState_i", iport_Fri_state);
     this->addPort("MsrJntPos_i", iport_msr_joint_pos);
@@ -92,11 +90,11 @@ void FriRTNetExampleAbstract::cleanupHook(){}
 
 //define peer (lwr_fri component) and get access to attributes and properties
 void FriRTNetExampleAbstract::setPeer(std::string name){
-	peer = getPeer(name);
-	assert(peer);
-        m_toFRI = peer->attributes()->getAttribute("toKRL");
-	m_fromFRI= peer->attributes()->getAttribute("fromKRL");
-        control_mode_prop = peer->properties()->getProperty("control_mode");
+    peer = getPeer(name);
+    assert(peer);
+    m_toFRI = peer->attributes()->getAttribute("toKRL");
+    m_fromFRI= peer->attributes()->getAttribute("fromKRL");
+    control_mode_prop = peer->properties()->getProperty("control_mode");
 
 }
 
@@ -113,8 +111,6 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
         return;
     }
     else{
-
-
         if (mode == 1 || mode == 2){
             fri_to_krl.intData[1] = 10;
             controlMode = 10; // joint position control
@@ -122,15 +118,13 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
         else if (mode == 3 || mode == 7){
             fri_to_krl.intData[1] = 30;
             controlMode = 30; // joint impedance control
-	    control_mode_prop.set(7);
+            control_mode_prop.set(7);
         }
         else if (mode == 4 || mode == 5 || mode == 6){
             fri_to_krl.intData[1] = 20;
             controlMode = 20; // cartesian impedance control
         }
-
         m_toFRI.set(fri_to_krl);
-
     }
 }
 
@@ -207,7 +201,7 @@ void FriRTNetExampleAbstract::initializeCommand(){
     //Get current joint position and set it as desired position
     if (oport_joint_position.connected()){
         std::vector<double> measured_jointPosition;
-	RTT::FlowStatus measured_jointPosition_fs = iport_msr_joint_pos.read(measured_jointPosition);
+        RTT::FlowStatus measured_jointPosition_fs = iport_msr_joint_pos.read(measured_jointPosition);
         if (measured_jointPosition_fs == RTT::NewData){
             std::vector<double> joint_position_command_init;
             joint_position_command_init.assign(7, 0.0);
@@ -242,13 +236,10 @@ void FriRTNetExampleAbstract::initializeCommand(){
 
     if (oport_add_joint_trq.connected()){
         //Send 0 joint torque
-
         std::vector<double> joint_eff_command;
         joint_eff_command.assign(LWRDOF, 0.0);
         oport_add_joint_trq.write(joint_eff_command);
-
     }
-
 }
 
 std::vector<double> FriRTNetExampleAbstract::getCartPos(){

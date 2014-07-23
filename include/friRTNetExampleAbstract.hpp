@@ -130,6 +130,8 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     void setControlStrategy(int mode);
 
+    /** @brief Select the tool defined on the KRC
+     */
     void setTool(int toolNumber);
 
     /** @brief Check if the selected control mode is the required one
@@ -150,6 +152,9 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /** @brief Ask KRL script for a friStart()
      */
     void friStart();
+
+    /** @brief Reset the array shared with the KRC
+     */
     void friReset();
 
     /** @brief Ask KRL exit
@@ -160,8 +165,12 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     void initializeCommand();
 
+    /** @brief Return the cartesian position of the tool center point in the robot base frame
+     */
     std::vector<double> getCartPos();
 
+    /** @brief Return the Jacobian
+     */
     std::vector<double> getJacobian();
 };
 #endif
