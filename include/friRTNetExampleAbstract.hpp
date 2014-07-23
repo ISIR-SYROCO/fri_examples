@@ -172,5 +172,14 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /** @brief Return the Jacobian
      */
     std::vector<double> getJacobian();
+
+    /** @brief Connect joint position output ports with lwr_fri component
+     */
+    bool connectOJointPosition();
+
+    /** @brief Send Joint position in radians
+     */
+    void sendJointPosition(std::vector<double> &qdes);
+
 };
 #endif

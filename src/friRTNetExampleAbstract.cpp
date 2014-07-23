@@ -43,6 +43,8 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("getCartPos", &FriRTNetExampleAbstract::getCartPos, this, RTT::OwnThread);
     this->addOperation("getJacobian", &FriRTNetExampleAbstract::getJacobian, this, RTT::OwnThread);
 
+    this->addOperation("sendJointPosition", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
+
     LWRDOF = 7;
 }
 
@@ -265,4 +267,21 @@ std::vector<double> FriRTNetExampleAbstract::getJacobian(){
 		}
 	}
 	return kuka_jacobian_vector;
+}
+
+bool FriRTNetExampleAbstract::connectOJointPosition(){
+    assert(peer);
+    return oport_joint_position.connectTo(peer->getPort("desJntPos"));
+}
+
+void FriRTNetExampleAbstract::sendJointPosition(std::vector<double> &qdes){
+    if (oport_joint_position.connected()){
+        if(qdes.size() == LWRDOF){
+            oport_joint_position.write(qdes);
+        }
+        else{
+            std::cout << "Input wrong qdes vector size" << std::endl;
+        }
+    }
+    return;
 }
