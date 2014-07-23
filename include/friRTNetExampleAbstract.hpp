@@ -139,8 +139,9 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     bool requiresControlMode(int modeRequired);
 
     /** @brief Get the FRI Mode
+     *  @return : The value of the FRI_STATE enum
      */
-    void getFRIMode();
+    FRI_STATE getFRIMode();
 
     /** @brief Ask KRL script for a friStop()
      */

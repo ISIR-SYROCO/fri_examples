@@ -151,18 +151,20 @@ bool FriRTNetExampleAbstract::requiresControlMode(int modeRequired){
     }
 }
 
-void FriRTNetExampleAbstract::getFRIMode(){
-
-	fri_frm_krl = m_fromFRI.get();
-        if(fri_frm_krl.intData[0] == 1){
-        	std::cout << "FRI in Command Mode" << std::endl;
+FRI_STATE FriRTNetExampleAbstract::getFRIMode(){
+    fri_frm_krl = m_fromFRI.get();
+    if(fri_frm_krl.intData[0] == 1){
+        std::cout << "FRI in Command Mode" << std::endl;
+        return FRI_STATE_CMD;
+    }else{
+        if(fri_frm_krl.intData[0] == 2){
+            std::cout << "FRI in Monitor Mode" << std::endl;
+            return FRI_STATE_MON;
         }else{
-	   	if(fri_frm_krl.intData[0] == 2){
-    	        	std::cout << "FRI in Monitor Mode" << std::endl;
-            	}else{
-        		std::cout << "Cannot read FRI Mode" << std::endl;
-    	    	}
+            std::cout << "Cannot read FRI Mode" << std::endl;
+            return FRI_STATE_INVALID;
         }
+    }
 }
 
 void FriRTNetExampleAbstract::friStop(){
