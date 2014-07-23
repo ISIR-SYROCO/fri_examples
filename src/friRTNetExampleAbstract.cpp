@@ -61,9 +61,9 @@ bool FriRTNetExampleAbstract::configureHook(){
 
     //We chose to put 1 on the $FRI_FRM_INT[1] to trigger the fri_start()
     //In KRL, index starts at 1
-    fri_to_krl.intData[0]=1;
+    //fri_to_krl.intData[0]=1;
     //Set control strategy to joint position
-    fri_to_krl.intData[1]=10;
+    //fri_to_krl.intData[1]=10;
    /* controlMode = 10;*/ //this is control mode 1 for friRTNet
 
     if (!iport_events.connected()){
