@@ -46,10 +46,13 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("sendJointPosition", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
     this->addOperation("sendJointVelocities", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
     this->addOperation("sendAddJointTorque", &FriRTNetExampleAbstract::sendAddJointTorque, this, RTT::OwnThread);
+    this->addOperation("sendCartesianPose", &FriRTNetExampleAbstract::sendCartesianPose, this, RTT::OwnThread);
+    this->addOperation("sendCartesianTwist", &FriRTNetExampleAbstract::sendCartesianTwist, this, RTT::OwnThread);
     this->addOperation("connectOJointPosition", &FriRTNetExampleAbstract::connectOJointPosition, this, RTT::OwnThread);
     this->addOperation("connectOJointVelocities", &FriRTNetExampleAbstract::connectOJointVelocities, this, RTT::OwnThread);
     this->addOperation("connectOJointTorque", &FriRTNetExampleAbstract::connectOJointTorque, this, RTT::OwnThread);
     this->addOperation("connectOCartesianPose", &FriRTNetExampleAbstract::connectOCartesianPose, this, RTT::OwnThread);
+    this->addOperation("connectOCartesianTwist", &FriRTNetExampleAbstract::connectOCartesianTwist, this, RTT::OwnThread);
 
     LWRDOF = 7;
 }
@@ -295,6 +298,11 @@ bool FriRTNetExampleAbstract::connectOCartesianPose(){
     return oport_cartesian_pose.connectTo(peer->getPort("desCartPos"));
 }
 
+bool FriRTNetExampleAbstract::connectOCartesianTwist(){
+    assert(peer);
+    return oport_cartesian_twist.connectTo(peer->getPort("desCartTwist"));
+}
+
 void FriRTNetExampleAbstract::sendJointPosition(std::vector<double> &qdes){
     if (oport_joint_position.connected()){
         if(qdes.size() == LWRDOF){
@@ -346,6 +354,25 @@ void FriRTNetExampleAbstract::sendCartesianPose(std::vector<double> &pose){
         }
         else{
             std::cout << "Input wrong tau vector size, should be 7" << std::endl;
+        }
+    }
+    return;
+}
+
+void FriRTNetExampleAbstract::sendCartesianTwist(std::vector<double> &twist){
+    if (oport_cartesian_twist.connected()){
+        if(twist.size() == 6){
+            geometry_msgs::Twist cart_twist;
+            cart_twist.linear.x = twist[0];
+            cart_twist.linear.y = twist[1];
+            cart_twist.linear.z = twist[2];
+            cart_twist.angular.x = twist[3];
+            cart_twist.angular.y = twist[4];
+            cart_twist.angular.z = twist[5];
+            oport_cartesian_twist.write(cart_twist);
+        }
+        else{
+            std::cout << "Input wrong tau vector size, should be 6" << std::endl;
         }
     }
     return;

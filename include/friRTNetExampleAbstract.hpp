@@ -190,6 +190,10 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     bool connectOCartesianPose();
 
+    /** @brief Connect cartesian pose output ports with lwr_fri component
+     */
+    bool connectOCartesianTwist();
+
     /** @brief Send Joint position in radians
      */
     void sendJointPosition(std::vector<double> &qdes);
@@ -205,6 +209,10 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /** @brief Send desired tool center point cartesian pose: x, y, z(m), qw, qx, qy, qz
      */
     void sendCartesianPose(std::vector<double> &pose);
+
+    /** @brief Send desired tool center point cartesian twist: vx, vy, vz, wx, wy, wz
+     */
+    void sendCartesianTwist(std::vector<double> &twist);
 
 };
 #endif
