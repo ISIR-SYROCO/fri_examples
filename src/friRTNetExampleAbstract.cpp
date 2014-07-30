@@ -256,11 +256,22 @@ void FriRTNetExampleAbstract::initializeCommand(){
 
 std::vector<double> FriRTNetExampleAbstract::getCartPos(){
 	geometry_msgs::Pose  msr_cart_pos;
-	std::vector <double> msr_cart_pos_vector(3);
+	std::vector <double> msr_cart_pos_vector(12);
+    KDL::Rotation cart_orientation;
 	RTT::FlowStatus CartPos_fs = iport_cart_pos.read(msr_cart_pos);
 	msr_cart_pos_vector[0] = (double)msr_cart_pos.position.x;
 	msr_cart_pos_vector[1] = (double)msr_cart_pos.position.y;
 	msr_cart_pos_vector[2] = (double)msr_cart_pos.position.z;
+    cart_orientation.Quaternion((double)msr_cart_pos.orientation.x,
+                                (double)msr_cart_pos.orientation.y,
+                                (double)msr_cart_pos.orientation.z,
+                                (double)msr_cart_pos.orientation.w);
+    for(int i=0; i<3; ++i){
+        for(int j=0; j<3; ++j){
+            msr_cart_pos_vector[3+3*i+j] = cart_orientation(i, j);
+        }
+    }
+
 	//if (CartPos_fs == RTT::NewData)
 	return msr_cart_pos_vector;
 }
