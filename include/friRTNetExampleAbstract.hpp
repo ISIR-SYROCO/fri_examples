@@ -174,6 +174,10 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     std::vector<double> getJacobian();
 
+    /** @brief Return the current configuration of the robot
+     */
+    std::vector<double> getQ();
+
     /** @brief Connect joint position output ports with lwr_fri component
      */
     bool connectOJointPosition();

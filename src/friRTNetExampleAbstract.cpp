@@ -41,6 +41,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("friReset", &FriRTNetExampleAbstract::friReset, this, RTT::OwnThread);
     this->addOperation("stopKrlScript", &FriRTNetExampleAbstract::stopKrlScript, this, RTT::OwnThread);
     this->addOperation("getCartPos", &FriRTNetExampleAbstract::getCartPos, this, RTT::OwnThread);
+    this->addOperation("getQ", &FriRTNetExampleAbstract::getQ, this, RTT::OwnThread);
     this->addOperation("getJacobian", &FriRTNetExampleAbstract::getJacobian, this, RTT::OwnThread);
 
     this->addOperation("sendJointPosition", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
@@ -276,6 +277,12 @@ std::vector<double> FriRTNetExampleAbstract::getJacobian(){
 		}
 	}
 	return kuka_jacobian_vector;
+}
+
+std::vector<double> FriRTNetExampleAbstract::getQ(){
+    std::vector<double> q(LWRDOF);
+    iport_msr_joint_pos.read(q);
+    return q;
 }
 
 bool FriRTNetExampleAbstract::connectOJointPosition(){
