@@ -43,6 +43,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("getCartPos", &FriRTNetExampleAbstract::getCartPos, this, RTT::OwnThread);
     this->addOperation("getQ", &FriRTNetExampleAbstract::getQ, this, RTT::OwnThread);
     this->addOperation("getJacobian", &FriRTNetExampleAbstract::getJacobian, this, RTT::OwnThread);
+    this->addOperation("getMassMatrix", &FriRTNetExampleAbstract::getMassMatrix, this, RTT::OwnThread);
 
     this->addOperation("sendJointPosition", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
     this->addOperation("sendJointVelocities", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
@@ -56,6 +57,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("connectOCartesianTwist", &FriRTNetExampleAbstract::connectOCartesianTwist, this, RTT::OwnThread);
 
     LWRDOF = 7;
+    mass_matrix.resize(49);
 }
 
 FriRTNetExampleAbstract::~FriRTNetExampleAbstract(){
@@ -294,6 +296,17 @@ std::vector<double> FriRTNetExampleAbstract::getQ(){
     std::vector<double> q(LWRDOF);
     iport_msr_joint_pos.read(q);
     return q;
+}
+
+std::vector<double> FriRTNetExampleAbstract::getMassMatrix(){
+    Eigen::Matrix<double, 7, 7> mass_matrix_eigen;
+    iport_mass_matrix.read(mass_matrix_eigen);
+    for(int i=0; i<7; ++i){
+        for(int j=0; j<7; ++j){
+            mass_matrix[7*i+j] = mass_matrix_eigen(i, j);
+        }
+    }
+    return mass_matrix;
 }
 
 bool FriRTNetExampleAbstract::connectOJointPosition(){

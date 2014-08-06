@@ -88,6 +88,8 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     FriRTNetExampleAbstract(std::string const& name);
     ~FriRTNetExampleAbstract();
 
+    std::vector<double> mass_matrix;
+
     /** @brief Orocos Configure Hook
      * Initialization of the shared array between
      * KRC and remote pc
@@ -173,6 +175,10 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /** @brief Return the Jacobian
      */
     std::vector<double> getJacobian();
+
+    /** @brief Return the Mass Matrix
+     */
+    std::vector<double> getMassMatrix();
 
     /** @brief Return the current configuration of the robot
      */
