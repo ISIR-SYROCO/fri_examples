@@ -1,5 +1,5 @@
 &ACCESS RVP
-&REL 198
+&REL 218
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF friISIR( )
@@ -40,7 +40,7 @@ DEF friISIR( )
   REPEAT
    HALT
    ;****************************************
-   ;**** use T1-Mode for safety reasons ****
+   ;**** use T2-Mode for safety reasons ****
    ;****************************************
   UNTIL $MODE_OP==#t2
  ENDIF
@@ -53,7 +53,6 @@ DEF friISIR( )
 
  ;PTP {a1 0,a2 80,a3 90,a4 0,a5 0,a6 0,e1 0}
  HALT
-
 
  ;Test open FRI with datarate 1 msec
  retVal=FRIOPEN(1)

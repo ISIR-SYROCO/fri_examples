@@ -1,5 +1,5 @@
-&ACCESS RVO1
-&REL 20
+&ACCESS RVP
+&REL 24
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
 DEF resetSTIFFNESS( )
@@ -25,7 +25,7 @@ DEF resetSTIFFNESS( )
  ISIRSTIFFNESS.STRATEGY = 10
 
  ;Frame for Cartesian Stiffness mode #TOOL or #BASE
- ISIRSTIFFNESS.FRAMETYPE = #TOOL
+ ISIRSTIFFNESS.FRAMETYPE = #BASE
 
  ;Base frame for Cartesian Stiffness mode
  ISIRSTIFFNESS.BASE = {X 0, Y 0, Z 0, A 0, B 0, C 0} 
