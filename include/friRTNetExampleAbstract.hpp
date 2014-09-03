@@ -90,6 +90,9 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
 
     std::vector<double> mass_matrix;
 
+    std::vector<double> estExtJntTrq;
+    std::vector<double> estExtTcpWrench;
+
     /** @brief Orocos Configure Hook
      * Initialization of the shared array between
      * KRC and remote pc
@@ -183,6 +186,14 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /** @brief Return the current configuration of the robot
      */
     std::vector<double> getQ();
+
+    /** @brief Return the estimated external joint torque
+     */
+    std::vector<double> getEstExtJntTrq();
+
+    /** @brief Return the estimated external tool center point wrench
+     */
+    std::vector<double> getEstExtTcpWrench();
 
     /** @brief Connect joint position output ports with lwr_fri component
      */

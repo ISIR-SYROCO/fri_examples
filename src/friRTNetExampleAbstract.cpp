@@ -44,6 +44,8 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("getQ", &FriRTNetExampleAbstract::getQ, this, RTT::OwnThread);
     this->addOperation("getJacobian", &FriRTNetExampleAbstract::getJacobian, this, RTT::OwnThread);
     this->addOperation("getMassMatrix", &FriRTNetExampleAbstract::getMassMatrix, this, RTT::OwnThread);
+    this->addOperation("getEstExtJntTrq", &FriRTNetExampleAbstract::getEstExtJntTrq, this, RTT::OwnThread);
+    this->addOperation("getEstExtTcpWrench", &FriRTNetExampleAbstract::getEstExtTcpWrench, this, RTT::OwnThread);
 
     this->addOperation("sendJointPosition", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
     this->addOperation("sendJointVelocities", &FriRTNetExampleAbstract::sendJointPosition, this, RTT::OwnThread);
@@ -57,7 +59,9 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("connectOCartesianTwist", &FriRTNetExampleAbstract::connectOCartesianTwist, this, RTT::OwnThread);
 
     LWRDOF = 7;
-    mass_matrix.resize(49);
+    mass_matrix.assign(49, 0);
+    estExtJntTrq.assign(7, 0);
+    estExtTcpWrench.assign(6, 0);
 }
 
 FriRTNetExampleAbstract::~FriRTNetExampleAbstract(){
@@ -307,6 +311,33 @@ std::vector<double> FriRTNetExampleAbstract::getMassMatrix(){
         }
     }
     return mass_matrix;
+}
+
+std::vector<double> FriRTNetExampleAbstract::getEstExtJntTrq(){
+    if(iport_est_ext_joint_trq.connected()){
+        RTT::FlowStatus est_ext_joint_trq_fs = iport_est_ext_joint_trq.read(estExtJntTrq); 
+    }
+    else{
+        estExtJntTrq.assign(7,0.0);
+    }
+    return estExtJntTrq;
+}
+
+std::vector<double> FriRTNetExampleAbstract::getEstExtTcpWrench(){
+    if(iport_cart_wrench.connected()){
+        geometry_msgs::Wrench wrench;
+        RTT::FlowStatus est_ext_tcp_wrench_fs = iport_cart_wrench.read(wrench);
+        estExtTcpWrench[0] = wrench.force.x;
+        estExtTcpWrench[1] = wrench.force.y;
+        estExtTcpWrench[2] = wrench.force.z;
+        estExtTcpWrench[3] = wrench.torque.x;
+        estExtTcpWrench[4] = wrench.torque.y;
+        estExtTcpWrench[5] = wrench.torque.z;
+    }
+    else{
+        estExtTcpWrench.assign(6, 0.0);
+    }
+    return estExtTcpWrench;
 }
 
 bool FriRTNetExampleAbstract::connectOJointPosition(){
