@@ -13,14 +13,14 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addPort("MsrCartPos_i", iport_cart_pos);
     this->addPort("CmdCartPos_i", iport_cmd_cart_pos);
     this->addPort("CmdCartPosFriOffset_i", iport_cmd_cart_pos_fri_offset);
-    this->addPort("msrJntVel_i", iport_msr_joint_vel);
+    this->addPort("MsrJntVel_i", iport_msr_joint_vel);
     this->addPort("MsrJntTrq_i", iport_msr_joint_trq);
     this->addPort("EstExtJntTrq_i", iport_est_ext_joint_trq);
     this->addPort("EstExtTcpWrench_i", iport_cart_wrench);
     this->addPort("Events_i", iport_events);
     this->addPort("MassMatrix_i", iport_mass_matrix);
     this->addPort("Jacobian_i", jacobianPort);
-    this->addPort("gravity_i", gravityPort);
+    this->addPort("Gravity_i", gravityPort);
 
 
     this->addPort("JointPositions_o", oport_joint_position);
@@ -29,7 +29,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addPort("CartesianPosition_o", oport_cartesian_pose);
     this->addPort("CartesianVelocity_o", oport_cartesian_twist);
     this->addPort("CartesianWrench_o", oport_cartesian_wrench);
-    this->addPort("desJntImpedance_o",oport_joint_impedance);
+    this->addPort("DesJntImpedance_o",oport_joint_impedance);
 
     this->addOperation("getFRIMode", &FriRTNetExampleAbstract::getFRIMode, this, RTT::OwnThread);
     this->addOperation("setPeer", &FriRTNetExampleAbstract::setPeer, this, RTT::OwnThread);
