@@ -195,6 +195,24 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     std::vector<double> getEstExtTcpWrench();
 
+    bool connectIRobotState();
+    bool connectIFriState();
+    bool connectIMsrJntPos();
+    bool connectICmdJntPos();
+    bool connectICmdJntPosFriOffset();
+    bool connectIMsrCartPos();
+    bool connectICmdCartPos();
+    bool connectICmdCartPosFriOffset();
+    bool connectIMsrJntVel();
+    bool connectIMsrJntTrq();
+    bool connectIEstExtJntTrq();
+    bool connectIEstExtTcpWrench();
+    bool connectIEvents();
+    bool connectIMassMatrix();
+    bool connectIJacobian();
+    bool connectIGravity();
+    
+
     /** @brief Connect joint position output ports with lwr_fri component
      */
     bool connectOJointPosition();
@@ -214,6 +232,11 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /** @brief Connect cartesian pose output ports with lwr_fri component
      */
     bool connectOCartesianTwist();
+
+    bool connectOCartesianWrench();
+    bool connectODesJntImpedance();
+
+    void disconnectPort(std::string portname);
 
     /** @brief Send Joint position in radians
      */

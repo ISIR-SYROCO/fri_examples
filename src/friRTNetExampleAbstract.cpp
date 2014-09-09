@@ -54,9 +54,28 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("sendCartesianTwist", &FriRTNetExampleAbstract::sendCartesianTwist, this, RTT::OwnThread);
     this->addOperation("connectOJointPosition", &FriRTNetExampleAbstract::connectOJointPosition, this, RTT::OwnThread);
     this->addOperation("connectOJointVelocities", &FriRTNetExampleAbstract::connectOJointVelocities, this, RTT::OwnThread);
+    this->addOperation("connectIRobotState", &FriRTNetExampleAbstract::connectIRobotState, this, RTT::OwnThread);
+    this->addOperation("connectIFriState", &FriRTNetExampleAbstract::connectIFriState, this, RTT::OwnThread);
+    this->addOperation("connectIMsrJntPos", &FriRTNetExampleAbstract::connectIMsrJntPos, this, RTT::OwnThread);
+    this->addOperation("connectICmdJntPos", &FriRTNetExampleAbstract::connectICmdJntPos, this, RTT::OwnThread);
+    this->addOperation("connectICmdJntPosFriOffset", &FriRTNetExampleAbstract::connectICmdJntPosFriOffset, this, RTT::OwnThread);
+    this->addOperation("connectIMsrCartPos", &FriRTNetExampleAbstract::connectIMsrCartPos, this, RTT::OwnThread);
+    this->addOperation("connectICmdCartPos", &FriRTNetExampleAbstract::connectICmdCartPos, this, RTT::OwnThread);
+    this->addOperation("connectICmdCartPosFriOffset", &FriRTNetExampleAbstract::connectICmdCartPosFriOffset, this, RTT::OwnThread);
+    this->addOperation("connectIMsrJntVel", &FriRTNetExampleAbstract::connectIMsrJntVel, this, RTT::OwnThread);
+    this->addOperation("connectIMsrJntTrq", &FriRTNetExampleAbstract::connectIMsrJntTrq, this, RTT::OwnThread);
+    this->addOperation("connectIEstExtJntTrq", &FriRTNetExampleAbstract::connectIEstExtJntTrq, this, RTT::OwnThread);
+    this->addOperation("connectIEstExtTcpWrench", &FriRTNetExampleAbstract::connectIEstExtTcpWrench, this, RTT::OwnThread);
+    this->addOperation("connectIEvents", &FriRTNetExampleAbstract::connectIEvents, this, RTT::OwnThread);
+    this->addOperation("connectIMassMatrix", &FriRTNetExampleAbstract::connectIMassMatrix, this, RTT::OwnThread);
+    this->addOperation("connectIJacobian", &FriRTNetExampleAbstract::connectIJacobian, this, RTT::OwnThread);
+    this->addOperation("connectIGravity", &FriRTNetExampleAbstract::connectIGravity, this, RTT::OwnThread);
     this->addOperation("connectOJointTorque", &FriRTNetExampleAbstract::connectOJointTorque, this, RTT::OwnThread);
     this->addOperation("connectOCartesianPose", &FriRTNetExampleAbstract::connectOCartesianPose, this, RTT::OwnThread);
     this->addOperation("connectOCartesianTwist", &FriRTNetExampleAbstract::connectOCartesianTwist, this, RTT::OwnThread);
+
+    this->addOperation("connectOCartesianWrench", &FriRTNetExampleAbstract::connectOCartesianWrench, this, RTT::OwnThread);
+    this->addOperation("connectODesJntImpedance", &FriRTNetExampleAbstract::connectODesJntImpedance, this, RTT::OwnThread);
 
     LWRDOF = 7;
     mass_matrix.assign(49, 0);
@@ -340,6 +359,86 @@ std::vector<double> FriRTNetExampleAbstract::getEstExtTcpWrench(){
     return estExtTcpWrench;
 }
 
+bool FriRTNetExampleAbstract::connectIRobotState(){
+    assert(peer);
+    return iport_robot_state.connectTo(peer->getPort("RobotState"));
+}
+
+bool FriRTNetExampleAbstract::connectIFriState(){
+    assert(peer);
+    return iport_Fri_state.connectTo(peer->getPort("FRIState"));
+}
+
+bool FriRTNetExampleAbstract::connectIMsrJntPos(){
+    assert(peer);
+    return iport_msr_joint_pos.connectTo(peer->getPort("msrJntPos"));
+}
+
+bool FriRTNetExampleAbstract::connectICmdJntPos(){
+    assert(peer);
+    return iport_cmd_joint_pos.connectTo(peer->getPort("cmdJntPos"));
+}
+
+bool FriRTNetExampleAbstract::connectICmdJntPosFriOffset(){
+    assert(peer);
+    return iport_cmd_joint_pos_fri_offset.connectTo(peer->getPort("cmdJntPosFriOffset"));
+}
+
+bool FriRTNetExampleAbstract::connectIMsrCartPos(){
+    assert(peer);
+    return iport_cart_pos.connectTo(peer->getPort("msrCartPos"));
+}
+
+bool FriRTNetExampleAbstract::connectICmdCartPos(){
+    assert(peer);
+    return iport_cmd_cart_pos.connectTo(peer->getPort("cmdCartPos"));
+}
+
+bool FriRTNetExampleAbstract::connectICmdCartPosFriOffset(){
+    assert(peer);
+    return iport_cmd_joint_pos_fri_offset.connectTo(peer->getPort("cmdCartPosFriOffset"));
+}
+
+bool FriRTNetExampleAbstract::connectIMsrJntVel(){
+    assert(peer);
+    return iport_msr_joint_vel.connectTo(peer->getPort("msrJntVel"));
+}
+
+bool FriRTNetExampleAbstract::connectIMsrJntTrq(){
+    assert(peer);
+    return iport_msr_joint_trq.connectTo(peer->getPort("msrJntTrq"));
+}
+
+bool FriRTNetExampleAbstract::connectIEstExtJntTrq(){
+    assert(peer);
+    return iport_est_ext_joint_trq.connectTo(peer->getPort("estExtJntTrq"));
+}
+
+bool FriRTNetExampleAbstract::connectIEstExtTcpWrench(){
+    assert(peer);
+    return iport_cart_wrench.connectTo(peer->getPort("estExtTcpWrench"));
+}
+
+bool FriRTNetExampleAbstract::connectIEvents(){
+    assert(peer);
+    return iport_events.connectTo(peer->getPort("events"));
+}
+
+bool FriRTNetExampleAbstract::connectIMassMatrix(){
+    assert(peer);
+    return iport_mass_matrix.connectTo(peer->getPort("massMatrix_o"));
+}
+
+bool FriRTNetExampleAbstract::connectIJacobian(){
+    assert(peer);
+    return jacobianPort.connectTo(peer->getPort("Jacobian"));
+}
+
+bool FriRTNetExampleAbstract::connectIGravity(){
+    assert(peer);
+    return gravityPort.connectTo(peer->getPort("gravity_o"));
+}
+
 bool FriRTNetExampleAbstract::connectOJointPosition(){
     assert(peer);
     return oport_joint_position.connectTo(peer->getPort("desJntPos"));
@@ -363,6 +462,23 @@ bool FriRTNetExampleAbstract::connectOCartesianPose(){
 bool FriRTNetExampleAbstract::connectOCartesianTwist(){
     assert(peer);
     return oport_cartesian_twist.connectTo(peer->getPort("desCartTwist"));
+}
+
+bool FriRTNetExampleAbstract::connectOCartesianWrench(){
+    assert(peer);
+    return oport_cartesian_wrench.connectTo(peer->getPort("desAddTcpWrench"));
+}
+
+bool FriRTNetExampleAbstract::connectODesJntImpedance(){
+    assert(peer);
+    return oport_joint_impedance.connectTo(peer->getPort("desJntImpedance"));
+}
+
+void FriRTNetExampleAbstract::disconnectPort(std::string portname){
+    RTT::base::PortInterface * p = getPort(portname);
+    if (p != NULL){
+        p->disconnect();
+    }
 }
 
 void FriRTNetExampleAbstract::sendJointPosition(std::vector<double> &qdes){
