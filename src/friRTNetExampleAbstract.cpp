@@ -332,6 +332,12 @@ std::vector<double> FriRTNetExampleAbstract::getMassMatrix(){
     return mass_matrix;
 }
 
+std::vector<double> FriRTNetExampleAbstract::getGravity(){
+    std::vector<double> g(LWRDOF);
+    gravityPort.read(g);
+    return g;
+}
+
 std::vector<double> FriRTNetExampleAbstract::getEstExtJntTrq(){
     if(iport_est_ext_joint_trq.connected()){
         RTT::FlowStatus est_ext_joint_trq_fs = iport_est_ext_joint_trq.read(estExtJntTrq); 

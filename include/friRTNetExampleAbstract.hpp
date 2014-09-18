@@ -183,6 +183,10 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
      */
     std::vector<double> getMassMatrix();
 
+    /** @brief Return the gravity
+     */
+    std::vector<double> getGravity();
+
     /** @brief Return the current configuration of the robot
      */
     std::vector<double> getQ();
