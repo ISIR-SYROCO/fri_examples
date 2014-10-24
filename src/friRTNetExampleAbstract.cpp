@@ -277,6 +277,16 @@ void FriRTNetExampleAbstract::initializeCommand(){
         joint_eff_command.assign(LWRDOF, 0.0);
         oport_add_joint_trq.write(joint_eff_command);
     }
+
+    if (oport_joint_impedance.connected()){
+        lwr_fri::FriJointImpedance joint_impedance_command;
+		for(unsigned int i = 0; i < LWRDOF; i++){
+			joint_impedance_command.stiffness[i] = 250;
+			joint_impedance_command.damping[i] = 0.7;
+		}
+
+		oport_joint_impedance.write(joint_impedance_command);
+    }
 }
 
 std::vector<double> FriRTNetExampleAbstract::getCartPos(){
