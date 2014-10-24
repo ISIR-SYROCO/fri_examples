@@ -44,6 +44,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("getQ", &FriRTNetExampleAbstract::getQ, this, RTT::OwnThread);
     this->addOperation("getJacobian", &FriRTNetExampleAbstract::getJacobian, this, RTT::OwnThread);
     this->addOperation("getMassMatrix", &FriRTNetExampleAbstract::getMassMatrix, this, RTT::OwnThread);
+    this->addOperation("getGravity", &FriRTNetExampleAbstract::getGravity, this, RTT::OwnThread);
     this->addOperation("getEstExtJntTrq", &FriRTNetExampleAbstract::getEstExtJntTrq, this, RTT::OwnThread);
     this->addOperation("getEstExtTcpWrench", &FriRTNetExampleAbstract::getEstExtTcpWrench, this, RTT::OwnThread);
 
