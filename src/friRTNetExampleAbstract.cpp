@@ -36,6 +36,10 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
 
     this->addOperation("setControlStrategy", &FriRTNetExampleAbstract::setControlStrategy, this, RTT::OwnThread);
 
+    this->addOperation("setTool", &FriRTNetExampleAbstract::setTool, this, RTT::OwnThread);
+    this->addOperation("setLoad", &FriRTNetExampleAbstract::setLoad, this, RTT::OwnThread);
+    this->addOperation("getLoad", &FriRTNetExampleAbstract::getLoad, this, RTT::OwnThread);
+
     this->addOperation("friStart", &FriRTNetExampleAbstract::friStart, this, RTT::OwnThread);
     this->addOperation("friStop", &FriRTNetExampleAbstract::friStop, this, RTT::OwnThread);
     this->addOperation("friReset", &FriRTNetExampleAbstract::friReset, this, RTT::OwnThread);
@@ -109,6 +113,7 @@ bool FriRTNetExampleAbstract::startHook(){
 }
 
 bool FriRTNetExampleAbstract::doStart(){
+	getLoad();
     friStart();
     return true;
 }
@@ -171,6 +176,16 @@ void FriRTNetExampleAbstract::setTool(int toolNumber){
 	m_toFRI.set(fri_to_krl);
 }
 
+void FriRTNetExampleAbstract::setLoad(double load){
+	current_load = load;
+	fri_to_krl.realData[0] = load;
+	m_toFRI.set(fri_to_krl);
+}
+
+void FriRTNetExampleAbstract::getLoad(){
+    fri_frm_krl = m_fromFRI.get();
+	current_load = fri_frm_krl.realData[0];
+}
 
 bool FriRTNetExampleAbstract::requiresControlMode(int modeRequired){
     if (controlMode == modeRequired){

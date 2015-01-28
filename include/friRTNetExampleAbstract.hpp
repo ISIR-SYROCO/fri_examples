@@ -93,6 +93,8 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     std::vector<double> estExtJntTrq;
     std::vector<double> estExtTcpWrench;
 
+	double current_load;
+
     /** @brief Orocos Configure Hook
      * Initialization of the shared array between
      * KRC and remote pc
@@ -139,6 +141,14 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /** @brief Select the tool defined on the KRC
      */
     void setTool(int toolNumber);
+
+    /** @brief Set new load
+	 */
+	void setLoad(double load);
+
+    /** @brief Get current load (tool weight)
+	 */
+	void getLoad();
 
     /** @brief Check if the selected control mode is the required one
      *  @param modeRequired : the required mode

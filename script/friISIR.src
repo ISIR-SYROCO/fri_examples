@@ -62,6 +62,9 @@ DEF friISIR( )
  $FRI_TO_INT[1] = 2
  $FRI_TO_INT[2] = 10
 
+ ;Get current Load
+ $FRI_TO_REA[1] = $LOAD.M
+
  ;Waiting for remote pc to send $FRI_FRM_INT[1]==1    
 
 
@@ -116,6 +119,12 @@ DEF friISIR( )
      $FRI_TO_INT[3] = $FRI_FRM_INT[3]
    ENDIF
 
+   ;$FRI_FRM_REA[1] = Load
+   IF ($FRI_TO_REA[1] <> $FRI_FRM_REA[1]) THEN
+     LOAD.M = $FRI_FRM_REA[1]
+     $FRI_TO_REA[1] = $FRI_FRM_REA[1]
+   ENDIF
+
    $STIFFNESS = ISIRSTIFFNESS
    $STIFFNESS.COMMIT = TRUE
    $FRI_TO_INT[2] = $FRI_FRM_INT[2]
@@ -148,6 +157,7 @@ DEF friISIR( )
  ;hit joint limits
  PTP CLAMP_AXES($AXIS_ACT_MES)
 
+ WAIT SEC 0.5
  HALT
  IF ($FRI_TO_INT[1] == 1) THEN
   retVal=FRISTOP()	
