@@ -43,7 +43,7 @@ bool DemoKukaKinectKaramaRTNET::configureHook(){
 
 
 void DemoKukaKinectKaramaRTNET::updateHook(){
-   fri_frm_krl = m_fromFRI.get(); 
+   fri_frm_krl = m_fromKRL.get(); 
    if(fri_frm_krl.intData[0] == 1){ //command mode
 
        RTT::FlowStatus distanceFS = port_distance.read(distance);

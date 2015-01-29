@@ -104,7 +104,7 @@ bool ATIcalibration::doStart(){
 
 void ATIcalibration::updateHook(){
 	RTT::os::TimeService::ticks timestamp = RTT::os::TimeService::Instance()->getTicks();
- 	fri_frm_krl = m_fromFRI.get();
+ 	fri_frm_krl = m_fromKRL.get();
  	if(fri_frm_krl.intData[0] == 1){ //command mode
 
  		RTT::FlowStatus joint_state_fs =iport_msr_joint_pos.read(JState);

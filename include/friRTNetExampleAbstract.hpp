@@ -47,12 +47,12 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     /**
      * @brief Attribute to send shared arrays to the KRC
      */
-  	RTT::Attribute<tFriKrlData> m_toFRI;
+  	RTT::Attribute<tFriKrlData> m_toKRL;
 
     /**
      * @brief Attribute to read shared arrays from the KRC
      */
-	RTT::Attribute<tFriKrlData> m_fromFRI;
+	RTT::Attribute<tFriKrlData> m_fromKRL;
 
 	/**
 	 * @brief Property to get and set the control_mode (1 to 7)

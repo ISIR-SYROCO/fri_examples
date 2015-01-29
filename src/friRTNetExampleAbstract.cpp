@@ -135,8 +135,8 @@ void FriRTNetExampleAbstract::cleanupHook(){}
 void FriRTNetExampleAbstract::setPeer(std::string name){
     peer = getPeer(name);
     assert(peer);
-    m_toFRI = peer->attributes()->getAttribute("toKRL");
-    m_fromFRI= peer->attributes()->getAttribute("fromKRL");
+    m_toKRL = peer->attributes()->getAttribute("toKRL");
+    m_fromKRL= peer->attributes()->getAttribute("fromKRL");
     control_mode_prop = peer->properties()->getProperty("control_mode");
 
 }
@@ -167,23 +167,23 @@ void FriRTNetExampleAbstract::setControlStrategy(int mode){
             fri_to_krl.intData[1] = 20;
             controlMode = 20; // cartesian impedance control
         }
-        m_toFRI.set(fri_to_krl);
+        m_toKRL.set(fri_to_krl);
     }
 }
 
 void FriRTNetExampleAbstract::setTool(int toolNumber){
 	fri_to_krl.intData[2] = toolNumber;
-	m_toFRI.set(fri_to_krl);
+	m_toKRL.set(fri_to_krl);
 }
 
 void FriRTNetExampleAbstract::setLoad(float load){
 	current_load = load;
 	fri_to_krl.realData[0] = load;
-	m_toFRI.set(fri_to_krl);
+	m_toKRL.set(fri_to_krl);
 }
 
 void FriRTNetExampleAbstract::getLoad(){
-	fri_frm_krl = m_fromFRI.get();
+	fri_frm_krl = m_fromKRL.get();
 	current_load = fri_frm_krl.realData[0];
 	std::cout << current_load << std::endl;
 }
@@ -200,7 +200,7 @@ bool FriRTNetExampleAbstract::requiresControlMode(int modeRequired){
 }
 
 FRI_STATE FriRTNetExampleAbstract::getFRIMode(){
-    fri_frm_krl = m_fromFRI.get();
+    fri_frm_krl = m_fromKRL.get();
     if(fri_frm_krl.intData[0] == 1){
         std::cout << "FRI in Command Mode" << std::endl;
         return FRI_STATE_CMD;
@@ -219,7 +219,7 @@ void FriRTNetExampleAbstract::friStop(){
 
     //Put 2 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=2;
-    m_toFRI.set(fri_to_krl);
+    m_toKRL.set(fri_to_krl);
 
     return;
 }
@@ -228,7 +228,7 @@ void FriRTNetExampleAbstract::friStart(){
 
     //Put 1 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=1;
-    m_toFRI.set(fri_to_krl);
+    m_toKRL.set(fri_to_krl);
 
     return;
 }
@@ -240,14 +240,14 @@ void FriRTNetExampleAbstract::friReset(){
         fri_to_krl.realData[i]=0.0;
     }
 
-    m_toFRI.set(fri_to_krl);
+    m_toKRL.set(fri_to_krl);
 }
 
 void FriRTNetExampleAbstract::stopKrlScript(){
 
     //Put 3 in $FRI_FRM_INT[1] to trigger fri_stop()
     fri_to_krl.intData[0]=3;
-    m_toFRI.set(fri_to_krl);
+    m_toKRL.set(fri_to_krl);
 }
 
 
