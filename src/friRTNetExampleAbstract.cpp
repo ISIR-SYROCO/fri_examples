@@ -176,15 +176,16 @@ void FriRTNetExampleAbstract::setTool(int toolNumber){
 	m_toFRI.set(fri_to_krl);
 }
 
-void FriRTNetExampleAbstract::setLoad(double load){
+void FriRTNetExampleAbstract::setLoad(float load){
 	current_load = load;
 	fri_to_krl.realData[0] = load;
 	m_toFRI.set(fri_to_krl);
 }
 
 void FriRTNetExampleAbstract::getLoad(){
-    fri_frm_krl = m_fromFRI.get();
+	fri_frm_krl = m_fromFRI.get();
 	current_load = fri_frm_krl.realData[0];
+	std::cout << current_load << std::endl;
 }
 
 bool FriRTNetExampleAbstract::requiresControlMode(int modeRequired){

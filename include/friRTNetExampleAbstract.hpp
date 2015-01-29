@@ -144,7 +144,7 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
 
     /** @brief Set new load
 	 */
-	void setLoad(double load);
+	void setLoad(float load);
 
     /** @brief Get current load (tool weight)
 	 */
