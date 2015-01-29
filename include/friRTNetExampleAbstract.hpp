@@ -135,18 +135,32 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
     void setPeer(std::string name);
 
     /** @brief Set control strategy
+	 *  1 : joint position
+	 *  2 : joint velocity
+	 *  3 : joint torque
+	 *  4 : cartesian position
+	 *  5 : cartesian force
+	 *  6 : cartesian twist
+	 *  7 : joint position and torque
+	 *  Then $FRI_*_INT[2] is set to the apprioriate value:
+	 *  10 if control strategy 1 or 2
+	 *  20 if control strategy 4, 5 or 6
+	 *  30 if control strategy 3 or 7
      */
     void setControlStrategy(int mode);
 
     /** @brief Select the tool defined on the KRC
+	 *  The tool number is stored in $FRI_*_INT[3]
      */
     void setTool(int toolNumber);
 
     /** @brief Set new load
+	 *  The value of the load is stored in $FRI_*_REA[1]
 	 */
 	void setLoad(float load);
 
     /** @brief Get current load (tool weight)
+	 *  The value of the load is stored in $FRI_*_REA[1]
 	 */
 	void getLoad();
 
