@@ -32,7 +32,6 @@ DEF friISIR( )
 
  ;Reset $STIFFNESS system variable to default value
  resetSTIFFNESS()
- $FRI_TO_INT[2] = 10 
 
  BAS(#TOOL,0)
  ;Force to be in T2 mode
@@ -61,9 +60,16 @@ DEF friISIR( )
  ;FRI Monitor Mode flag
  $FRI_TO_INT[1] = 2
  $FRI_TO_INT[2] = 10
+ $FRI_TO_INT[4] = 2
 
  ;Get current Load
  $FRI_TO_REA[1] = $LOAD.M
+
+ ;Waiting for the remote pc to set new FRI rate
+ WAIT FOR ($FRI_FRM_INT[4] <> 0)
+ $FRI_TO_INT[4] = $FRI_FRM_INT[4]
+ FRICLOSE()
+ FRIOPEN($FRI_FRM_INT[4])
 
  ;Waiting for remote pc to send $FRI_FRM_INT[1]==1    
  WAIT FOR ($FRI_FRM_INT[1]==0)

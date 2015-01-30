@@ -39,6 +39,7 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     this->addOperation("setTool", &FriRTNetExampleAbstract::setTool, this, RTT::OwnThread);
     this->addOperation("setLoad", &FriRTNetExampleAbstract::setLoad, this, RTT::OwnThread);
     this->addOperation("getLoad", &FriRTNetExampleAbstract::getLoad, this, RTT::OwnThread);
+    this->addOperation("setFRIRate", &FriRTNetExampleAbstract::setFRIRate, this, RTT::OwnThread);
 
     this->addOperation("friStart", &FriRTNetExampleAbstract::friStart, this, RTT::OwnThread);
     this->addOperation("friStop", &FriRTNetExampleAbstract::friStop, this, RTT::OwnThread);
@@ -86,6 +87,8 @@ FriRTNetExampleAbstract::FriRTNetExampleAbstract(std::string const& name) : RTT:
     mass_matrix.assign(49, 0);
     estExtJntTrq.assign(7, 0);
     estExtTcpWrench.assign(6, 0);
+
+	fri_rate = 0;
 }
 
 FriRTNetExampleAbstract::~FriRTNetExampleAbstract(){
@@ -239,6 +242,7 @@ void FriRTNetExampleAbstract::friReset(){
         fri_to_krl.intData[i]=0;
         fri_to_krl.realData[i]=0.0;
     }
+	fri_to_krl.intData[3] = fri_rate;
 
     m_toKRL.set(fri_to_krl);
 }
@@ -587,4 +591,8 @@ void FriRTNetExampleAbstract::sendCartesianTwist(std::vector<double> &twist){
         }
     }
     return;
+}
+
+void FriRTNetExampleAbstract::setFRIRate(int period){
+	fri_rate = period;
 }

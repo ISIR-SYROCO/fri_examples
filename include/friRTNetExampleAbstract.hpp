@@ -95,6 +95,14 @@ class FriRTNetExampleAbstract : public RTT::TaskContext{
 
 	double current_load;
 
+	int fri_rate;
+
+	/** @brief Set the period of the FRI on the KRC side
+	 *  It must be called just after the configure operation
+	 *  and before the friReset
+	 */
+	void setFRIRate(int period);
+
     /** @brief Orocos Configure Hook
      * Initialization of the shared array between
      * KRC and remote pc
