@@ -429,7 +429,7 @@ bool FriRTNetExampleAbstract::connectICmdCartPos(){
 
 bool FriRTNetExampleAbstract::connectICmdCartPosFriOffset(){
     assert(peer);
-    return iport_cmd_joint_pos_fri_offset.connectTo(peer->getPort("cmdCartPosFriOffset"));
+    return iport_cmd_cart_pos_fri_offset.connectTo(peer->getPort("cmdCartPosFriOffset"));
 }
 
 bool FriRTNetExampleAbstract::connectIMsrJntVel(){
